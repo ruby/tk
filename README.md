@@ -30,4 +30,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/ruby/t
 
 ## License
 
-The gem is available as open source under the terms of the [Ruby license](License.txt).
+The gem is available as open source under the terms of the [Ruby license](LICENSE.txt).
