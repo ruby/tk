@@ -12,11 +12,8 @@
 #ifdef HAVE_RUBY_ENCODING_H
 #include "ruby/encoding.h"
 #endif
-#ifndef RUBY_VERSION
-#define RUBY_VERSION "(unknown version)"
-#endif
-#ifndef RUBY_RELEASE_DATE
-#define RUBY_RELEASE_DATE "unknown release-date"
+#ifdef HAVE_RUBY_VERSION_H
+#include "ruby/version.h"
 #endif
 
 #undef RUBY_UNTYPED_DATA_WARNING
@@ -3035,7 +3032,7 @@ lib_do_one_event_core(argc, argv, self, is_ip)
     VALUE self;
     int   is_ip;
 {
-    volatile VALUE vflags;
+    VALUE vflags;
     int flags;
     int found_event;
 
@@ -3049,11 +3046,7 @@ lib_do_one_event_core(argc, argv, self, is_ip)
         flags = TCL_ALL_EVENTS | TCL_DONT_WAIT;
     } else {
         Check_Type(vflags, T_FIXNUM);
-        flags = FIX2INT(vflags);
-    }
-
-    if (rb_safe_level() >=1 && OBJ_TAINTED(vflags)) {
-      flags |= TCL_DONT_WAIT;
+        flags = (int)FIX2LONG(vflags);
     }
 
     if (is_ip) {
@@ -3636,11 +3629,7 @@ ip_ruby_cmd(clientData, interp, argc, argv)
         s = rb_tainted_str_new2(str);
 #endif
         DUMP2("arg:%s",str);
-#ifndef HAVE_STRUCT_RARRAY_LEN
         rb_ary_push(args, s);
-#else
-        RARRAY(args)->ptr[RARRAY(args)->len++] = s;
-#endif
     }
 
     if (old_gc == Qfalse) rb_gc_enable();
@@ -10006,61 +9995,52 @@ lib_get_reltype_name(self)
 static VALUE
 tcltklib_compile_info(void)
 {
-    volatile VALUE ret;
-    size_t size;
-    static CONST char form[]
-      = "tcltklib %s :: Ruby%s (%s) %s pthread :: Tcl%s(%s)/Tk%s(%s) %s";
-    char *info;
-
-    size = strlen(form)
-        + strlen(TCLTKLIB_RELEASE_DATE)
-        + strlen(RUBY_VERSION)
-        + strlen(RUBY_RELEASE_DATE)
-        + strlen("without")
-        + strlen(TCL_PATCH_LEVEL)
-        + strlen("without stub")
-        + strlen(TK_PATCH_LEVEL)
-        + strlen("without stub")
-        + strlen("unknown tcl_threads");
-
-    info = ALLOC_N(char, size);
-    /* info = ckalloc(sizeof(char) * size); */ /* SEGV */
-
-    sprintf(info, form,
-            TCLTKLIB_RELEASE_DATE,
-            RUBY_VERSION, RUBY_RELEASE_DATE,
+    VALUE ret;
+    static const char info[] =
+	"tcltklib " TCLTKLIB_RELEASE_DATE " "
+	":: Ruby"
+#ifdef RUBY_API_VERSION_MAJOR
+	STRINGIZE(RUBY_API_VERSION_MAJOR)"."
+	STRINGIZE(RUBY_API_VERSION_MINOR)"."
+	STRINGIZE(RUBY_API_VERSION_TEENY)" "
+#else
+	RUBY_VERSION" "
+#endif
+#ifdef RUBY_RELEASE_DATE
+	"("RUBY_RELEASE_DATE") "
+#endif
 #ifdef HAVE_NATIVETHREAD
-            "with",
+	"with"
 #else
-            "without",
+	"without"
 #endif
-            TCL_PATCH_LEVEL,
+	" pthread "
+	":: Tcl" TCL_PATCH_LEVEL "("
 #ifdef USE_TCL_STUBS
-            "with stub",
+	"with"
 #else
-            "without stub",
+	"without"
 #endif
-            TK_PATCH_LEVEL,
+	" stub)"
+	"/"
+	"Tk" TK_PATCH_LEVEL "("
 #ifdef USE_TK_STUBS
-            "with stub",
+	"with"
 #else
-            "without stub",
+	"without"
 #endif
+	" stub) "
 #ifdef WITH_TCL_ENABLE_THREAD
 # if WITH_TCL_ENABLE_THREAD
-            "with tcl_threads"
+	"with"
 # else
-            "without tcl_threads"
+	"without"
 # endif
 #else
-            "unknown tcl_threads"
+	"unknown"
 #endif
-        );
-
+	" tcl_threads";
     ret = rb_obj_freeze(rb_str_new2(info));
-
-    xfree(info);
-    /* ckfree(info); */
 
     return ret;
 }

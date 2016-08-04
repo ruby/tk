@@ -127,6 +127,20 @@ def maybe_64bit?
   /64|universal|s390x/ =~ RUBY_PLATFORM
 end
 
+if defined?(Logging.quiet) and Logging.quiet and /--jobserver-fds=/ !~ ENV["MAKEFLAGS"]
+  def progress(s)
+    print(s)
+  end
+  def newline
+  end
+else
+  def progress(s)
+  end
+  def newline
+    puts
+  end
+end
+
 def check_tcltk_version(version)
   return [nil, nil] unless version.kind_of? String
 
@@ -357,7 +371,7 @@ def collect_tcltk_defs(tcl_defs_str, tk_defs_str)
   end
 
   if tcl_defs_str
-    tcl_defs = tcl_defs_str.split(/ ?-D/).map{|s|
+    tcl_defs = tcl_defs_str.split(/(?:\A|\s)\s*-D/).map{|s|
       s =~ /^([^=]+)(.*)$/
       [$1, $2]
     }
@@ -366,7 +380,7 @@ def collect_tcltk_defs(tcl_defs_str, tk_defs_str)
   end
 
   if tk_defs_str
-    tk_defs = tk_defs_str.split(/ ?-D/).map{|s|
+    tk_defs = tk_defs_str.split(/(?:\A|\s)\s*-D/).map{|s|
       s =~ /^([^=]+)(.*)$/
       [$1, $2]
     }
@@ -382,7 +396,7 @@ def collect_tcltk_defs(tcl_defs_str, tk_defs_str)
           vtcl != vtk )
   }
 
-  defs.map{|ary| s = ary.join(''); (s.strip.empty?)? "": "-D" << s}
+  defs.map{|ary| /\S/ =~ (s = ary.join('')) and "-D" << s.strip}.compact
 end
 
 def parse_tclConfig(file)
@@ -757,7 +771,7 @@ def search_tclConfig(*paths) # libdir list or [tcl-libdir|file, tk-libdir|file]
       dir.strip.chomp('/')
     end
   }.each{|dir|
-    print("."); progress_flag = true # progress
+    progress("."); progress_flag = true
     # print("check #{dir} ==>");
     if dir.kind_of? Array
       tcldir, tkdir = dir
@@ -1182,7 +1196,7 @@ def find_tcl(tcllib, stubs, version, *opt_paths)
     end
   }
 
-  print("\n") # progress
+  progress("\n")
   [false, nil, nil, nil]
 end
 
@@ -1321,7 +1335,7 @@ def find_tk(tklib, stubs, version, *opt_paths)
     end
   }
 
-  print("\n") # progress
+  progress("\n")
   [false, nil, nil, nil]
 end
 
@@ -1333,7 +1347,7 @@ def find_tcltk_library(tcllib, tklib, stubs, tclversion, tkversion,
     st,path,lib,libs,*inc = find_tcl(tcllib, stubs, tclversion, *tcl_opt_paths)
   end
   unless st
-    puts("Warning:: cannot find Tcl library. tcltklib will not be compiled (tcltklib is disabled on your Ruby. That is, Ruby/Tk will not work). Please check configure options.")
+    puts("\n""Warning:: cannot find Tcl library. tcltklib will not be compiled (tcltklib is disabled on your Ruby. That is, Ruby/Tk will not work). Please check configure options.")
     return false
   else
     ($LIBPATH ||= []; $LIBPATH |= [path]) if path
@@ -1349,7 +1363,7 @@ def find_tcltk_library(tcllib, tklib, stubs, tclversion, tkversion,
     st,path,lib,libs,*inc = find_tk(tklib, stubs, tkversion, *tk_opt_paths)
   end
   unless st
-    puts("Warning:: cannot find Tk library. tcltklib will not be compiled (tcltklib is disabled on your Ruby. That is, Ruby/Tk will not work). Please check configure options.")
+    puts("\n""Warning:: cannot find Tk library. tcltklib will not be compiled (tcltklib is disabled on your Ruby. That is, Ruby/Tk will not work). Please check configure options.")
     return false
   else
     ($LIBPATH ||= []; $LIBPATH |= [path]) if path
@@ -1395,14 +1409,15 @@ def find_tcltk_header(tclver, tkver)
     # already checked existence of tcl headers based on tclConfig.sh
     have_tcl_h = true
   else
-    print "\nSearch tcl.h"
+    print "Search tcl.h"
+    newline
     if enable_config("tcl-h-ver-check", true) &&
         tclver && tclver =~ /^\D*(\d)\.?(\d)/
       major = $1; minor = $2
     else
       major = minor = nil
     end
-    print(".") # progress
+    progress(".")
     if major && minor
       # version check on tcl.h
       version_check = proc {|code|
@@ -1445,7 +1460,7 @@ def find_tcltk_header(tclver, tkver)
         version_check = nil
       end
       have_tcl_h = paths.find{|path|
-        print(".") # progress
+        progress(".")
         inc_opt = " -I#{path.quote}"
         if try_header("tcl", inc_opt, &version_check)
           ($INCFLAGS ||= "") << inc_opt
@@ -1455,6 +1470,7 @@ def find_tcltk_header(tclver, tkver)
         end
       }
     end
+    progress("\n")
   end
 
   # tk.h
@@ -1462,14 +1478,15 @@ def find_tcltk_header(tclver, tkver)
     # already checked existence of tk headers based on tkConfig.sh
     have_tk_h = true
   else
-    print "\nSearch tk.h"
+    print "Search tk.h"
+    newline
     if enable_config("tk-h-ver-check", true) &&
         tkver && tkver =~ /^\D*(\d)\.?(\d)/
       major = $1; minor = $2
     else
       major = minor = nil
     end
-    print(".") # progress
+    progress(".")
     if major && minor
       # version check on tk.h
       version_check = proc {|code|
@@ -1512,7 +1529,7 @@ def find_tcltk_header(tclver, tkver)
         version_check = nil
       end
       have_tk_h = paths.find{|path|
-        print(".") # progress
+        progress(".")
         inc_opt = " -I#{path.quote}"
         if try_header(%w'tcl.h tk.h', inc_opt, &version_check)
           ($INCFLAGS ||= "") << inc_opt
@@ -1522,6 +1539,7 @@ def find_tcltk_header(tclver, tkver)
         end
       }
     end
+    progress("\n")
   end
 
   puts "Can't find \"tcl.h\"." unless have_tcl_h
@@ -1582,7 +1600,7 @@ def find_X11(*opt_paths)
   defaults.compact.each{|path| paths.concat(Dir.glob(path.strip.chomp('/'), File::FNM_CASEFOLD))}
   st = find_library("X11", "XOpenDisplay", *paths)
   unless st
-    puts("Warning:: cannot find X11 library. tcltklib will not be compiled (tcltklib is disabled on your Ruby. That is, Ruby/Tk will not work). Please check configure options. If your Tcl/Tk don't require X11, please try --without-X11.")
+    puts("\n""Warning:: cannot find X11 library. tcltklib will not be compiled (tcltklib is disabled on your Ruby. That is, Ruby/Tk will not work). Please check configure options. If your Tcl/Tk don't require X11, please try --without-X11.")
   end
   st
 end
@@ -1591,9 +1609,8 @@ def search_X_libraries
   use_tkConfig = false
   if TkConfig_Info['config_file_path']
     # use definitions on tkConfig.sh
-    if (TkConfig_Info['TK_XINCLUDES'] &&
-        !TkConfig_Info['TK_XINCLUDES'].strip.empty?) ||
-        (TkConfig_Info['TK_XLIBSW'] && !TkConfig_Info['TK_XLIBSW'].strip.empty?)
+    if (/\S/ =~ TkConfig_Info['TK_XINCLUDES'] ||
+        /\S/ =~ TkConfig_Info['TK_XLIBSW'])
       use_tkConfig = true
       #use_X = true && with_config("X11", ! is_win32?)
       use_X = with_config("X11", true)
@@ -1606,8 +1623,7 @@ def search_X_libraries
     use_X = with_config("X11", !(is_win32? || TkLib_Config["tcltk-framework"]))
   end
 
-  if TkConfig_Info['TK_XINCLUDES'] &&
-      !TkConfig_Info['TK_XINCLUDES'].strip.empty?
+  if /\S/ =~ TkConfig_Info['TK_XINCLUDES']
     ($INCFLAGS ||= "") << " " << TkConfig_Info['TK_XINCLUDES'].strip
   end
 
@@ -1618,7 +1634,7 @@ def search_X_libraries
     unless find_X11(x11_ldir2, x11_ldir)
       puts("Can't find X11 libraries. ")
       if use_tkConfig &&
-          TkConfig_Info['TK_XLIBSW'] && !TkConfig_Info['TK_XLIBSW'].strip.empty?
+          /\S/ =~ TkConfig_Info['TK_XLIBSW']
         puts("But, try to use TK_XLIBSW information (believe tkConfig.sh).")
         ($libs ||= "") << " " << TkConfig_Info['TK_XLIBSW'] << " "
       else
@@ -1647,9 +1663,9 @@ def pthread_check()
 
   if TclConfig_Info['config_file_path']
     if tcl_enable_thread == true
-      puts("Warning: definition of tclConfig.sh is ignored, because --enable-tcl-thread option is given.")
+      puts("\n""Warning: definition of tclConfig.sh is ignored, because --enable-tcl-thread option is given.")
     elsif tcl_enable_thread == false
-      puts("Warning: definition of tclConfig.sh is ignored, because --disable-tcl-thread option is given.")
+      puts("\n""Warning: definition of tclConfig.sh is ignored, because --disable-tcl-thread option is given.")
     else
       # tcl-thread is unknown and tclConfig.sh is given
       if TclConfig_Info['TCL_THREADS']
@@ -1665,9 +1681,9 @@ def pthread_check()
       if tcl_enable_thread == nil
         # cannot find definition
         if tcl_major_ver
-          puts("Warning: '#{TclConfig_Info['config_file_path']}' doesn't include TCL_THREADS definition.")
+          puts("\n""Warning: '#{TclConfig_Info['config_file_path']}' doesn't include TCL_THREADS definition.")
         else
-          puts("Warning: '#{TclConfig_Info['config_file_path']}' may not be a tclConfig file.")
+          puts("\n""Warning: '#{TclConfig_Info['config_file_path']}' may not be a tclConfig file.")
         end
         #tclConfig = false
       end
@@ -1800,27 +1816,21 @@ print("check functions.")
  ruby_enc_find_basename
 ".each do |func|
   have_func(func, "ruby.h")
-  print(".") # progress
+  progress(".")
 end
-print("\n") # progress
-
-print("check struct members.")
-have_struct_member("struct RArray", "ptr", "ruby.h")
-print(".") # progress
-have_struct_member("struct RArray", "len", "ruby.h")
-print("\n") # progress
+progress("\n")
 
 # check libraries
 unless is_win32?
   print("check libraries.")
   have_library("nsl", "t_open")
-  print(".") # progress
+  progress(".")
   have_library("socket", "socket")
-  print(".") # progress
+  progress(".")
   have_library("dl", "dlopen")
-  print(".") # progress
+  progress(".")
   have_library("m", "log", "math.h")
-  print("\n") # progress
+  progress("\n")
 end
 $CPPFLAGS ||= ""
 $CPPFLAGS += ' -D_WIN32' if /cygwin/ =~ RUBY_PLATFORM
@@ -1907,9 +1917,8 @@ TkLib_Config["space-on-tk-libpath"] =
 
 # enable Tcl/Tk stubs?
 =begin
-if TclConfig_Info['TCL_STUB_LIB_SPEC'] && TkConfig_Info['TK_STUB_LIB_SPEC'] &&
-    !TclConfig_Info['TCL_STUB_LIB_SPEC'].strip.empty? &&
-    !TkConfig_Info['TK_STUB_LIB_SPEC'].strip.empty?
+if /\S/ =~ TclConfig_Info['TCL_STUB_LIB_SPEC'] &&
+   /\S/ =~ TkConfig_Info['TK_STUB_LIB_SPEC']
   stubs = true
   unless (st = enable_config("tcltk-stubs")).nil?
     stubs &&= st
@@ -2015,16 +2024,14 @@ if TkLib_Config["tcltk-framework"]
     libs << ' ' << TclConfig_Info['TCL_LIBS']
     if stubs
       if TkLib_Config["tcl-build-dir"] &&
-          TclConfig_Info['TCL_BUILD_STUB_LIB_SPEC'] &&
-          !TclConfig_Info['TCL_BUILD_STUB_LIB_SPEC'].strip.empty?
+          /\S/ =~ TclConfig_Info['TCL_BUILD_STUB_LIB_SPEC']
         libs << ' ' << TclConfig_Info['TCL_BUILD_STUB_LIB_SPEC']
       else
         libs << ' ' << TclConfig_Info['TCL_STUB_LIB_SPEC']
       end
     else
       if TkLib_Config["tcl-build-dir"] &&
-          TclConfig_Info['TCL_BUILD_LIB_SPEC'] &&
-          !TclConfig_Info['TCL_BUILD_LIB_SPEC'].strip.empty?
+          /\S/ =~ TclConfig_Info['TCL_BUILD_LIB_SPEC']
         libs << ' ' << TclConfig_Info['TCL_BUILD_LIB_SPEC']
       else
         libs << ' ' << TclConfig_Info['TCL_LIB_SPEC']
@@ -2040,16 +2047,14 @@ if TkLib_Config["tcltk-framework"]
     libs << ' ' << TkConfig_Info['TK_LIBS']
     if stubs
       if TkLib_Config["tk-build-dir"] &&
-          TclConfig_Info['TK_BUILD_STUB_LIB_SPEC'] &&
-          !TclConfig_Info['TK_BUILD_STUB_LIB_SPEC'].strip.empty?
+          /\S/ =~ TclConfig_Info['TK_BUILD_STUB_LIB_SPEC']
         libs << ' ' << TkConfig_Info['TK_BUILD_STUB_LIB_SPEC']
       else
         libs << ' ' << TkConfig_Info['TK_STUB_LIB_SPEC']
       end
     else
       if TkLib_Config["tk-build-dir"] &&
-          TclConfig_Info['TK_BUILD_LIB_SPEC'] &&
-          !TclConfig_Info['TK_BUILD_LIB_SPEC'].strip.empty?
+          /\S/ =~ TclConfig_Info['TK_BUILD_LIB_SPEC']
         libs << ' ' << TkConfig_Info['TK_BUILD_LIB_SPEC']
       else
         libs << ' ' << TkConfig_Info['TK_LIB_SPEC']
@@ -2079,10 +2084,6 @@ if (TkLib_Config["tcltk-framework"] ||
   # for SUPPORT_STATUS
   $INSTALLFILES ||= []
   $INSTALLFILES << ["lib/tkextlib/SUPPORT_STATUS", "$(RUBYLIBDIR)", "lib"]
-
-  # create
-  $defs << %[-DRUBY_VERSION=\\"#{RUBY_VERSION}\\"]
-  $defs << %[-DRUBY_RELEASE_DATE=\\"#{RUBY_RELEASE_DATE}\\"]
 
   # remove harmful definitions.
   $defs.delete_if{|x|/^-Du?intptr_t=/ =~ x}
