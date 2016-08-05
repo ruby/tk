@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - 2.4.0-head
+  - ruby-head
 before_install:
   - apt-get install tk tk-dev
   - gem install bundler --no-document
