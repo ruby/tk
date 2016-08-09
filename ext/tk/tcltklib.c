@@ -6215,16 +6215,14 @@ ip_init(argc, argv, self)
     case 1:
         /* argv0 */
         if (!NIL_P(argv0)) {
-            const char *name = StringValueCStr(argv0);
-            long len = RSTRING_LEN(argv0);
-            int flag = TCL_GLOBAL_ONLY;
-            if ((len == 2 && memcmp(name, "-e", 2) == 0)
-                || (len == 1 && memcmp(name, "-", 1) == 0)) {
-                name = "ruby";
+            if (strncmp(StringValueCStr(argv0), "-e", 3) == 0
+                || strncmp(StringValueCStr(argv0), "-", 2) == 0) {
+                Tcl_SetVar(ptr->ip, "argv0", "ruby", TCL_GLOBAL_ONLY);
             } else {
-                /* flag = 0; */
+                /* Tcl_SetVar(ptr->ip, "argv0", StringValueCStr(argv0), 0); */
+                Tcl_SetVar(ptr->ip, "argv0", StringValueCStr(argv0),
+                           TCL_GLOBAL_ONLY);
             }
-            Tcl_SetVar(ptr->ip, "argv0", name, flag);
         }
     case 0:
         /* no args */
