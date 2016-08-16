@@ -5,8 +5,8 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 Gem::Specification.new do |spec|
   spec.name          = "tk"
   spec.version       = "0.1.0"
-  spec.authors       = ["SHIBATA Hiroshi"]
-  spec.email         = ["hsbt@ruby-lang.org"]
+  spec.authors       = ["SHIBATA Hiroshi", "Nobuyoshi Nakada"]
+  spec.email         = ["hsbt@ruby-lang.org", "nobu@ruby-lang.org"]
 
   spec.summary       = %q{Tk interface module using tcltklib.}
   spec.description   = %q{Tk interface module using tcltklib.}
