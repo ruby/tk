@@ -80,6 +80,53 @@ module Tk
       _setup_subst_table(KEY_TBL, PROC_TBL);
     end
 
+    class DND_SubstText < TkUtil::CallbackSubst
+      KEY_TBL = [
+        [ ?D, ?d, :data ],
+        nil
+      ]
+
+      PROC_TBL = [
+        [ ?d, proc do |s|
+                case TclTkLib::WINDOWING_SYSTEM
+                when 'x11', 'win32'
+                  s.force_encoding('utf-8')
+                end
+                s
+              end
+        ],
+        nil
+      ]
+      _setup_subst_table(KEY_TBL, PROC_TBL);
+    end
+    
+    class DND_SubstFileList < TkUtil::CallbackSubst
+      KEY_TBL = [
+        [ ?D, ?d, :data ],
+        nil
+      ]
+
+      PROC_TBL = [
+        [ ?d, proc do |s|
+                case TclTkLib::WINDOWING_SYSTEM
+                when 'win32'
+                  s.force_encoding('utf-8')
+                  TkComm.simplelist(s).map { |x| x.tr('\\', '/') }
+                when 'x11'
+                  s = s.encode('iso8859-1', 'utf-8')
+                  s.force_encoding('utf-8')
+                  TkComm.simplelist(s)
+                else
+                  TkComm.simplelist(s)
+                end
+              end
+        ],
+        nil
+      ]
+      _setup_subst_table(KEY_TBL, PROC_TBL);
+    end
+    
+    
     module DND
       def self.version
         begin
@@ -113,6 +160,14 @@ module Tk
       #end
       def dnd_bindtarget(type, event, *args)
         # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
+        klass = case type
+                when 'text/plain'
+                  DND_SubstText
+                when 'text/uri-list'
+                  DND_SubstFileList
+                else
+                  DND_Subst
+                end
         if TkComm._callback_entry?(args[0]) || !block_given?
           cmd = args.shift
         else
@@ -125,11 +180,11 @@ module Tk
         event = tk_event_sequence(event)
         if prior.kind_of?(Numeric)
           tk_call('dnd', 'bindtarget', @path, type, event,
-                  install_bind_for_event_class(DND_Subst, cmd, *args),
+                  install_bind_for_event_class(klass, cmd, *args),
                   prior)
         else
           tk_call('dnd', 'bindtarget', @path, type, event,
-                  install_bind_for_event_class(DND_Subst, cmd, prior, *args))
+                  install_bind_for_event_class(klass, cmd, prior, *args))
         end
         self
       end
