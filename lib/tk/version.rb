@@ -1,3 +1,0 @@
-module Tk
-  VERSION = "0.1.0"
-end
