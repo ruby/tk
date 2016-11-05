@@ -76,7 +76,7 @@ class << Tk::Tcllib::Crosshair
   private :itemcget_tkstring, :itemcget, :itemcget_strict
   private :itemconfigure, :itemconfiginfo, :current_itemconfiginfo
 
-  def confugure(w, slot, value=None)
+  def configure(w, slot, value=None)
     itemconfigure(w, slot, value)
   end
   def confuginfo(w, slot = nil)
