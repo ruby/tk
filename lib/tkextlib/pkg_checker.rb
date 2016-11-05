@@ -132,7 +132,7 @@ def check_pkg(file, verbose=false)
     unless ver.kind_of?(String)
       begin
         ver = TkPackage.require(name)
-        sccess_list[name] = ver
+        success_list[name] = ver
       rescue
       end
     end
