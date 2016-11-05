@@ -106,7 +106,7 @@ class Tk::Iwidgets::Tabset
       return
     end
 
-    reutrn unless @canvas ||= self.winfo_children[0]
+    return unless @canvas ||= self.winfo_children[0]
 
     delta = 1 if (delta = cget(:gap)) == 'overlap' ||
                    (delta = self.winfo_pixels(delta) + 1) <= 0
