@@ -923,13 +923,13 @@ module Tk::BLT
 
       def self.new(chart, keys={})
         obj = nil
-        LegenedID_TBL.mutex.synchronize{
-          unless (obj = LegenedID_TBL[chart.path])
+        LegendID_TBL.mutex.synchronize{
+          unless (obj = LegendID_TBL[chart.path])
             (obj = self.allocate).instance_eval{
               @parent = @chart = chart
               @cpath = @chart.path
               @path = @id = 'crosshairs'
-              Legend::LegenedID_TBL[@cpath] = self
+              Legend::LegendID_TBL[@cpath] = self
             }
           end
         }
