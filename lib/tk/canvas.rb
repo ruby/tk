@@ -566,7 +566,7 @@ class Tk::Canvas<TkWindow
 
   def rchars(tag, first, last, str_or_coords)
     # Tcl/Tk 8.6 or later
-    str_or_coords = str_or_coords.flatten if str_or_coords.kinad_of? Array
+    str_or_coords = str_or_coords.flatten if str_or_coords.kind_of? Array
     tk_send_without_enc('rchars', tagid(tag), first, last, str_or_coords)
     self
   end
