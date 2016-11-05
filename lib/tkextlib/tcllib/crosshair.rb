@@ -79,7 +79,7 @@ class << Tk::Tcllib::Crosshair
   def configure(w, slot, value=None)
     itemconfigure(w, slot, value)
   end
-  def confuginfo(w, slot = nil)
+  def configinfo(w, slot = nil)
     itemconfiginfo(w, slot)
   end
   def current_configinfo(w, slot = nil)
