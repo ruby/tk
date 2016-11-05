@@ -376,7 +376,7 @@ class RemoteTkIp
   end
 
   def _thread_vwait(var_name)
-    _appsend(false, 'thread_vwait', varname)
+    _appsend(false, 'thread_vwait', var_name)
   end
 
   def _thread_tkwait(mode, target)
