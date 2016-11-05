@@ -893,7 +893,7 @@ class Tk::Tcllib::Tablelist
   end
 
   def sortcolumnlist
-    simplelist(tk_send('sortcolumlist')).map{|col| num_or_str(col)}
+    simplelist(tk_send('sortcolumnlist')).map{|col| num_or_str(col)}
   end
 
   def sortorder
