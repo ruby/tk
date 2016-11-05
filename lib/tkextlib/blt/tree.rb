@@ -600,7 +600,7 @@ module Tk::BLT
         'recurse'=>nil, 'tags'=>nil,
 
         # sort command
-        'ascii'=>nil, 'decreasing'=>nil, 'disctionary'=>nil,
+        'ascii'=>nil, 'decreasing'=>nil, 'dictionary'=>nil,
         'integer'=>nil, 'real'=>nil, 'recurse'=>nil, 'reorder'=>nil,
       }
     end
