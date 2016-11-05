@@ -888,7 +888,7 @@ class Tk::Tcllib::Tablelist
   end
 
   def sortcolumn
-    idx = num_or_str(tk_send('sortcolum'))
+    idx = num_or_str(tk_send('sortcolumn'))
     (idx.kind_of?(Fixnum) && idx < 0)?  nil: idx
   end
 
