@@ -26,7 +26,14 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ruby/tk.
+Your contributions are welcome on GitHub at https://github.com/ruby/tk.
+
+Unfortunatelly we have no resource to handle only issue reports.
+Therefore please open pull request with either:
+- a bug report with a correction patch or
+- (at least) a reproducible code snippet for an issue in form of a test/spec.
+
+Thank you in advance!
 
 ## License
 
