@@ -2441,7 +2441,7 @@ lib_eventloop_core(check_root, update_flag, check_var, interp)
                             if (NIL_P(rb_errinfo())) {
                                 rb_exc_raise(rb_exc_new2(rb_eFatal, "FATAL"));
                             } else {
-                                rb_exc_raise(rb_errinfo());
+                                rb_jump_tag(TAG_FATAL);
                             }
                         }
                     }
