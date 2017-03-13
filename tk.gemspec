@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "tk"
-  spec.version       = "0.1.1"
+  spec.version       = "0.1.2"
   spec.authors       = ["SHIBATA Hiroshi", "Nobuyoshi Nakada"]
   spec.email         = ["hsbt@ruby-lang.org", "nobu@ruby-lang.org"]
 
