@@ -243,7 +243,7 @@ module TkGrid
     list(tk_call_without_enc('grid', 'size', master))
   end
 
-  def slaves(master, keys=nil)
+  def slaves(master, args=nil)
     # master = master.epath if master.kind_of?(TkObject)
     master = _epath(master)
     list(tk_call_without_enc('grid', 'slaves', master, *hash_kv(args)))
