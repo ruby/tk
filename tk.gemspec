@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "tk"
-  spec.version       = "0.1.2"
+  spec.version       = "0.2.0"
   spec.authors       = ["SHIBATA Hiroshi", "Nobuyoshi Nakada"]
   spec.email         = ["hsbt@ruby-lang.org", "nobu@ruby-lang.org"]
 
@@ -18,6 +18,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rake-compiler"
-  
+
   spec.metadata["msys2_mingw_dependencies"] = "tk"
 end
