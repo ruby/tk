@@ -641,9 +641,9 @@ class Tk::Text<TkTextWin
     }
     args << _get_eval_enc_str(idx1) << _get_eval_enc_str(idx2)
     if cnt <= 1
-      number(tk_send_without_enc('count', *opts))
+      number(tk_send_without_enc('count', *args))
     else
-      list(tk_send_without_enc('count', *opts))
+      list(tk_send_without_enc('count', *args))
     end
   end
 
