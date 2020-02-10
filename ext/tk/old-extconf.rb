@@ -8,7 +8,6 @@ is_win32 = (/mswin|mingw|cygwin|bccwin/ =~ RUBY_PLATFORM)
 
 have_func("ruby_native_thread_p", "ruby.h")
 have_func("rb_errinfo", "ruby.h")
-have_func("rb_safe_level", "ruby.h")
 have_struct_member("struct RArray", "ptr", "ruby.h")
 have_struct_member("struct RArray", "len", "ruby.h")
 

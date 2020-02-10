@@ -97,9 +97,6 @@ extern VALUE rb_proc_new _((VALUE (*)(ANYARGS/* VALUE yieldarg[, VALUE procarg] 
 #else
 VALUE rb_errinfo(void);
 #endif
-#ifndef HAVE_RB_SAFE_LEVEL
-#define rb_safe_level() (ruby_safe_level+0)
-#endif
 #ifndef HAVE_RB_SOURCEFILE
 #define rb_sourcefile() (ruby_sourcefile+0)
 #endif
@@ -255,7 +252,6 @@ static VALUE ip_invoke_real _((int, VALUE*, VALUE));
 static VALUE ip_invoke _((int, VALUE*, VALUE));
 static VALUE ip_invoke_with_position _((int, VALUE*, VALUE, Tcl_QueuePosition));
 static VALUE tk_funcall _((VALUE(), int, VALUE*, VALUE));
-static VALUE callq_safelevel_handler _((VALUE, VALUE));
 
 /* Tcl's object type */
 #if TCL_MAJOR_VERSION >= 8
@@ -420,7 +416,6 @@ struct invoke_queue {
 #endif
     VALUE interp;
     int *done;
-    int safe_level;
     VALUE result;
     VALUE thread;
 };
@@ -431,7 +426,6 @@ struct eval_queue {
     int len;
     VALUE interp;
     int *done;
-    int safe_level;
     VALUE result;
     VALUE thread;
 };
@@ -443,7 +437,6 @@ struct call_queue {
     VALUE *argv;
     VALUE interp;
     int *done;
-    int safe_level;
     VALUE result;
     VALUE thread;
 };
@@ -3620,10 +3613,10 @@ ip_ruby_cmd(clientData, interp, argc, argv)
         VALUE s;
 #if TCL_MAJOR_VERSION >= 8
         str = Tcl_GetStringFromObj(argv[i], &len);
-        s = rb_tainted_str_new(str, len);
+        s = rb_str_new(str, len);
 #else /* TCL_MAJOR_VERSION < 8 */
         str = argv[i];
-        s = rb_tainted_str_new2(str);
+        s = rb_str_new2(str);
 #endif
         DUMP2("arg:%s",str);
         rb_ary_push(args, s);
@@ -6946,22 +6939,8 @@ ip_get_result_string_obj(interp)
     Tcl_DecrRefCount(retObj);
     return strval;
 #else
-    return rb_tainted_str_new2(interp->result);
+    return rb_str_new2(interp->result);
 #endif
-}
-
-/* call Tcl/Tk functions on the eventloop thread */
-static VALUE
-callq_safelevel_handler(arg, callq)
-    VALUE arg;
-    VALUE callq;
-{
-    struct call_queue *q;
-
-    Data_Get_Struct(callq, struct call_queue, q);
-    DUMP2("(safe-level handler) $SAFE = %d", q->safe_level);
-    rb_set_safe_level(q->safe_level);
-    return((q->func)(q->interp, q->argc, q->argv));
 }
 
 static int call_queue_handler _((Tcl_Event *, int));
@@ -7006,19 +6985,9 @@ call_queue_handler(evPtr, flags)
     /* incr internal handler mark */
     rbtk_internal_eventloop_handler++;
 
-    /* check safe-level */
-    if (rb_safe_level() != q->safe_level) {
-        /* q_dat = Data_Wrap_Struct(rb_cData,0,-1,q); */
-        q_dat = Data_Wrap_Struct(0,call_queue_mark,-1,q);
-        ret = rb_funcall(rb_proc_new(callq_safelevel_handler, q_dat),
-                         ID_call, 0);
-        rb_gc_force_recycle(q_dat);
-	q_dat = (VALUE)NULL;
-    } else {
-        DUMP2("call function (for caller thread:%"PRIxVALUE")", thread);
-        DUMP2("call function (current thread:%"PRIxVALUE")", rb_thread_current());
-        ret = (q->func)(q->interp, q->argc, q->argv);
-    }
+    DUMP2("call function (for caller thread:%"PRIxVALUE")", thread);
+    DUMP2("call function (current thread:%"PRIxVALUE")", rb_thread_current());
+    ret = (q->func)(q->interp, q->argc, q->argv);
 
     /* set result */
     RARRAY_ASET(q->result, 0, ret);
@@ -7155,7 +7124,6 @@ tk_funcall(func, argc, argv, obj)
     callq->interp = ip_obj;
     callq->result = result;
     callq->thread = current;
-    callq->safe_level = rb_safe_level();
     callq->ev.proc = call_queue_handler;
 
     /* add the handler to Tcl event queue */
@@ -7303,7 +7271,7 @@ ip_eval_real(self, cmd_str, cmd_len)
           Tcl_DecrRefCount(cmd);
           rb_thread_critical = thr_crit_bup;
           ptr->return_value = TCL_OK;
-          return rb_tainted_str_new2("");
+          return rb_str_new2("");
       } else {
           int status;
           struct call_eval_info inf;
@@ -7379,7 +7347,7 @@ ip_eval_real(self, cmd_str, cmd_len)
             Tcl_ResetResult(ptr->ip);
             rbtk_release_ip(ptr);
             rb_thread_critical = thr_crit_bup;
-            return rb_tainted_str_new2("");
+            return rb_str_new2("");
         }
     }
 
@@ -7395,7 +7363,7 @@ ip_eval_real(self, cmd_str, cmd_len)
     /* ip is deleted? */
     if (deleted_ip(ptr)) {
         ptr->return_value = TCL_OK;
-        return rb_tainted_str_new2("");
+        return rb_str_new2("");
     } else {
         /* Tcl_Preserve(ptr->ip); */
         rbtk_preserve_ip(ptr);
@@ -7436,19 +7404,6 @@ ip_eval_real(self, cmd_str, cmd_len)
     rbtk_release_ip(ptr);
     return ret;
 #endif
-}
-
-static VALUE
-evq_safelevel_handler(arg, evq)
-    VALUE arg;
-    VALUE evq;
-{
-    struct eval_queue *q;
-
-    Data_Get_Struct(evq, struct eval_queue, q);
-    DUMP2("(safe-level handler) $SAFE = %d", q->safe_level);
-    rb_set_safe_level(q->safe_level);
-    return ip_eval_real(q->interp, q->str, q->len);
 }
 
 int eval_queue_handler _((Tcl_Event *, int));
@@ -7493,24 +7448,7 @@ eval_queue_handler(evPtr, flags)
     /* incr internal handler mark */
     rbtk_internal_eventloop_handler++;
 
-    /* check safe-level */
-    if (rb_safe_level() != q->safe_level) {
-#ifdef HAVE_NATIVETHREAD
-#ifndef RUBY_USE_NATIVE_THREAD
-    if (!ruby_native_thread_p()) {
-      rb_bug("cross-thread violation on eval_queue_handler()");
-    }
-#endif
-#endif
-        /* q_dat = Data_Wrap_Struct(rb_cData,0,-1,q); */
-        q_dat = Data_Wrap_Struct(0,eval_queue_mark,-1,q);
-        ret = rb_funcall(rb_proc_new(evq_safelevel_handler, q_dat),
-                         ID_call, 0);
-        rb_gc_force_recycle(q_dat);
-	q_dat = (VALUE)NULL;
-    } else {
-        ret = ip_eval_real(q->interp, q->str, q->len);
-    }
+    ret = ip_eval_real(q->interp, q->str, q->len);
 
     /* set result */
     RARRAY_ASET(q->result, 0, ret);
@@ -7640,7 +7578,6 @@ ip_eval(self, str)
     evq->interp = ip_obj;
     evq->result = result;
     evq->thread = current;
-    evq->safe_level = rb_safe_level();
     evq->ev.proc = eval_queue_handler;
 
     position = TCL_QUEUE_TAIL;
@@ -7912,7 +7849,6 @@ lib_toUTF8_core(ip_obj, src, encodename)
 # endif
     Tcl_Encoding encoding;
     Tcl_DString dstr;
-    int taint_flag = OBJ_TAINTED(str);
     struct tcltkip *ptr;
     char *buf;
     int thr_crit_bup;
@@ -8033,13 +7969,12 @@ lib_toUTF8_core(ip_obj, src, encodename)
     /* Tcl_ExternalToUtfDString(encoding,buf,strlen(buf),&dstr); */
     Tcl_ExternalToUtfDString(encoding, buf, RSTRING_LENINT(str), &dstr);
 
-    /* str = rb_tainted_str_new2(Tcl_DStringValue(&dstr)); */
+    /* str = rb_str_new2(Tcl_DStringValue(&dstr)); */
     /* str = rb_str_new2(Tcl_DStringValue(&dstr)); */
     str = rb_str_new(Tcl_DStringValue(&dstr), Tcl_DStringLength(&dstr));
 #ifdef HAVE_RUBY_ENCODING_H
     rb_enc_associate_index(str, ENCODING_INDEX_UTF8);
 #endif
-    if (taint_flag) RbTk_OBJ_UNTRUST(str);
     rb_ivar_set(str, ID_at_enc, ENCODING_NAME_UTF8);
 
     /*
@@ -8098,7 +8033,6 @@ lib_fromUTF8_core(ip_obj, src, encodename)
     Tcl_Interp *interp;
     Tcl_Encoding encoding;
     Tcl_DString dstr;
-    int taint_flag = OBJ_TAINTED(str);
     char *buf;
     int thr_crit_bup;
 #endif
@@ -8182,7 +8116,7 @@ lib_fromUTF8_core(ip_obj, src, encodename)
             tclstr = Tcl_NewStringObj(RSTRING_PTR(str), RSTRING_LENINT(str));
 	    Tcl_IncrRefCount(tclstr);
             s = (char*)Tcl_GetByteArrayFromObj(tclstr, &len);
-            str = rb_tainted_str_new(s, len);
+            str = rb_str_new(s, len);
 	    s = (char*)NULL;
 	    Tcl_DecrRefCount(tclstr);
 #ifdef HAVE_RUBY_ENCODING_H
@@ -8211,7 +8145,7 @@ lib_fromUTF8_core(ip_obj, src, encodename)
 
     if (RSTRING_LEN(str) == 0) {
         rb_thread_critical = thr_crit_bup;
-        return rb_tainted_str_new2("");
+        return rb_str_new2("");
     }
 
     buf = ALLOC_N(char, RSTRING_LEN(str)+1);
@@ -8224,7 +8158,7 @@ lib_fromUTF8_core(ip_obj, src, encodename)
     /* Tcl_UtfToExternalDString(encoding,buf,strlen(buf),&dstr); */
     Tcl_UtfToExternalDString(encoding,buf,RSTRING_LENINT(str),&dstr);
 
-    /* str = rb_tainted_str_new2(Tcl_DStringValue(&dstr)); */
+    /* str = rb_str_new2(Tcl_DStringValue(&dstr)); */
     /* str = rb_str_new2(Tcl_DStringValue(&dstr)); */
     str = rb_str_new(Tcl_DStringValue(&dstr), Tcl_DStringLength(&dstr));
 #ifdef HAVE_RUBY_ENCODING_H
@@ -8241,7 +8175,6 @@ lib_fromUTF8_core(ip_obj, src, encodename)
     }
 #endif
 
-    if (taint_flag) RbTk_OBJ_UNTRUST(str);
     rb_ivar_set(str, ID_at_enc, encodename);
 
     /*
@@ -8297,7 +8230,6 @@ lib_UTF_backslash_core(self, str, all_bs)
 #ifdef TCL_UTF_MAX
     char *src_buf, *dst_buf, *ptr;
     int read_len = 0, dst_len = 0;
-    int taint_flag = OBJ_TAINTED(str);
     int thr_crit_bup;
 
     tcl_stubs_check();
@@ -8335,7 +8267,6 @@ lib_UTF_backslash_core(self, str, all_bs)
     }
 
     str = rb_str_new(dst_buf, dst_len);
-    if (taint_flag) RbTk_OBJ_UNTRUST(str);
 #ifdef HAVE_RUBY_ENCODING_H
     rb_enc_associate_index(str, ENCODING_INDEX_UTF8);
 #endif
@@ -8571,7 +8502,7 @@ ip_invoke_core(interp, argc, argv)
 
     /* ip is deleted? */
     if (deleted_ip(ptr)) {
-        return rb_tainted_str_new2("");
+        return rb_str_new2("");
     }
 
     /* Tcl_Preserve(ptr->ip); */
@@ -8606,7 +8537,7 @@ ip_invoke_core(interp, argc, argv)
                 Tcl_ResetResult(ptr->ip);
                 /* Tcl_Release(ptr->ip); */
                 rbtk_release_ip(ptr);
-                return rb_tainted_str_new2("");
+                return rb_str_new2("");
             }
         } else {
 #if TCL_MAJOR_VERSION >= 8
@@ -8801,7 +8732,7 @@ ip_invoke_core(interp, argc, argv)
                 rb_warn("%s (ignore)", Tcl_GetStringResult(ptr->ip));
             }
             Tcl_ResetResult(ptr->ip);
-            return rb_tainted_str_new2("");
+            return rb_str_new2("");
         }
     }
 
@@ -8928,7 +8859,7 @@ ip_invoke_real(argc, argv, interp)
 
     /* ip is deleted? */
     if (deleted_ip(ptr)) {
-        return rb_tainted_str_new2("");
+        return rb_str_new2("");
     }
 
     /* allocate memory for arguments */
@@ -8942,19 +8873,6 @@ ip_invoke_real(argc, argv, interp)
     free_invoke_arguments(argc, av);
 
     return v;
-}
-
-VALUE
-ivq_safelevel_handler(arg, ivq)
-    VALUE arg;
-    VALUE ivq;
-{
-    struct invoke_queue *q;
-
-    Data_Get_Struct(ivq, struct invoke_queue, q);
-    DUMP2("(safe-level handler) $SAFE = %d", q->safe_level);
-    rb_set_safe_level(q->safe_level);
-    return ip_invoke_core(q->interp, q->argc, q->argv);
 }
 
 int invoke_queue_handler _((Tcl_Event *, int));
@@ -8999,19 +8917,9 @@ invoke_queue_handler(evPtr, flags)
     /* incr internal handler mark */
     rbtk_internal_eventloop_handler++;
 
-    /* check safe-level */
-    if (rb_safe_level() != q->safe_level) {
-        /* q_dat = Data_Wrap_Struct(rb_cData,0,0,q); */
-        q_dat = Data_Wrap_Struct(0,invoke_queue_mark,-1,q);
-        ret = rb_funcall(rb_proc_new(ivq_safelevel_handler, q_dat),
-                         ID_call, 0);
-        rb_gc_force_recycle(q_dat);
-	q_dat = (VALUE)NULL;
-    } else {
-        DUMP2("call invoke_real (for caller thread:%"PRIxVALUE")", thread);
-        DUMP2("call invoke_real (current thread:%"PRIxVALUE")", rb_thread_current());
-        ret = ip_invoke_core(q->interp, q->argc, q->argv);
-    }
+    DUMP2("call invoke_real (for caller thread:%"PRIxVALUE")", thread);
+    DUMP2("call invoke_real (current thread:%"PRIxVALUE")", rb_thread_current());
+    ret = ip_invoke_core(q->interp, q->argc, q->argv);
 
     /* set result */
     RARRAY_ASET(q->result, 0, ret);
@@ -9141,7 +9049,6 @@ ip_invoke_with_position(argc, argv, obj, position)
     ivq->interp = ip_obj;
     ivq->result = result;
     ivq->thread = current;
-    ivq->safe_level = rb_safe_level();
     ivq->ev.proc = invoke_queue_handler;
 
     /* add the handler to Tcl event queue */
@@ -9239,7 +9146,7 @@ ip_retval(self)
 
     /* ip is deleted? */
     if (deleted_ip(ptr)) {
-        return rb_tainted_str_new2("");
+        return rb_str_new2("");
     }
 
     return (INT2FIX(ptr->return_value));
@@ -9296,7 +9203,7 @@ ip_get_variable2_core(interp, argc, argv)
         /* ip is deleted? */
         if (deleted_ip(ptr)) {
             rb_thread_critical = thr_crit_bup;
-            return rb_tainted_str_new2("");
+            return rb_str_new2("");
         } else {
             /* Tcl_Preserve(ptr->ip); */
             rbtk_preserve_ip(ptr);
@@ -9334,7 +9241,7 @@ ip_get_variable2_core(interp, argc, argv)
 
         /* ip is deleted? */
         if (deleted_ip(ptr)) {
-            return rb_tainted_str_new2("");
+            return rb_str_new2("");
         } else {
             /* Tcl_Preserve(ptr->ip); */
             rbtk_preserve_ip(ptr);
@@ -9352,7 +9259,7 @@ ip_get_variable2_core(interp, argc, argv)
             return exc;
         }
 
-        strval = rb_tainted_str_new2(ret);
+        strval = rb_str_new2(ret);
         /* Tcl_Release(ptr->ip); */
         rbtk_release_ip(ptr);
         rb_thread_critical = thr_crit_bup;
@@ -9382,7 +9289,7 @@ ip_get_variable2(self, varname, index, flag)
     retval = tk_funcall(ip_get_variable2_core, 3, argv, self);
 
     if (NIL_P(retval)) {
-        return rb_tainted_str_new2("");
+        return rb_str_new2("");
     } else {
         return retval;
     }
@@ -9433,7 +9340,7 @@ ip_set_variable2_core(interp, argc, argv)
         if (deleted_ip(ptr)) {
             Tcl_DecrRefCount(valobj);
             rb_thread_critical = thr_crit_bup;
-            return rb_tainted_str_new2("");
+            return rb_str_new2("");
         } else {
             /* Tcl_Preserve(ptr->ip); */
             rbtk_preserve_ip(ptr);
@@ -9474,7 +9381,7 @@ ip_set_variable2_core(interp, argc, argv)
 
         /* ip is deleted? */
         if (deleted_ip(ptr)) {
-            return rb_tainted_str_new2("");
+            return rb_str_new2("");
         } else {
             /* Tcl_Preserve(ptr->ip); */
             rbtk_preserve_ip(ptr);
@@ -9487,7 +9394,7 @@ ip_set_variable2_core(interp, argc, argv)
             return rb_exc_new2(rb_eRuntimeError, ptr->ip->result);
         }
 
-        strval = rb_tainted_str_new2(ret);
+        strval = rb_str_new2(ret);
 
         /* Tcl_Release(ptr->ip); */
         rbtk_release_ip(ptr);
@@ -9521,7 +9428,7 @@ ip_set_variable2(self, varname, index, value, flag)
     retval = tk_funcall(ip_set_variable2_core, 4, argv, self);
 
     if (NIL_P(retval)) {
-        return rb_tainted_str_new2("");
+        return rb_str_new2("");
     } else {
         return retval;
     }
@@ -9596,7 +9503,7 @@ ip_unset_variable2(self, varname, index, flag)
     retval = tk_funcall(ip_unset_variable2_core, 3, argv, self);
 
     if (NIL_P(retval)) {
-        return rb_tainted_str_new2("");
+        return rb_str_new2("");
     } else {
         return retval;
     }
@@ -9680,7 +9587,6 @@ lib_split_tklist_core(ip_obj, list_str)
     Tcl_Interp *interp;
     volatile VALUE ary, elem;
     int idx;
-    int taint_flag = OBJ_TAINTED(list_str);
 #ifdef HAVE_RUBY_ENCODING_H
     int list_enc_idx;
     volatile VALUE list_ivar_enc;
@@ -9735,13 +9641,11 @@ lib_split_tklist_core(ip_obj, list_str)
         rb_thread_critical = Qtrue;
 
         ary = rb_ary_new2(objc);
-        if (taint_flag) RbTk_OBJ_UNTRUST(ary);
 
         old_gc = rb_gc_disable();
 
         for(idx = 0; idx < objc; idx++) {
             elem = get_str_from_obj(objv[idx]);
-            if (taint_flag) RbTk_OBJ_UNTRUST(elem);
 
 #ifdef HAVE_RUBY_ENCODING_H
 	    if (rb_enc_get_index(elem) == ENCODING_INDEX_BINARY) {
@@ -9783,16 +9687,11 @@ lib_split_tklist_core(ip_obj, list_str)
         }
 
         ary = rb_ary_new2(argc);
-        if (taint_flag) RbTk_OBJ_UNTRUST(ary);
 
         old_gc = rb_gc_disable();
 
         for(idx = 0; idx < argc; idx++) {
-            if (taint_flag) {
-                elem = rb_tainted_str_new2(argv[idx]);
-            } else {
-                elem = rb_str_new2(argv[idx]);
-            }
+            elem = rb_str_new2(argv[idx]);
             /* rb_ivar_set(elem, ID_at_enc, rb_str_new2("binary")); */
             /* RARRAY(ary)->ptr[idx] = elem; */
 	    rb_ary_push(ary, elem)
@@ -9833,7 +9732,6 @@ lib_merge_tklist(argc, argv, obj)
     int  *flagPtr;
     char *dst, *result;
     volatile VALUE str;
-    int taint_flag = 0;
     int thr_crit_bup;
     VALUE old_gc;
 
@@ -9855,7 +9753,6 @@ lib_merge_tklist(argc, argv, obj)
     /* pass 1 */
     len = 1;
     for(num = 0; num < argc; num++) {
-        if (OBJ_TAINTED(argv[num])) taint_flag = 1;
         dst = StringValueCStr(argv[num]);
 #if TCL_MAJOR_VERSION >= 8
         len += Tcl_ScanCountedElement(dst, RSTRING_LENINT(argv[num]),
@@ -9903,7 +9800,6 @@ lib_merge_tklist(argc, argv, obj)
 
     /* create object */
     str = rb_str_new(result, dst - result - 1);
-    if (taint_flag) RbTk_OBJ_UNTRUST(str);
 #if 0 /* use Tcl_EventuallyFree */
     Tcl_EventuallyFree((ClientData)result, TCL_DYNAMIC); /* XXXXXXXX */
 #else
@@ -9928,7 +9824,6 @@ lib_conv_listelement(self, src)
 {
     int   len, scan_flag;
     volatile VALUE dst;
-    int   taint_flag = OBJ_TAINTED(src);
     int thr_crit_bup;
 
     tcl_stubs_check();
@@ -9951,7 +9846,6 @@ lib_conv_listelement(self, src)
 #endif
 
     rb_str_resize(dst, len);
-    if (taint_flag) RbTk_OBJ_UNTRUST(dst);
 
     rb_thread_critical = thr_crit_bup;
 
@@ -10416,12 +10310,6 @@ create_encoding_table_core(arg, interp)
   int i, idx, objc;
   Tcl_Obj **objv;
   Tcl_Obj *enc_list;
-
-#ifdef HAVE_RB_SET_SAFE_LEVEL_FORCE
-  rb_set_safe_level_force(0);
-#else
-  rb_set_safe_level(0);
-#endif
 
   /* set 'binary' encoding */
   encobj = rb_enc_from_encoding(rb_enc_from_index(ENCODING_INDEX_BINARY));
