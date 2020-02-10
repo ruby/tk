@@ -40,7 +40,8 @@ module Tk
   end
 
   module YScrollable
-    def yscrollcommand(cmd=Proc.new)
+    def yscrollcommand(cmd = (use_block = true), &block)
+      cmd = block if use_block
       configure_cmd 'yscrollcommand', cmd
       # Tk.update  # avoid scrollbar trouble
       self
