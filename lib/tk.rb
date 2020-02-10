@@ -1456,7 +1456,8 @@ EOS
       TkUtil._get_eval_string(TkUtil.eval_cmd(cmd, *args))
     end
 
-    def INTERP.init_ip_env(script = Proc.new)
+    def INTERP.init_ip_env(script = (use_block = true), &block)
+      script = block if use_block
       @init_ip_env << script
       script.call(self)
     end
@@ -3399,12 +3400,12 @@ module TkBindCore
   #def bind_append(context, cmd=Proc.new, *args)
   #  Tk.bind_append(self, context, cmd, *args)
   #end
-  def bind_append(context, *args)
+  def bind_append(context, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     Tk.bind_append(self, context, cmd, *args)
   end
