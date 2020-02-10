@@ -171,13 +171,6 @@ tk_obj_untrust(self, obj)
     VALUE self;
     VALUE obj;
 {
-#ifdef HAVE_RB_OBJ_TAINT
-  rb_obj_taint(obj);
-#endif
-#ifdef HAVE_RB_OBJ_UNTRUST
-  rb_obj_untrust(obj);
-#endif
-
   return obj;
 }
 
@@ -190,7 +183,11 @@ tk_eval_cmd(argc, argv, self)
     VALUE cmd, rest;
 
     rb_scan_args(argc, argv, "1*", &cmd, &rest);
+#ifdef RB_PASS_KEYWORDS
+    return rb_eval_cmd_kw(cmd, rest, 0);
+#else
     return rb_eval_cmd(cmd, rest, 0);
+#endif
 }
 
 static VALUE
@@ -1142,7 +1139,7 @@ tcl2rb_string(self, value)
 {
     rb_check_type(value, T_STRING);
 
-    if (RSTRING_PTR(value) == (char*)NULL) return rb_tainted_str_new2("");
+    if (RSTRING_PTR(value) == (char*)NULL) return rb_str_new2("");
 
     return tkstr_to_str(value);
 }
@@ -1154,7 +1151,7 @@ tcl2rb_num_or_str(self, value)
 {
     rb_check_type(value, T_STRING);
 
-    if (RSTRING_PTR(value) == (char*)NULL) return rb_tainted_str_new2("");
+    if (RSTRING_PTR(value) == (char*)NULL) return rb_str_new2("");
 
     return rb_rescue2(tkstr_to_number, value,
                       tkstr_to_str, value,

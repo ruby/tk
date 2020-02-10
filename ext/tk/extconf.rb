@@ -1810,8 +1810,8 @@ end
 # check header file
 print("check functions.")
 
-%w"ruby_native_thread_p rb_errinfo rb_safe_level rb_hash_lookup
- rb_proc_new rb_obj_untrust rb_obj_taint rb_set_safe_level_force
+%w"ruby_native_thread_p rb_errinfo rb_hash_lookup
+ rb_proc_new 
  rb_sourcefile rb_thread_alive_p rb_thread_check_trap_pending
  ruby_enc_find_basename
 ".each do |func|
