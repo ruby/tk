@@ -5,6 +5,8 @@
 ##############################################################
 require 'mkmf'
 
+$CFLAGS << " -DNO_TAINT" if RUBY_VERSION >= '2.7'
+
 TkLib_Config = {}
 TkLib_Config['search_versions'] =
   # %w[8.9 8.8 8.7 8.6 8.5 8.4 8.3 8.2 8.1 8.0 7.6 4.2]

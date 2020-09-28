@@ -46,10 +46,14 @@ int rb_thread_check_trap_pending(void);
 #define RARRAY_AREF(a, i) RARRAY_CONST_PTR(a)[i]
 #endif
 
+#ifdef NO_TAINT
+#define RbTk_OBJ_UNTRUST(x)  do {} while (0)
+#else
 #ifdef OBJ_UNTRUST
 #define RbTk_OBJ_UNTRUST(x)  do {OBJ_TAINT(x); OBJ_UNTRUST(x);} while (0)
 #else
 #define RbTk_OBJ_UNTRUST(x)  OBJ_TAINT(x)
+#endif
 #endif
 #define RbTk_ALLOC_N(type, n) (type *)ckalloc((int)(sizeof(type) * (n)))
 
