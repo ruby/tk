@@ -7,4 +7,6 @@
 /pkg/
 /spec/reports/
 /tmp/
+/lib/*.so
+/*.gem
 *.bundle
