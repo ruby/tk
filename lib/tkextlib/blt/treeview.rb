@@ -1045,7 +1045,7 @@ class Tk::BLT::Treeview::Node < TkObject
 
   TreeNodeID_TBL = TkCore::INTERP.create_table
 
-  (TreeNode_ID = ['blt_treeview_node'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (TreeNode_ID = ['blt_treeview_node'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze
@@ -1166,7 +1166,7 @@ class Tk::BLT::Treeview::Tag < TkObject
 
   TreeTagID_TBL = TkCore::INTERP.create_table
 
-  (TreeTag_ID = ['blt_treeview_tag'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (TreeTag_ID = ['blt_treeview_tag'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

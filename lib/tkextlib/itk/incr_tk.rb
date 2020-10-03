@@ -147,7 +147,7 @@ module Tk
 
       ComponentID_TBL = TkCore::INTERP.create_table
 
-      (Itk_Component_ID = ['itk:component'.freeze, TkUtil.untrust('00000')]).instance_eval{
+      (Itk_Component_ID = ['itk:component'.freeze, '00000']).instance_eval{
         @mutex = Mutex.new
         def mutex; @mutex; end
         freeze

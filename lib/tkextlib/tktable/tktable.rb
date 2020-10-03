@@ -132,7 +132,7 @@ class Tk::TkTable::CellTag
 
   CellTagID_TBL = TkCore::INTERP.create_table
 
-  (CellTag_ID = ['tktbl:celltag'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (CellTag_ID = ['tktbl:celltag'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

@@ -939,7 +939,7 @@ class Tk::Tile::Treeview::Tag < TkObject
 
   TagID_TBL = TkCore::INTERP.create_table
 
-  (Tag_ID = ['tile_treeview_tag'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (Tag_ID = ['tile_treeview_tag'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

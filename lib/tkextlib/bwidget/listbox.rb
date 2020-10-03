@@ -213,7 +213,7 @@ class Tk::BWidget::ListBox::Item
 
   ListItem_TBL = TkCore::INTERP.create_table
 
-  (ListItem_ID = ['bw:item'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (ListItem_ID = ['bw:item'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

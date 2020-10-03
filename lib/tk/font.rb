@@ -12,7 +12,7 @@ class TkFont
 
   TkCommandNames = ['font'.freeze].freeze
 
-  (Tk_FontID = ["@font".freeze, TkUtil.untrust("00000")]).instance_eval{
+  (Tk_FontID = ["@font".freeze, "00000"]).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

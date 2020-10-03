@@ -1733,7 +1733,7 @@ end
 class Tk::TreeCtrl::Column < TkObject
   TreeCtrlColumnID_TBL = TkCore::INTERP.create_table
 
-  (TreeCtrlColumnID = ['treectrl_column'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (TreeCtrlColumnID = ['treectrl_column'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze
@@ -1839,7 +1839,7 @@ end
 class Tk::TreeCtrl::Element < TkObject
   TreeCtrlElementID_TBL = TkCore::INTERP.create_table
 
-  (TreeCtrlElementID = ['treectrl_element'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (TreeCtrlElementID = ['treectrl_element'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze
@@ -2277,7 +2277,7 @@ end
 class Tk::TreeCtrl::Style < TkObject
   TreeCtrlStyleID_TBL = TkCore::INTERP.create_table
 
-  (TreeCtrlStyleID = ['treectrl_style'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (TreeCtrlStyleID = ['treectrl_style'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

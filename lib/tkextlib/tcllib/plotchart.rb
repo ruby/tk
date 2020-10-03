@@ -1360,7 +1360,7 @@ module Tk::Tcllib::Plotchart
   class PlotSeries < TkObject
     SeriesID_TBL = TkCore::INTERP.create_table
 
-    (Series_ID = ['series'.freeze, TkUtil.untrust('00000')]).instance_eval{
+    (Series_ID = ['series'.freeze, '00000']).instance_eval{
       @mutex = Mutex.new
       def mutex; @mutex; end
       freeze

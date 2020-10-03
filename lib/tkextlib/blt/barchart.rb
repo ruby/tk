@@ -33,23 +33,6 @@ module Tk::BLT
     end
     private :__tkvariable_optkeys
 
-=begin
-    BarElement_ID = ['blt_barchart_bar'.freeze, TkUtil.untrust('00000')].freeze
-
-    def bar(elem=nil, keys={})
-      if elem.kind_of?(Hash)
-        keys = elem
-        elem = nil
-      end
-      unless elem
-        elem = BarElement_ID.join(TkCore::INTERP._ip_id_).freeze
-        BarElement_ID[1].succ!
-      end
-      tk_send('bar', elem, keys)
-      Element.new(self, elem, :without_creating=>true)
-    end
-=end
-
     def extents(item)
       num_or_str(tk_send_without_enc('extents', item))
     end

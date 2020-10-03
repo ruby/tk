@@ -229,7 +229,7 @@ class TkcTag<TkObject
 
   CTagID_TBL = TkCore::INTERP.create_table
 
-  (Tk_CanvasTag_ID = ['ctag'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (Tk_CanvasTag_ID = ['ctag'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze
@@ -415,7 +415,7 @@ class TkcTagCurrent<TkcTagString
 end
 
 class TkcGroup<TkcTag
-  (Tk_cGroup_ID = ['tkcg'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (Tk_cGroup_ID = ['tkcg'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

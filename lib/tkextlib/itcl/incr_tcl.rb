@@ -41,12 +41,12 @@ module Tk
     class ItclObject < TkObject
       ITCL_CLASSNAME = ''.freeze
 
-      (ITCL_OBJ_ID = ['itclobj'.freeze, TkUtil.untrust('00000')]).instance_eval{
+      (ITCL_OBJ_ID = ['itclobj'.freeze, '00000']).instance_eval{
         @mutex = Mutex.new
         def mutex; @mutex; end
         freeze
       }
-      ITCL_OBJ_TBL = TkUtil.untrust({})
+      ITCL_OBJ_TBL = {}
 
       def initialize(*args)
         if (@klass = self.class::ITCL_CLASSNAME).empty?
