@@ -1,13 +1,13 @@
 Gem::Specification.new do |spec|
   spec.name          = "tk"
-  spec.version       = "0.2.0"
-  spec.authors       = ["SHIBATA Hiroshi", "Nobuyoshi Nakada"]
-  spec.email         = ["hsbt@ruby-lang.org", "nobu@ruby-lang.org"]
+  spec.version       = "0.3.0"
+  spec.authors       = ["SHIBATA Hiroshi", "Nobuyoshi Nakada", "Jeremy Evans"]
+  spec.email         = ["hsbt@ruby-lang.org", "nobu@ruby-lang.org", "code@jeremyevans.net"]
 
   spec.summary       = %q{Tk interface module using tcltklib.}
   spec.description   = %q{Tk interface module using tcltklib.}
   spec.homepage      = "https://github.com/ruby/tk"
-  spec.license       = "2-clause BSDL"
+  spec.license       = "BSD-2-Clause"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
