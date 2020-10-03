@@ -9,7 +9,7 @@ cmd2 = TkOptionDB.new_proc_class(:ZZZ, [:show_msg, :bye_msg], 3, false, cmd1)
 cmd3 = TkOptionDB.new_proc_class(:ZZZ, [:show_msg, :bye_msg], 3, false, b)
 cmd4 = TkOptionDB.new_proc_class(:BTN_CMD, [:show_msg, :bye_msg], 3){
   def self.__check_proc_string__(str)
-    "{|arg| print [arg, $SAFE].inspect, ': '; Proc.new#{str}.call(arg)}"
+    "{|arg| print arg.inspect, ': '; Proc.new#{str}.call(arg)}"
   end
 }
 cmd1.show_msg('cmd1')
