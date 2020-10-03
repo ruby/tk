@@ -139,31 +139,6 @@ module TkOptionDB
   class << @@resource_proc_class
     private :new
 
-=begin
-    CARRIER    = '.'.freeze
-    METHOD_TBL = TkCore::INTERP.create_table
-    ADD_METHOD = false
-    SAFE_MODE  = 4
-=end
-
-=begin
-    def __closed_block_check__(str)
-      depth = 0
-      str.scan(/[{}]/){|x|
-        if x == "{"
-          depth += 1
-        elsif x == "}"
-          depth -= 1
-        end
-        if depth <= 0 && !($' =~ /\A\s*\Z/)
-          fail RuntimeError, "bad string for procedure : #{str.inspect}"
-        end
-      }
-      str
-    end
-    private :__closed_block_check__
-=end
-
     def __check_proc_string__(str)
       # If you want to check the proc_string, do it in this method.
       # Please define this in the block given to 'new_proc_class' method.
@@ -207,44 +182,6 @@ module TkOptionDB
   end
   @@resource_proc_class.freeze
 
-=begin
-  def __create_new_class(klass, func, safe = 4, add = false, parent = nil)
-    klass = klass.to_s if klass.kind_of? Symbol
-    unless (?A..?Z) === klass[0]
-      fail ArgumentError, "bad string '#{klass}' for class name"
-    end
-    unless func.kind_of? Array
-      fail ArgumentError, "method-list must be Array"
-    end
-    func_str = func.join(' ')
-    if parent == nil
-      install_win(parent)
-    elsif parent <= @@resource_proc_class
-      install_win(parent::CARRIER)
-    else
-      fail ArgumentError, "parent must be Resource-Proc class"
-    end
-    carrier = Tk.tk_call_without_enc('frame', @path, '-class', klass)
-
-    body = <<-"EOD"
-      class #{klass} < TkOptionDB.module_eval('@@resource_proc_class')
-        CARRIER    = '#{carrier}'.freeze
-        METHOD_TBL = TkCore::INTERP.create_table
-        ADD_METHOD = #{add}
-        SAFE_MODE  = #{safe}
-        %w(#{func_str}).each{|f| METHOD_TBL[f.intern] = nil }
-      end
-    EOD
-
-    if parent.kind_of?(Class) && parent <= @@resource_proc_class
-      parent.class_eval(body)
-      eval(parent.name + '::' + klass)
-    else
-      eval(body)
-      eval('TkOptionDB::' + klass)
-    end
-  end
-=end
   def __create_new_class(klass, func, safe = 4, add = false, parent = nil)
     if klass.kind_of?(TkWindow)
       carrier = klass.path
@@ -288,12 +225,6 @@ module TkOptionDB
     func.each{|f|
       cmd_klass.instance_variable_get('@method_tbl')[f.to_s.intern] = nil
     }
-=begin
-    cmd_klass.const_set(:METHOD_TBL, TkCore::INTERP.create_table)
-    cmd_klass.const_set(:ADD_METHOD, add)
-    cmd_klass.const_set(:SAFE_MODE, safe)
-    func.each{|f| cmd_klass::METHOD_TBL[f.to_s.intern] = nil }
-=end
 
     cmd_klass
   end
