@@ -293,7 +293,7 @@ class Test1
   def test_checkbutton(ip, parent)
     checkbutton, global, pack = ip.commands().values_at(
       "checkbutton", "global", "pack")
-    t1, b1, cb = inittoplevel(ip, parent, "checkbutton")
+    t1, b1, _ = inittoplevel(ip, parent, "checkbutton")
 
     ## checkbutton
 
@@ -616,7 +616,7 @@ print "start\n"
 ip = []
 
 # インタプリタ, ウィジェット等の生成.
-for i in 1 .. n
+for _ in 1 .. n
   ip.push(Test1.new())
 end
 
