@@ -601,7 +601,7 @@ module Tk::BLT
 
         # sort command
         'ascii'=>nil, 'decreasing'=>nil, 'dictionary'=>nil,
-        'integer'=>nil, 'real'=>nil, 'recurse'=>nil, 'reorder'=>nil,
+        'integer'=>nil, 'real'=>nil, 'reorder'=>nil,
       }
     end
 

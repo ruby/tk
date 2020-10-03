@@ -84,9 +84,6 @@ EOD
                                 :scriptcommand=>proc{|*args|
                                   script_cmd(*args)
                                 },
-                                :appletcommand=>proc{|*args|
-                                  applet_cmd(*args)
-                                },
                                 :hyperlinkcommand=>proc{|*args|
                                   hyper_cmd(*args)
                                 },
@@ -384,9 +381,6 @@ EOD
                                    },
                                    :scriptcommand=>proc{|*args|
                                      script_cmd(*args)
-                                   },
-                                   :appletcommand=>proc{|*args|
-                                     applet_cmd(*args)
                                    },
                                    :hyperlinkcommand=>proc{|*args|
                                      hyper_cmd(*args)
