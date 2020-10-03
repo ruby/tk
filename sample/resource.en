@@ -7,7 +7,7 @@
 *BtnFrame.Button.foreground: red
 *hello.text: HELLO
 *quit.text: QUIT
-*BTN_CMD.show_msg: {|arg| print "($SAFE=#{$SAFE}) ";\
+*BTN_CMD.show_msg: {|arg| print "(0) ";\
                           print "Hello!! This is a sample of #{arg}.";\
-                          print "(<<< $SAFE=#{$SAFE})\n"}
-*BTN_CMD.bye_msg:  {print "($SAFE=#{$SAFE} >>>) Good-bye¡¥(<<< $SAFE=#{$SAFE})\n"}
+                          print "(<<< 0)\n"}
+*BTN_CMD.bye_msg:  {print "(0 >>>) Good-bye¡¥(<<< 0)\n"}

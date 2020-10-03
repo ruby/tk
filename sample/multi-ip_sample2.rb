@@ -13,7 +13,7 @@ cmd = proc{|s|
 
   TkButton.new(:text=>'b1: p self', :command=>proc{p self}).pack(:fill=>:x)
   sleep s
-  TkButton.new(:text=>'b2: p $SAFE', :command=>proc{p $SAFE}).pack(:fill=>:x)
+  TkButton.new(:text=>'b2: p 0', :command=>proc{p 0}).pack(:fill=>:x)
   sleep s
   TkButton.new(:text=>'b3: p MultiTkIp.ip_name',
                :command=>proc{p MultiTkIp.ip_name}).pack(:fill=>:x)

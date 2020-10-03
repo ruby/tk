@@ -100,7 +100,7 @@ class RemoteTkIp
 
     @threadgroup  = ThreadGroup.new
 
-    @safe_level = [$SAFE]
+    @safe_level = [0]
 
     @wait_on_mainloop = [true, 0]
 
@@ -198,9 +198,6 @@ class RemoteTkIp
     raise SecurityError, "no permission to manipulate" unless self.manipulable?
 
     p ['_appsend', [@remote, @displayof], enc_mode, async, cmds] if $DEBUG
-    if $SAFE >= 1 && cmds.find{|obj| obj.tainted?}
-      fail SecurityError, "cannot send tainted commands at level #{$SAFE}"
-    end
 
     cmds = @interp._merge_tklist(*TkUtil::_conv_args([], enc_mode, *cmds))
     if @displayof

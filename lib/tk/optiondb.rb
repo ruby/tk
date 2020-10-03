@@ -185,13 +185,12 @@ module TkOptionDB
                 "not support resource-proc '#{id.id2name}' for #{self.name}"
         end
         proc_str = proc_source
-        proc_str = '{' + proc_str + '}' unless /\A\{.*\}\Z/ =~ proc_str
+        proc_str = '{' + proc_str + '}' unless /\A\{.*\}\Z/m =~ proc_str
         #proc_str = __closed_block_check__(proc_str)
         proc_str = __check_proc_string__(proc_str)
         res_proc = proc{
           begin
-            #eval("$SAFE = #{self::SAFE_MODE};\nProc.new" + proc_str)
-            eval("$SAFE = #{@safe_mode};\nProc.new" + proc_str)
+            eval("Proc.new" + proc_str)
           rescue SyntaxError=>err
             raise SyntaxError,
               TkCore::INTERP._toUTF8(err.message.gsub(/\(eval\):\d:/,

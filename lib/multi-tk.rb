@@ -187,7 +187,7 @@ class MultiTkIp
   @@CB_ENTRY_CLASS = Class.new(TkCallbackEntry){
     def initialize(ip, cmd)
       @ip = ip
-      @safe = safe = $SAFE
+      @safe = safe = 0
       # @cmd = cmd
       cmd = MultiTkIp._proc_on_safelevel(&cmd)
       @cmd = proc{|*args| cmd.call(safe, *args)}
@@ -315,26 +315,22 @@ class MultiTkIp
   ######################################
 
   def set_safe_level(safe)
-    if safe > @safe_level[0]
-      @safe_level[0] = safe
-      @cmd_queue.enq([@system, 'set_safe_level', safe])
-    end
-    @safe_level[0]
+    0
   end
   def safe_level=(safe)
-    set_safe_level(safe)
+    0
   end
   def self.set_safe_level(safe)
-    __getip.set_safe_level(safe)
+    0
   end
   def self.safe_level=(safe)
-    self.set_safe_level(safe)
+    0
   end
   def safe_level
-    @safe_level[0]
+    0
   end
   def self.safe_level
-    __getip.safe_level
+    0
   end
 
   def wait_on_mainloop?
@@ -392,13 +388,11 @@ class MultiTkIp
     end
   end
 
-  def _receiver_eval_proc_core(safe_level, thread, cmd, *args)
+  def _receiver_eval_proc_core(_safe_level, thread, cmd, *args)
     begin
-      #ret = proc{$SAFE = safe_level; cmd.call(*args)}.call
-      #ret = cmd.call(safe_level, *args)
       normal_ret = false
       ret = catch(:IRB_EXIT) do  # IRB hack
-        retval = cmd.call(safe_level, *args)
+        retval = cmd.call(0, *args)
         normal_ret = true
         retval
       end
@@ -578,18 +572,18 @@ class MultiTkIp
     end
   end
 
-  def _receiver_eval_proc(last_thread, safe_level, thread, cmd, *args)
+  def _receiver_eval_proc(last_thread, _safe_level, thread, cmd, *args)
     if thread
       Thread.new{
         last_thread.join if last_thread
         unless @interp.deleted?
-          _receiver_eval_proc_core(safe_level, thread, cmd, *args)
+          _receiver_eval_proc_core(0, thread, cmd, *args)
         end
       }
     else
       Thread.new{
         unless  @interp.deleted?
-          _receiver_eval_proc_core(safe_level, thread, cmd, *args)
+          _receiver_eval_proc_core(0, thread, cmd, *args)
         end
       }
       last_thread
@@ -616,11 +610,11 @@ class MultiTkIp
     end
   end
 
-  def _create_receiver_and_watchdog(lvl = $SAFE)
-    lvl = $SAFE if lvl < $SAFE
+  def _create_receiver_and_watchdog(lvl = 0)
+    lvl = 0
 
     # command-procedures receiver
-    receiver = Thread.new(lvl){|safe_level|
+    receiver = Thread.new(lvl){|_safe_level|
       last_thread = {}
 
       loop do
@@ -629,11 +623,6 @@ class MultiTkIp
         if thread == @system
           # control command
           case cmd
-          when 'set_safe_level'
-            begin
-              safe_level = args[0] if safe_level < args[0]
-            rescue Exception
-            end
           when 'call_mainloop'
             thread = args.shift
             _check_and_return(thread,
@@ -645,7 +634,7 @@ class MultiTkIp
         else
           # procedure
           last_thread[thread] = _receiver_eval_proc(last_thread[thread],
-						    safe_level, thread,
+						    0, thread,
 						    cmd, *args)
         end
       end
@@ -825,11 +814,11 @@ class MultiTkIp
 
     @safe_base = false
 
-    @safe_level = [$SAFE]
+    @safe_level = [0]
 
     @cmd_queue = MultiTkIp::Command_Queue.new(@interp)
 
-    @cmd_receiver, @receiver_watchdog = _create_receiver_and_watchdog(@safe_level[0])
+    @cmd_receiver, @receiver_watchdog = _create_receiver_and_watchdog(0)
 
     @threadgroup.add @cmd_receiver
     @threadgroup.add @receiver_watchdog
@@ -902,7 +891,7 @@ class MultiTkIp
           begin
             req.ret[0] = req.target.instance_eval{
               @cmd_receiver, @receiver_watchdog =
-                _create_receiver_and_watchdog(@safe_level[0])
+                _create_receiver_and_watchdog(0)
               @threadgroup.add @cmd_receiver
               @threadgroup.add @receiver_watchdog
               @threadgroup.enclose
@@ -1397,13 +1386,6 @@ class MultiTkIp
 
       @ip_name = nil
 
-      if safe
-        safe = $SAFE if safe < $SAFE
-        @safe_level = [safe]
-      else
-        @safe_level = [$SAFE]
-      end
-
     else
       # create slave-ip
       if safeip || master.safe?
@@ -1412,22 +1394,10 @@ class MultiTkIp
                                                            name, tk_opts)
         # @interp_thread = nil if RUBY_VERSION < '1.9.0' ### !!!!!!!!!!!
         @interp_thread = nil unless WITH_RUBY_VM  ### Ruby 1.9 !!!!!!!!!!!
-        if safe
-          safe = master.safe_level if safe < master.safe_level
-          @safe_level = [safe]
-        else
-          @safe_level = [1]
-        end
       else
         @interp, @ip_name = master.__create_trusted_slave_obj(name, tk_opts)
         # @interp_thread = nil if RUBY_VERSION < '1.9.0' ### !!!!!!!!!!!
         @interp_thread = nil unless WITH_RUBY_VM  ### Ruby 1.9 !!!!!!!!!!!
-        if safe
-          safe = master.safe_level if safe < master.safe_level
-          @safe_level = [safe]
-        else
-          @safe_level = [master.safe_level]
-        end
       end
       @set_alias_proc = proc{|name|
         master._invoke('interp', 'alias', @ip_name, name, '', name)
@@ -1551,7 +1521,7 @@ class << MultiTkIp
   alias __new new
   private :__new
 
-  def new_master(safe=nil, keys={}, &blk)
+  def new_master(_safe=nil, keys={}, &blk)
     if MultiTkIp::WITH_RUBY_VM
       #### TODO !!!!!!
       fail RuntimeError,
@@ -1572,11 +1542,8 @@ class << MultiTkIp
     end
 
     ip = __new(__getip, nil, keys)
-    #ip.eval_proc(proc{$SAFE=ip.safe_level; Proc.new}.call) if block_given?
     if block_given?
-      #Thread.new{ip.eval_proc(proc{$SAFE=ip.safe_level; Proc.new}.call)}
-      #Thread.new{ip.eval_proc(proc{$SAFE=ip.safe_level; yield}.call)}
-      ip._proc_on_safelevel(&blk).call(ip.safe_level)
+      ip._proc_on_safelevel(&blk).call(0)
     end
     ip
   end
@@ -1598,11 +1565,8 @@ class << MultiTkIp
     end
 
     ip = __new(__getip, false, keys)
-    # ip.eval_proc(proc{$SAFE=ip.safe_level; Proc.new}.call) if block_given?
     if block_given?
-      #Thread.new{ip.eval_proc(proc{$SAFE=ip.safe_level; Proc.new}.call)}
-      #Thread.new{ip.eval_proc(proc{$SAFE=ip.safe_level; yield}.call)}
-      ip._proc_on_safelevel(&blk).call(ip.safe_level)
+      ip._proc_on_safelevel(&blk).call(0)
     end
     ip
   end
@@ -1621,11 +1585,8 @@ class << MultiTkIp
     end
 
     ip = __new(__getip, true, keys)
-    # ip.eval_proc(proc{$SAFE=ip.safe_level; Proc.new}.call) if block_given?
     if block_given?
-      #Thread.new{ip.eval_proc(proc{$SAFE=ip.safe_level; Proc.new}.call)}
-      #Thread.new{ip.eval_proc(proc{$SAFE=ip.safe_level; yield}.call)}
-      ip._proc_on_safelevel(&blk).call(ip.safe_level)
+      ip._proc_on_safelevel(&blk).call(0)
     end
     ip
   end
@@ -2104,22 +2065,8 @@ class MultiTkIp
         _proc_on_safelevel(&cmd)
       end
     else
-      #Proc.new{|safe, *args| $SAFE=safe if $SAFE < safe; yield(*args)}
-      Proc.new{|safe, *args|
-        # avoid security error on Exception objects
-        untrust_proc = proc{|err|
-          begin
-            err.untrust if err.respond_to?(:untrust)
-          rescue SecurityError
-          end
-          err
-        }
-        $SAFE=safe if $SAFE < safe;
-        begin
-          yield(*args)
-        rescue Exception => e
-          fail untrust_proc.call(e)
-        end
+      Proc.new{|_safe, *args|
+        yield(*args)
       }
     end
   end
@@ -2128,9 +2075,8 @@ class MultiTkIp
   end
 
   def _proc_on_current_safelevel(cmd=nil, &blk) # require a block for eval
-    safe = $SAFE
     cmd = _proc_on_safelevel(cmd, &blk)
-    Proc.new{|*args| cmd.call(safe, *args)}
+    Proc.new{|*args| cmd.call(0, *args)}
   end
   def MultiTkIp._proc_on_current_safelevel(cmd=nil, &blk)
     MultiTkIp.__getip._proc_on_current_safelevel(cmd, &blk)
@@ -2149,7 +2095,7 @@ class MultiTkIp
     if @cmd_receiver == Thread.current ||
         (!req_val && TclTkLib.mainloop_thread? != false) # callback
       begin
-        ret = cmd.call(safe_level, *args)
+        ret = cmd.call(0, *args)
       rescue SystemExit => e
         # exit IP
         warn("Warning: "+ e.inspect + " on " + self.inspect) if $DEBUG
@@ -2371,8 +2317,7 @@ end
 
     eval_proc_core(true,
                    proc{|safe|
-                     Kernel.eval("$SAFE=#{safe} if $SAFE < #{safe};" << cmd,
-                                 *eval_args)
+                     Kernel.eval(cmd, *eval_args)
                    })
   end
   alias eval_str eval_string
@@ -2385,8 +2330,7 @@ end
     Thread.new{
       eval_proc_core(true,
                      proc{|safe|
-                       Kernel.eval("$SAFE=#{safe} if $SAFE < #{safe};" << cmd,
-                                   *eval_args)
+                       Kernel.eval(cmd, *eval_args)
                      })
     }
   end

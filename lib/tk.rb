@@ -1787,9 +1787,6 @@ EOS
   end
 
   def appsend(interp, async, *args)
-    if $SAFE >= 1 && args.find{|obj| obj.tainted?}
-      fail SecurityError, "cannot send tainted Tk commands at level #{$SAFE}"
-    end
     if async != true && async != false && async != nil
       args.unshift(async)
       async = false
@@ -1802,9 +1799,6 @@ EOS
   end
 
   def rb_appsend(interp, async, *args)
-    if $SAFE >= 1 && args.find{|obj| obj.tainted?}
-      fail SecurityError, "cannot send tainted Ruby commands at level #{$SAFE}"
-    end
     if async != true && async != false && async != nil
       args.unshift(async)
       async = false
@@ -1818,9 +1812,6 @@ EOS
   end
 
   def appsend_displayof(interp, win, async, *args)
-    if $SAFE >= 1 && args.find{|obj| obj.tainted?}
-      fail SecurityError, "cannot send tainted Tk commands at level #{$SAFE}"
-    end
     win = '.' if win == nil
     if async != true && async != false && async != nil
       args.unshift(async)
@@ -1834,9 +1825,6 @@ EOS
   end
 
   def rb_appsend_displayof(interp, win, async, *args)
-    if $SAFE >= 1 && args.find{|obj| obj.tainted?}
-      fail SecurityError, "cannot send tainted Ruby commands at level #{$SAFE}"
-    end
     win = '.' if win == nil
     if async != true && async != false && async != nil
       args.unshift(async)

@@ -23,15 +23,13 @@ if __FILE__ == $0 || !TkCore::INTERP.safe?
 end
 
 # 'show_msg' and 'bye_msg' procedures can be defined on BTN_CMD resource.
-# Those procedures are called under $SAFE==2
 cmd = TkOptionDB.new_proc_class(:BTN_CMD, [:show_msg, :bye_msg], 3) {
   # If you want to check resource string (str),
   # please define __check_proc_string__(str) like this.
   class << self
     def __check_proc_string__(str)
-      print "($SAFE=#{$SAFE} >>>) check!! str.tainted?::#{str.tainted?}"
-      str.untaint
-      print "==>#{str.tainted?} (<<< $SAFE=#{$SAFE}): "
+      print "(0 >>>) check!! str.tainted?::false"
+      print "==>#{false} (<<< 0): "
       str
     end
     private :__check_proc_string__
@@ -43,16 +41,16 @@ TkFrame.new(:class=>'BtnFrame'){|f|
   pack(:padx=>5, :pady=>5)
   TkButton.new(:parent=>f, :widgetname=>'hello'){
     command proc{
-      print "($SAFE=#{$SAFE} >>>) : "
+      print "(0 >>>) : "
       cmd.show_msg(TkOptionDB.inspect)
-      print "(<<< $SAFE=#{$SAFE})"
+      print "(<<< 0)"
     }
     pack(:fill=>:x, :padx=>10, :pady=>10)
   }
   TkButton.new(:command=>proc{
-                 print "($SAFE=#{$SAFE} >>>) : "
+                 print "(0 >>>) : "
                  cmd.bye_msg
-                 print "(<<< $SAFE=#{$SAFE} ) : "
+                 print "(<<< 0) : "
                  exit
                },
                :parent=>f, :widgetname=>'quit'){
@@ -65,16 +63,16 @@ BtnFrame.new{|f|
   pack(:padx=>5, :pady=>5)
   TkButton.new(:parent=>f, :widgetname=>'hello'){
     command proc{
-      print "($SAFE=#{$SAFE} >>>) : "
+      print "(0 >>>) : "
       cmd.show_msg(TkOptionDB.inspect)
-      print "(<<< $SAFE=#{$SAFE})"
+      print "(<<< 0)"
     }
     pack(:fill=>:x, :padx=>10, :pady=>10)
   }
   TkButton.new(:command=>proc{
-                 print "($SAFE=#{$SAFE} >>>) : "
+                 print "(0 >>>) : "
                  cmd.bye_msg
-                 print "(<<< $SAFE=#{$SAFE})"
+                 print "(<<< 0)"
                  exit
                },
                :parent=>f, :widgetname=>'quit'){
@@ -87,16 +85,16 @@ TkFrame.new(:class=>'BtnFrame2'){|f|
   pack(:padx=>5, :pady=>5)
   TkButton.new(:parent=>f, :widgetname=>'hello'){
     command proc{
-      print "($SAFE=#{$SAFE} >>>) : "
+      print "(0 >>>) : "
       cmd.show_msg(TkOptionDB.inspect)
-      print "(<<< $SAFE=#{$SAFE})"
+      print "(<<< 0)"
     }
     pack(:fill=>:x, :padx=>10, :pady=>10)
   }
   TkButton.new(:command=>proc{
-                 print "($SAFE=#{$SAFE} >>>) : "
+                 print "(0 >>>) : "
                  cmd.bye_msg
-                 print "(<<< $SAFE=#{$SAFE})"
+                 print "(<<< 0)"
                  exit
                },
                :parent=>f, :widgetname=>'quit'){
