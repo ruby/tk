@@ -1415,14 +1415,6 @@ class MultiTkIp
 
     @cmd_queue = MultiTkIp::Command_Queue.new(@interp)
 
-=begin
-    @cmd_receiver, @receiver_watchdog = _create_receiver_and_watchdog(@safe_level[0])
-
-    @threadgroup.add @cmd_receiver
-    @threadgroup.add @receiver_watchdog
-
-    @threadgroup.enclose
-=end
     @@DEFAULT_MASTER.assign_receiver_and_watchdog(self)
 
     @@IP_TABLE[@threadgroup] = self
@@ -1872,82 +1864,12 @@ class MultiTkIp
     @@CB_ENTRY_CLASS.new(__getip, cmd).freeze
   end
 
-=begin
-  def cb_eval(cmd, *args)
-    #self.eval_callback{ TkComm._get_eval_string(TkUtil.eval_cmd(cmd, *args)) }
-    #ret = self.eval_callback{ TkComm._get_eval_string(TkUtil.eval_cmd(cmd, *args)) }
-    ret = self.eval_callback(*args){|safe, *params|
-      $SAFE=safe if $SAFE < safe
-      TkComm._get_eval_string(TkUtil.eval_cmd(cmd, *params))
-    }
-    if ret.kind_of?(Exception)
-      raise ret
-    end
-    ret
-  end
-=end
   def cb_eval(cmd, *args)
     self.eval_callback(*args,
                        &_proc_on_safelevel{|*params|
                          TkComm._get_eval_string(TkUtil.eval_cmd(cmd, *params))
                        })
   end
-=begin
-  def cb_eval(cmd, *args)
-    self.eval_callback(*args){|safe, *params|
-      $SAFE=safe if $SAFE < safe
-      # TkUtil.eval_cmd(cmd, *params)
-      TkComm._get_eval_string(TkUtil.eval_cmd(cmd, *params))
-    }
-  end
-=end
-=begin
-  def cb_eval(cmd, *args)
-    @callback_status[0] ||= TkVariable.new
-    @callback_status[1] ||= TkVariable.new
-    st, val = @callback_status
-    th = Thread.new{
-      self.eval_callback(*args){|safe, *params|
-        #p [status, val, safe, *params]
-        $SAFE=safe if $SAFE < safe
-        begin
-          TkComm._get_eval_string(TkUtil.eval_cmd(cmd, *params))
-        rescue TkCallbackContinue
-          st.value = 4
-        rescue TkCallbackBreak
-          st.value = 3
-        rescue TkCallbackReturn
-          st.value = 2
-        rescue Exception => e
-          val.value = e.message
-          st.value = 1
-        else
-          st.value = 0
-        end
-      }
-    }
-    begin
-      st.wait
-      status = st.numeric
-      retval = val.value
-    rescue => e
-      fail e
-    end
-
-    if status == 1
-      fail RuntimeError, retval
-    elsif status == 2
-      fail TkCallbackReturn, "Tk callback returns 'return' status"
-    elsif status == 3
-      fail TkCallbackBreak, "Tk callback returns 'break' status"
-    elsif status == 4
-      fail TkCallbackContinue, "Tk callback returns 'continue' status"
-    else
-      ''
-    end
-  end
-=end
-
 end
 
 # pseudo-toplevel operation support
@@ -2246,42 +2168,6 @@ end
                      *args)
     end
   end
-=begin
-  def eval_proc(*args)
-    # The scope of the eval-block of 'eval_proc' method is different from
-    # the external. If you want to pass local values to the eval-block,
-    # use arguments of eval_proc method. They are passed to block-arguments.
-    if block_given?
-      cmd = Proc.new
-    else
-      unless (cmd = args.shift)
-        fail ArgumentError, "A Proc or Method object is expected for 1st argument"
-      end
-    end
-    if TclTkLib.mainloop_thread? == true
-      # call from eventloop
-      current = Thread.current
-      backup_ip = current[:callback_ip]
-      current[:callback_ip] = self
-      begin
-        eval_proc_core(false,
-	               proc{|safe, *params|
-		         $SAFE=safe if $SAFE < safe
-                         cmd.call(*params)
-                       }, *args)
-      ensure
-        current[:callback_ip] = backup_ip
-      end
-    else
-      eval_proc_core(true,
-                     proc{|safe, *params|
-                       $SAFE=safe if $SAFE < safe
-                       Thread.new(*params, &cmd).value
-                     },
-                     *args)
-    end
-  end
-=end
   alias call eval_proc
 
   def bg_eval_proc(*args)
@@ -2294,14 +2180,6 @@ end
     end
     Thread.new{
       eval_proc(cmd, *args)
-=begin
-      eval_proc_core(false,
-                     proc{|safe, *params|
-                       $SAFE=safe if $SAFE < safe
-                       Thread.new(*params, &cmd).value
-                     },
-                     safe_level, *args)
-=end
     }
   end
   alias background_eval_proc bg_eval_proc

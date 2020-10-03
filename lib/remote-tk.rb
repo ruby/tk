@@ -106,14 +106,6 @@ class RemoteTkIp
 
     @cmd_queue = Queue.new
 
-=begin
-    @cmd_receiver, @receiver_watchdog = _create_receiver_and_watchdog()
-
-    @threadgroup.add @cmd_receiver
-    @threadgroup.add @receiver_watchdog
-
-    @threadgroup.enclose
-=end
     @@DEFAULT_MASTER.assign_receiver_and_watchdog(self)
 
     @@IP_TABLE[@threadgroup] = self
