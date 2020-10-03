@@ -118,7 +118,7 @@ end
 class Tk::Vu::PieSlice
   SliceID_TBL = TkCore::INTERP.create_table
 
-  (Pie_Slice_ID = ['vu:pie'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (Pie_Slice_ID = ['vu:pie'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

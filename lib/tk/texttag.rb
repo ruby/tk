@@ -12,7 +12,7 @@ class TkTextTag<TkObject
 
   TTagID_TBL = TkCore::INTERP.create_table
 
-  (Tk_TextTag_ID = ['tag'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (Tk_TextTag_ID = ['tag'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

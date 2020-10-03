@@ -14,7 +14,7 @@ module Tk::BLT
 
       TabID_TBL = TkCore::INTERP.create_table
 
-      (TabsetTab_ID = ['blt_tabset_tab'.freeze, TkUtil.untrust('00000')]).instance_eval{
+      (TabsetTab_ID = ['blt_tabset_tab'.freeze, '00000']).instance_eval{
         @mutex = Mutex.new
         def mutex; @mutex; end
         freeze

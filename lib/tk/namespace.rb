@@ -14,7 +14,7 @@ class TkNamespace < TkObject
 
   Tk_Namespace_ID_TBL = TkCore::INTERP.create_table
 
-  (Tk_Namespace_ID = ["ns".freeze, TkUtil.untrust("00000")]).instance_eval{
+  (Tk_Namespace_ID = ["ns".freeze, "00000"]).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

@@ -310,7 +310,7 @@ class Tk::BWidget::Tree::Node
 
   TreeNode_TBL = TkCore::INTERP.create_table
 
-  (TreeNode_ID = ['bw:node'.freeze, TkUtil.untrust('00000')]).instance_eval{
+  (TreeNode_ID = ['bw:node'.freeze, '00000']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze

@@ -414,7 +414,7 @@ module Tk::BLT
     #################
 
     class Axis < TkObject
-      (OBJ_ID = ['blt_chart_axis'.freeze, TkUtil.untrust('00000')]).instance_eval{
+      (OBJ_ID = ['blt_chart_axis'.freeze, '00000']).instance_eval{
         @mutex = Mutex.new
         def mutex; @mutex; end
         freeze
@@ -672,7 +672,7 @@ module Tk::BLT
         ElementID_TBL.mutex.synchronize{ ElementID_TBL.clear }
       }
 
-      (OBJ_ID = ['blt_chart_element'.freeze, TkUtil.untrust('00000')]).instance_eval{
+      (OBJ_ID = ['blt_chart_element'.freeze, '00000']).instance_eval{
         @mutex = Mutex.new
         def mutex; @mutex; end
         freeze
@@ -991,7 +991,7 @@ module Tk::BLT
     #################
 
     class Pen < TkObject
-      (OBJ_ID = ['blt_chart_pen'.freeze, TkUtil.untrust('00000')]).instance_eval{
+      (OBJ_ID = ['blt_chart_pen'.freeze, '00000']).instance_eval{
         @mutex = Mutex.new
         def mutex; @mutex; end
         freeze

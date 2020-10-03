@@ -31,8 +31,8 @@ class TclTkIp
   def initialize(*args)
     __initialize__(*args)
 
-    @force_default_encoding ||= TkUtil.untrust([false])
-    @encoding ||= TkUtil.untrust([nil])
+    @force_default_encoding ||= [false]
+    @encoding ||= [nil]
     def @encoding.to_s; self.join(nil); end
   end
 end
@@ -42,8 +42,8 @@ module TkComm
   include TkUtil
   extend TkUtil
 
-  WidgetClassNames = TkUtil.untrust({})
-  TkExtlibAutoloadModule = TkUtil.untrust([])
+  WidgetClassNames = {}
+  TkExtlibAutoloadModule = []
 
   # None = Object.new  ### --> definition is moved to TkUtil module
   # def None.to_s
@@ -54,8 +54,8 @@ module TkComm
   #Tk_CMDTBL = {}
   #Tk_WINDOWS = {}
   Tk_IDs = [
-    TkUtil.untrust("00000"), # [0]-cmdid
-    TkUtil.untrust("00000")  # [1]-winid
+    "00000", # [0]-cmdid
+    "00000"  # [1]-winid
   ]
   Tk_IDs.instance_eval{
     @mutex = Mutex.new
@@ -76,7 +76,7 @@ module TkComm
   Tk_WINDOWS.freeze
 
   self.instance_eval{
-    @cmdtbl = TkUtil.untrust([])
+    @cmdtbl = []
   }
 
   unless const_defined?(:GET_CONFIGINFO_AS_ARRAY)
@@ -848,7 +848,6 @@ end
       TkCore::INTERP.tk_cmd_tbl[id] = TkCore::INTERP.get_cb_entry(cmd)
     end
     @cmdtbl = [] unless defined? @cmdtbl
-    TkUtil.untrust(@cmdtbl) unless @cmdtbl.tainted?
     @cmdtbl.push id
 
     if local_cmdtbl && local_cmdtbl.kind_of?(Array)
@@ -1363,11 +1362,10 @@ EOS
     end
 
     INTERP.instance_eval{
-      # @tk_cmd_tbl = TkUtil.untrust({})
       @tk_cmd_tbl =
-        TkUtil.untrust(Hash.new{|hash, key|
+        Hash.new{|hash, key|
                          fail IndexError, "unknown command ID '#{key}'"
-                       })
+                       }
       def @tk_cmd_tbl.[]=(idx,val)
         if self.has_key?(idx) && Thread.current.group != ThreadGroup::Default
           fail SecurityError,"cannot change the entried command"
@@ -1375,15 +1373,15 @@ EOS
         super(idx,val)
       end
 
-      @tk_windows = TkUtil.untrust({})
+      @tk_windows = {}
 
-      @tk_table_list = TkUtil.untrust([])
+      @tk_table_list = []
 
-      @init_ip_env  = TkUtil.untrust([])  # table of Procs
-      @add_tk_procs = TkUtil.untrust([])  # table of [name, args, body]
+      @init_ip_env  = []  # table of Procs
+      @add_tk_procs = []  # table of [name, args, body]
 
-      @force_default_encoding ||= TkUtil.untrust([false])
-      @encoding ||= TkUtil.untrust([nil])
+      @force_default_encoding ||= [false]
+      @encoding ||= [nil]
       def @encoding.to_s; self.join(nil); end
 
       @cb_entry_class = Class.new(TkCallbackEntry){
@@ -1437,15 +1435,7 @@ EOS
     end
     def INTERP.create_table
       id = @tk_table_list.size
-      (tbl = {}).tainted? || TkUtil.untrust(tbl)
-      @tk_table_list << tbl
-#      obj = Object.new
-#      obj.instance_eval <<-EOD
-#        def self.method_missing(m, *args)
-#         TkCore::INTERP.tk_object_table(#{id}).send(m, *args)
-#        end
-#      EOD
-#      return obj
+      @tk_table_list << {}
       Tk_OBJECT_TABLE.new(id)
     end
 
@@ -2074,7 +2064,6 @@ EOS
     puts 'invoke args => ' + args.inspect if $DEBUG
     ### print "=> ", args.join(" ").inspect, "\n" if $DEBUG
     begin
-      # res = TkUtil.untrust(INTERP._invoke(*args))
       # res = INTERP._invoke(enc_mode, *args)
       res = _ip_invoke_core(enc_mode, *args)
       # >>>>>  _invoke returns a TAINTED string  <<<<<
@@ -2082,7 +2071,6 @@ EOS
       # err = $!
       begin
         args.unshift "unknown"
-        #res = TkUtil.untrust(INTERP._invoke(*args))
         #res = INTERP._invoke(enc_mode, *args)
         res = _ip_invoke_core(enc_mode, *args)
         # >>>>>  _invoke returns a TAINTED string  <<<<<

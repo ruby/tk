@@ -31,8 +31,8 @@ class << TclTkIp
     end
     obj = __new__(*args)
     obj.instance_eval{
-      @force_default_encoding ||= TkUtil.untrust([false])
-      @encoding ||= TkUtil.untrust([nil])
+      @force_default_encoding ||= [false]
+      @encoding ||= [nil]
       def @encoding.to_s; self.join(nil); end
     }
     obj
@@ -88,26 +88,25 @@ class MultiTkIp
   WITH_ENCODING = defined?(::Encoding.default_external)
   #WITH_ENCODING = Object.const_defined?(:Encoding) && ::Encoding.class == Class
 
-  (@@SLAVE_IP_ID = ['slave'.freeze, TkUtil.untrust('0')]).instance_eval{
+  (@@SLAVE_IP_ID = ['slave'.freeze, '0']).instance_eval{
     @mutex = Mutex.new
     def mutex; @mutex; end
     freeze
   }
 
-  @@IP_TABLE = TkUtil.untrust({}) unless defined?(@@IP_TABLE)
+  @@IP_TABLE = {} unless defined?(@@IP_TABLE)
 
-  @@INIT_IP_ENV  = TkUtil.untrust([]) unless defined?(@@INIT_IP_ENV)  # table of Procs
-  @@ADD_TK_PROCS = TkUtil.untrust([]) unless defined?(@@ADD_TK_PROCS) # table of [name, args, body]
+  @@INIT_IP_ENV  = [] unless defined?(@@INIT_IP_ENV)  # table of Procs
+  @@ADD_TK_PROCS = [] unless defined?(@@ADD_TK_PROCS) # table of [name, args, body]
 
-  @@TK_TABLE_LIST = TkUtil.untrust([]) unless defined?(@@TK_TABLE_LIST)
+  @@TK_TABLE_LIST = [] unless defined?(@@TK_TABLE_LIST)
 
   unless defined?(@@TK_CMD_TBL)
-    @@TK_CMD_TBL = TkUtil.untrust(Object.new)
+    @@TK_CMD_TBL = Object.new
 
-    # @@TK_CMD_TBL.instance_variable_set('@tbl', {}.taint)
-    tbl_obj = TkUtil.untrust(Hash.new{|hash,key|
+    tbl_obj = Hash.new{|hash,key|
                                fail IndexError, "unknown command ID '#{key}'"
-                             })
+                             }
     @@TK_CMD_TBL.instance_variable_set('@tbl', tbl_obj)
 
     class << @@TK_CMD_TBL
@@ -706,15 +705,15 @@ class MultiTkIp
 
   @@DEFAULT_MASTER = self.allocate
   @@DEFAULT_MASTER.instance_eval{
-    @tk_windows = TkUtil.untrust({})
+    @tk_windows = {}
 
-    @tk_table_list = TkUtil.untrust([])
+    @tk_table_list = []
 
-    @slave_ip_tbl = TkUtil.untrust({})
+    @slave_ip_tbl = {}
 
-    @slave_ip_top = TkUtil.untrust({})
+    @slave_ip_top = {}
 
-    @evloop_thread = TkUtil.untrust([])
+    @evloop_thread = []
 
     unless keys.kind_of? Hash
       fail ArgumentError, "expecting a Hash object for the 2nd argument"
@@ -797,18 +796,18 @@ class MultiTkIp
     end
 
     @interp.instance_eval{
-      @force_default_encoding ||= TkUtil.untrust([false])
-      @encoding ||= TkUtil.untrust([nil])
+      @force_default_encoding ||= [false]
+      @encoding ||= [nil]
       def @encoding.to_s; self.join(nil); end
     }
 
     @ip_name = nil
 
-    @callback_status = TkUtil.untrust([])
+    @callback_status = []
 
     @system = Object.new
 
-    @wait_on_mainloop = TkUtil.untrust([true, 0])
+    @wait_on_mainloop = [true, 0]
 
     @threadgroup  = Thread.current.group
 
@@ -1183,8 +1182,8 @@ class MultiTkIp
     ip_name = _create_slave_ip_name
     slave_ip = @interp.create_slave(ip_name, true)
     slave_ip.instance_eval{
-      @force_default_encoding ||= TkUtil.untrust([false])
-      @encoding ||= TkUtil.untrust([nil])
+      @force_default_encoding ||= [false]
+      @encoding ||= [nil]
       def @encoding.to_s; self.join(nil); end
     }
     @slave_ip_tbl[ip_name] = slave_ip
@@ -1231,8 +1230,8 @@ class MultiTkIp
     ip_name = _create_slave_ip_name
     slave_ip = @interp.create_slave(ip_name, false)
     slave_ip.instance_eval{
-      @force_default_encoding ||= TkUtil.untrust([false])
-      @encoding ||= TkUtil.untrust([nil])
+      @force_default_encoding ||= [false]
+      @encoding ||= [nil]
       def @encoding.to_s; self.join(nil); end
     }
     slave_ip._invoke('set', 'argv0', name) if name.kind_of?(String)
@@ -1277,14 +1276,6 @@ class MultiTkIp
     @slave_ip_top = {}
     @cb_error_proc = []
     @evloop_thread = []
-
-    TkUtil.untrust(@tk_windows)    unless @tk_windows.tainted?
-    TkUtil.untrust(@tk_table_list) unless @tk_table_list.tainted?
-    TkUtil.untrust(@slave_ip_tbl)  unless @slave_ip_tbl.tainted?
-    TkUtil.untrust(@slave_ip_top)  unless @slave_ip_top.tainted?
-    TkUtil.untrust(@cb_error_proc) unless @cb_error_proc.tainted?
-    TkUtil.untrust(@evloop_thread) unless @evloop_thread.tainted?
-
     @callback_status = []
 
     name, safe, safe_opts, tk_opts = _parse_slaveopts(keys)
@@ -1298,30 +1289,12 @@ class MultiTkIp
       unless WITH_RUBY_VM
         @interp = TclTkIp.new(name, _keys2opts(tk_opts))
         @interp.instance_eval{
-          @force_default_encoding ||= TkUtil.untrust([false])
-          @encoding ||= TkUtil.untrust([nil])
+          @force_default_encoding ||= [false]
+          @encoding ||= [nil]
           def @encoding.to_s; self.join(nil); end
         }
 
       else ### Ruby 1.9 !!!!!!!!!!!
-=begin
-        @interp_thread = Thread.new{
-          Thread.current[:interp] = interp = TclTkIp.new(name, _keys2opts(tk_opts))
-          interp.instance_eval{
-            @force_default_encoding ||= TkUtil.untrust([false])
-            @encoding ||= TkUtil.untrust([nil])
-            def @encoding.to_s; self.join(nil); end
-          }
-
-          #sleep
-          TclTkLib.mainloop(true)
-        }
-        until @interp_thread[:interp]
-          Thread.pass
-        end
-        # INTERP_THREAD.run
-        @interp = @interp_thread[:interp]
-=end
         @interp_thread = Thread.new{
           current = Thread.current
           begin
@@ -1379,8 +1352,8 @@ class MultiTkIp
       end
 
       @interp.instance_eval{
-        @force_default_encoding ||= TkUtil.untrust([false])
-        @encoding ||= TkUtil.untrust([nil])
+        @force_default_encoding ||= [false]
+        @encoding ||= [nil]
         def @encoding.to_s; self.join(nil); end
       }
 
@@ -1406,8 +1379,7 @@ class MultiTkIp
 
     @system = Object.new
 
-    @wait_on_mainloop = TkUtil.untrust([true, 0])
-    # @wait_on_mainloop = TkUtil.untrust([false, 0])
+    @wait_on_mainloop = [true, 0]
 
     @threadgroup  = ThreadGroup.new
 
@@ -1419,7 +1391,7 @@ class MultiTkIp
 
     @@IP_TABLE[@threadgroup] = self
     @@TK_TABLE_LIST.size.times{
-      @tk_table_list << TkUtil.untrust({})
+      @tk_table_list << {}
     }
     _init_ip_internal(@@INIT_IP_ENV, @@ADD_TK_PROCS)
 
@@ -1472,7 +1444,7 @@ class MultiTkIp
       super(interp){|ip| Thread.current[:callback_ip] = ip; blk.call}
     end
 
-    @table = TkUtil.untrust(Hash.new{|h,k| h[k] = TkUtil.untrust([])})
+    @table = Hash.new{|h,k| h[k] = []}
     def self.table
       @table
     end
@@ -1712,7 +1684,7 @@ class MultiTkIp
 
   def _add_new_tables
     (@@TK_TABLE_LIST.size - @tk_table_list.size).times{
-      @tk_table_list << TkUtil.untrust({})
+      @tk_table_list << {}
     }
   end
 
