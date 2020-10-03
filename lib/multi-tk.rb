@@ -2062,25 +2062,25 @@ if (!defined?(Use_PseudoToplevel_Feature_of_MultiTkIp) ||
   end
 
   class Object
-    alias __method_missing_alias_for_MultiTkIp__ method_missing
-    private :__method_missing_alias_for_MultiTkIp__
+    include(Module.new do
+      private
+      def method_missing(id, *args)
+        begin
+          has_top = (top = MultiTkIp.__getip.__pseudo_toplevel) &&
+            top.respond_to?(:pseudo_toplevel_evaluable?) &&
+            top.pseudo_toplevel_evaluable? &&
+            top.respond_to?(id)
+        rescue Exception => e
+          has_top = false
+        end
 
-    def method_missing(id, *args)
-      begin
-        has_top = (top = MultiTkIp.__getip.__pseudo_toplevel) &&
-          top.respond_to?(:pseudo_toplevel_evaluable?) &&
-          top.pseudo_toplevel_evaluable? &&
-          top.respond_to?(id)
-      rescue Exception => e
-        has_top = false
+        if has_top
+          top.__send__(id, *args)
+        else
+          super
+        end
       end
-
-      if has_top
-        top.__send__(id, *args)
-      else
-        __method_missing_alias_for_MultiTkIp__(id, *args)
-      end
-    end
+    end)
   end
 else
   # dummy
