@@ -171,8 +171,6 @@ module TclTklib
        : a target event.
        : If set DONT_WAIT flag and no event for processing, returns
        : false immediately.
-       : If $SAFE >= 1 and the flag is tainted,
-       : force to set DONT_WAIT flag.
 
     set_eventloop_tick(timer_tick)
        : Define the interval of thread-switching with an integer
