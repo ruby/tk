@@ -999,21 +999,21 @@ class Tk::Tile::Treeview::Tag < TkObject
     @t.tag_remove(@id, *items)
   end
 
-  def bind(seq, *args)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+  def bind(seq, *args, &block)
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     @t.tag_bind(@id, seq, cmd, *args)
     self
   end
 
-  def bind_append(seq, *args)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+  def bind_append(seq, *args, &block)
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     @t.tag_bind_append(@id, seq, cmd, *args)
     self
@@ -1191,13 +1191,6 @@ class Tk::Tile::Treeview < TkWindow
     Tk::Tile::Treeview::Item.new(self, parent, idx, keys)
   end
 
-  # def instate(spec, cmd=Proc.new)
-  #   tk_send('instate', spec, cmd)
-  # end
-  # def state(spec=None)
-  #   tk_send('state', spec)
-  # end
-
   def move(item, parent, idx)
     tk_send('move', item, parent, idx)
     self
@@ -1280,22 +1273,22 @@ class Tk::Tile::Treeview < TkWindow
     }
   end
 
-  def tag_bind(tag, seq, *args)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+  def tag_bind(tag, seq, *args, &block)
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind([@path, 'tag', 'bind', tag], seq, cmd, *args)
     self
   end
   alias tagbind tag_bind
 
-  def tag_bind_append(tag, seq, *args)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+  def tag_bind_append(tag, seq, *args, &block)
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append([@path, 'tag', 'bind', tag], seq, cmd, *args)
     self

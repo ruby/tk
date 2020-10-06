@@ -391,7 +391,7 @@ class Tk::HTML_Widget
   end
 
   def token_handler(tag, cmd=nil, &b)
-    cmd = Proc.new(&b) if !cmd && b
+    cmd = b if !cmd && b
     if cmd
       tk_send('token', 'handler', tag, cmd)
       return self

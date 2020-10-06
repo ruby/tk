@@ -639,10 +639,10 @@ end
 
 # 疑似トップレベルサポート
 module PseudoToplevel_Evaluable
-  def pseudo_toplevel_eval(body = Proc.new)
+  def pseudo_toplevel_eval(body = nil, &block)
     Thread.current[:TOPLEVEL] = self
     begin
-      body.call
+      (body || block).call
     ensure
       Thread.current[:TOPLEVEL] = nil
     end
@@ -706,10 +706,10 @@ class Proc
 end
 
 def proc(&b)
-  Proc.new(&b)
+  b
 end
 def lambda(&b)
-  Proc.new(&b)
+  b
 end
 
 def _null_binding

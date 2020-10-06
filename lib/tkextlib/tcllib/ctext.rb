@@ -150,8 +150,8 @@ class Tk::Tcllib::CText
     tk_call('ctext::findPreviousSpace', @path, idx)
   end
 
-  def set_update_proc(cmd=Proc.new)
-    tk_call('proc', 'ctext::update', '', cmd)
+  def set_update_proc(cmd=nil, &block)
+    tk_call('proc', 'ctext::update', '', cmd || block)
     self
   end
 

@@ -22,31 +22,23 @@ module TkcTagAccess
     @c.bbox(@id)
   end
 
-  #def bind(seq, cmd=Proc.new, *args)
-  #  @c.itembind(@id, seq, cmd, *args)
-  #  self
-  #end
-  def bind(seq, *args)
+  def bind(seq, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     @c.itembind(@id, seq, cmd, *args)
     self
   end
 
-  #def bind_append(seq, cmd=Proc.new, *args)
-  #  @c.itembind_append(@id, seq, cmd, *args)
-  #  self
-  #end
-  def bind_append(seq, *args)
+  def bind_append(seq, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     @c.itembind_append(@id, seq, cmd, *args)
     self

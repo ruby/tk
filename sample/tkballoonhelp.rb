@@ -84,8 +84,8 @@ class Tk::RbWidget::BalloonHelp<TkLabel
     end
   end
 
-  def command(cmd = Proc.new)
-    @command = cmd
+  def command(cmd = nil, &block)
+    @command = cmd || block
     self
   end
 

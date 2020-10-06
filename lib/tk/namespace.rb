@@ -307,23 +307,12 @@ class TkNamespace < TkObject
     TkNamespace.children(@fullname, pattern)
   end
 
-  def self.code(script = Proc.new)
-    TkNamespace.new('').code(script)
+  def self.code(script = nil, &block)
+    TkNamespace.new('').code(script || block)
   end
-=begin
-  def code(script = Proc.new)
-    if script.kind_of?(String)
-      cmd = proc{|*args| ScopeArgs.new(@fullname,*args).instance_eval(script)}
-    elsif script.kind_of?(Proc)
-      cmd = proc{|*args| ScopeArgs.new(@fullname,*args).instance_eval(&script)}
-    else
-      fail ArgumentError, "String or Proc is expected"
-    end
-    TkNamespace::NsCode.new(tk_call_without_enc('namespace', 'code',
-                                                _get_eval_string(cmd, false)))
-  end
-=end
-  def code(script = Proc.new)
+
+  def code(script = nil, &block)
+    script ||= block
     if script.kind_of?(String)
       cmd = proc{|*args|
         ret = ScopeArgs.new(@fullname,*args).instance_eval(script)
@@ -414,22 +403,13 @@ class TkNamespace < TkObject
     bool(tk_call('namespace', 'ensemble', 'exists', cmd))
   end
 
-  def self.eval(namespace, cmd = Proc.new, *args)
+  def self.eval(namespace, cmd = nil, *args, &block)
+    cmd ||= block
     #tk_call('namespace', 'eval', namespace, cmd, *args)
     TkNamespace.new(namespace).eval(cmd, *args)
   end
-=begin
-  def eval(cmd = Proc.new, *args)
-    #TkNamespace.eval(@fullname, cmd, *args)
-    #ns_tk_call(cmd, *args)
-    code_obj = code(cmd)
-    ret = code_obj.call(*args)
-    # uninstall_cmd(TkCore::INTERP._split_tklist(code_obj.path)[-1])
-    uninstall_cmd(_fromUTF8(TkCore::INTERP._split_tklist(_toUTF8(code_obj.path))[-1]))
-    tk_tcl2ruby(ret)
-  end
-=end
-  def eval(cmd = Proc.new, *args)
+  def eval(cmd = nil, *args, &block)
+    cmd ||= block
     code_obj = code(cmd)
     ret = code_obj.call(*args)
     uninstall_cmd(_fromUTF8(TkCore::INTERP._split_tklist(_toUTF8(code_obj.path))[-1]))
@@ -529,8 +509,8 @@ class TkNamespace < TkObject
   def self.get_unknown_handler
     tk_tcl2ruby(tk_call('namespace', 'unknown'))
   end
-  def self.set_unknown_handler(cmd = Proc.new)
-    tk_call('namespace', 'unknown', cmd)
+  def self.set_unknown_handler(cmd = nil, &block)
+    tk_call('namespace', 'unknown', cmd || block)
   end
 
   def self.which(name)

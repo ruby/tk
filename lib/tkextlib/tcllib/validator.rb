@@ -33,8 +33,8 @@ end
 module Tk::Tcllib::Validator
   extend TkCore
 
-  def self.attach(widget, color, cmd=Proc.new)
-    tk_call_without_enc('::widget::validator', 'attach', widget, color, cmd)
+  def self.attach(widget, color, cmd=nil, &block)
+    tk_call_without_enc('::widget::validator', 'attach', widget, color, cmd || block)
     nil
   end
 
@@ -48,17 +48,17 @@ module Tk::Tcllib::Validator
     nil
   end
 
-  def attach_validator(color, cmd=Proc.new)
-    tk_call_without_enc('::widget::validator', 'attach', @path, color, cmd)
+  def attach_validator(color, cmd=nil, &block)
+    tk_call_without_enc('::widget::validator', 'attach', @path, color, cmd || block)
     self
   end
 
-  def detach_validator(color, cmd=Proc.new)
+  def detach_validator(color, cmd=nil)
     tk_call_without_enc('::widget::validator', 'detach', @path)
     self
   end
 
-  def invoke_validator(color, cmd=Proc.new)
+  def invoke_validator(color, cmd=nil)
     tk_call_without_enc('::widget::validator', 'validate', @path)
     self
   end

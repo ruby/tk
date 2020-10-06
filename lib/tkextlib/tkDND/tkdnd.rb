@@ -146,19 +146,7 @@ module Tk
         end
       end
 
-      #def dnd_bindtarget(type, event, cmd=Proc.new, prior=50, *args)
-      #  event = tk_event_sequence(event)
-      #  if prior.kind_of?(Numeric)
-      #    tk_call('dnd', 'bindtarget', @path, type, event,
-      #            install_bind_for_event_class(DND_Subst, cmd, *args),
-      #            prior)
-      #  else
-      #    tk_call('dnd', 'bindtarget', @path, type, event,
-      #            install_bind_for_event_class(DND_Subst, cmd, prior, *args))
-      #  end
-      #  self
-      #end
-      def dnd_bindtarget(type, event, *args)
+      def dnd_bindtarget(type, event, *args, &block)
         # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
         klass = case type
                 when 'text/plain'
@@ -168,10 +156,10 @@ module Tk
                 else
                   DND_Subst
                 end
-        if TkComm._callback_entry?(args[0]) || !block_given?
+        if TkComm._callback_entry?(args[0]) || !block
           cmd = args.shift
         else
-          cmd = Proc.new
+          cmd = block
         end
 
         prior = 50
@@ -202,16 +190,12 @@ module Tk
         end
       end
 
-      #def dnd_bindsource(type, cmd=Proc.new, prior=None)
-      #  tk_call('dnd', 'bindsource', @path, type, cmd, prior)
-      #  self
-      #end
-      def dnd_bindsource(type, *args)
+      def dnd_bindsource(type, *args, &block)
         # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-        if TkComm._callback_entry?(args[0]) || !block_given?
+        if TkComm._callback_entry?(args[0]) || !block
           cmd = args.shift
         else
-          cmd = Proc.new
+          cmd = block
         end
 
         args = [TkComm::None] if args.empty?

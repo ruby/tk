@@ -536,7 +536,7 @@ module Tk::BLT
         if cmd
           configure('command', cmd)
         elsif b
-          configure('command', Proc.new(&b))
+          configure('command', b)
         else
           cget('command')
         end
@@ -1425,20 +1425,20 @@ module Tk::BLT
       end
     end
 
-    def _component_bind(target, tag, context, *args)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+    def _component_bind(target, tag, context, *args, &block)
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind([path, target, 'bind', tagid(tag)], context, cmd, *args)
       self
     end
-    def _component_bind_append(target, tag, context, *args)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+    def _component_bind_append(target, tag, context, *args, &block)
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind_append([path, target, 'bind', tagid(tag)], context, cmd, *args)
       self
@@ -1947,20 +1947,20 @@ module Tk::BLT
     def current_xaxis_configinfo(slot=nil)
       current_itemconfiginfo('xaxis', slot)
     end
-    def xaxis_bind(context, *args)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+    def xaxis_bind(context, *args, &block)
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind([path, 'xaxis', 'bind'], context, cmd, *args)
       self
     end
-    def xaxis_bind_append(context, *args)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+    def xaxis_bind_append(context, *args, &block)
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind_append([path, 'xaxis', 'bind'], context, cmd, *args)
       self
@@ -2022,20 +2022,20 @@ module Tk::BLT
     def current_x2axis_configinfo(slot=nil)
       current_itemconfiginfo('x2axis', slot)
     end
-    def x2axis_bind(context, *args)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+    def x2axis_bind(context, *args, &block)
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind([path, 'x2axis', 'bind'], context, cmd, *args)
       self
     end
-    def x2axis_bind_append(context, *args)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+    def x2axis_bind_append(context, *args, &block)
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind_append([path, 'x2axis', 'bind'], context, cmd, *args)
       self
@@ -2097,20 +2097,20 @@ module Tk::BLT
     def current_yaxis_configinfo(slot=nil)
       current_itemconfiginfo('yaxis', slot)
     end
-    def yaxis_bind(context, *args)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+    def yaxis_bind(context, *args, &block)
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind([path, 'yaxis', 'bind'], context, cmd, *args)
       self
     end
-    def yaxis_bind_append(context, *args)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+    def yaxis_bind_append(context, *args, &block)
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind_append([path, 'yaxis', 'bind'], context, cmd, *args)
       self
@@ -2172,20 +2172,20 @@ module Tk::BLT
     def current_y2axis_configinfo(slot=nil)
       current_itemconfiginfo('y2axis', slot)
     end
-    def y2axis_bind(context, *args)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+    def y2axis_bind(context, *args, &block)
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind([path, 'y2axis', 'bind'], context, cmd, *args)
       self
     end
-    def y2axis_bind_append(context, *args)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+    def y2axis_bind_append(context, *args, &block)
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind_append([path, 'y2axis', 'bind'], context, cmd, *args)
       self

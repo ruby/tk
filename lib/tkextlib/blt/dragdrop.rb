@@ -204,16 +204,16 @@ module Tk::BLT
       _setup_subst_table(KEY_TBL, PROC_TBL)
     end
 
-    def self.source_handler(win, datatype, cmd=Proc.new, *args)
+    def self.source_handler(win, datatype, cmd=nil, *args, &block)
       _bind_for_event_class(DnD_Handle,
                             ['::blt::drag&drop', 'source', win, 'handler'],
-                            cmd, *args)
+                            cmd || block, *args)
     end
 
-    def self.target_handler(win, datatype, cmd=Proc.new, *args)
+    def self.target_handler(win, datatype, cmd=nil, *args, &block)
       _bind_for_event_class(DnD_Handle,
                             ['::blt::drag&drop', 'target', win, 'handler'],
-                            cmd, *args)
+                            cmd || block, *args)
     end
 
     ###################################
@@ -255,8 +255,8 @@ module Tk::BLT
       tk_call('::blt::drag&drop', 'drop', win, x, y)
     end
 
-    def self.errors(cmd=Proc.new)
-      tk_call('::blt::drag&drop', 'errors', cmd)
+    def self.errors(cmd=nil, &block)
+      tk_call('::blt::drag&drop', 'errors', cmd || block)
     end
 
     def self.active

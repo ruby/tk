@@ -421,8 +421,8 @@ class TkMultiListFrame < TkListbox
   end
 
   # set title cmds
-  def titlecommand(idx, cmd=Proc.new)
-    @title_cmd[idx] = cmd
+  def titlecommand(idx, cmd=nil, &block)
+    @title_cmd[idx] = cmd || block
   end
 
   # call title cmds

@@ -43,31 +43,23 @@ class Tk::BWidget::SpinBox
   end
   private :__tkvariable_optkeys
 
-  #def entrybind(*args)
-  #  _bind([path, 'bind'], *args)
-  #  self
-  #end
-  def entrybind(context, *args)
+  def entrybind(context, *args, &block)
     #if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind([path, 'bind'], context, cmd, *args)
     self
   end
 
-  #def entrybind_append(*args)
-  #  _bind_append([path, 'bind'], *args)
-  #  self
-  #end
-  def entrybind_append(context, *args)
+  def entrybind_append(context, *args, &block)
     #if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append([path, 'bind'], context, cmd, *args)
     self

@@ -1420,31 +1420,23 @@ class Tk::TreeCtrl
     marquee_visible()
   end
 
-  #def notify_bind(obj, event, cmd=Proc.new, *args)
-  #  _bind([@path, 'notify', 'bind', obj], event, cmd, *args)
-  #  self
-  #end
-  def notify_bind(obj, event, *args)
+  def notify_bind(obj, event, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind([@path, 'notify', 'bind', obj], event, cmd, *args)
     self
   end
 
-  #def notify_bind_append(obj, event, cmd=Proc.new, *args)
-  #  _bind_append([@path, 'notify', 'bind', obj], event, cmd, *args)
-  #  self
-  #end
-  def notify_bind_append(obj, event, *args)
+  def notify_bind_append(obj, event, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append([@path, 'notify', 'bind', obj], event, cmd, *args)
     self
@@ -1475,7 +1467,7 @@ class Tk::TreeCtrl
 
   def notify_install(pattern, percents_cmd=nil, &b)
     pattern = "<#{pattern}>"
-    percents_cmd = Proc.new(&b) if !percents_cmd && b
+    percents_cmd = b if !percents_cmd && b
     if percents_cmd
       procedure(tk_send('notify', 'install', pattern, percents_cmd))
     else
@@ -1484,7 +1476,7 @@ class Tk::TreeCtrl
   end
 
   def notify_install_detail(event, detail, percents_cmd=nil, &b)
-    percents_cmd = Proc.new(&b) if !percents_cmd && b
+    percents_cmd = b if !percents_cmd && b
     if percents_cmd
       tk_send('notify', 'install', 'detail', event, detail, percents_cmd)
     else
@@ -1493,7 +1485,7 @@ class Tk::TreeCtrl
   end
 
   def notify_install_event(event, percents_cmd=nil, &b)
-    percents_cmd = Proc.new(&b) if !percents_cmd && b
+    percents_cmd = b if !percents_cmd && b
     if percents_cmd
       tk_send('notify', 'install', 'event', event, percents_cmd)
     else

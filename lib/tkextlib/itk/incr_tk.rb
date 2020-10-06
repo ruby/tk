@@ -360,18 +360,7 @@ module Tk
         end
       end
 
-      #def bind(*args)
-      #  unless @widget
-      #    begin
-      #      @widget = window(tk_call(@master, 'component', @component))
-      #      @path = @widget.path
-      #    rescue
-      #      fail RuntimeError, 'component is not assigned to a widget'
-      #    end
-      #  end
-      #  @widget.bind(*args)
-      #end
-      def bind(context, *args)
+      def bind(context, *args, &block)
         unless @widget
           begin
             @widget = window(tk_call(@master, 'component', @component))
@@ -381,26 +370,15 @@ module Tk
           end
         end
         # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-        if TkComm._callback_entry?(args[0]) || !block_given?
+        if TkComm._callback_entry?(args[0]) || !block
           cmd = args.shift
         else
-          cmd = Proc.new
+          cmd = block
         end
         @widget.bind(context, cmd, *args)
       end
 
-      #def bind_append(*args)
-      #  unless @widget
-      #    begin
-      #      @widget = window(tk_call(@master, 'component', @component))
-      #      @path = @widget.path
-      #    rescue
-      #      fail RuntimeError, 'component is not assigned to a widget'
-      #    end
-      #  end
-      #  @widget.bind_append(*args)
-      #end
-      def bind_append(context, *args)
+      def bind_append(context, *args, &block)
         unless @widget
           begin
             @widget = window(tk_call(@master, 'component', @component))
@@ -410,10 +388,10 @@ module Tk
           end
         end
         # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-        if TkComm._callback_entry?(args[0]) || !block_given?
+        if TkComm._callback_entry?(args[0]) || !block
           cmd = args.shift
         else
-          cmd = Proc.new
+          cmd = block
         end
         @widget.bind_append(context, cmd, *args)
       end

@@ -294,7 +294,8 @@ class TkValidateCommand
     ['vcmd', 'validatecommand', 'invcmd', 'invalidcommand']
   end
 
-  def _initialize_for_cb_class(klass, cmd = Proc.new, *args)
+  def _initialize_for_cb_class(klass, cmd = nil, *args, &block)
+    cmd ||= block
     extra_args_tbl = klass._get_extra_args_tbl
 
     if args.compact.size > 0
@@ -332,8 +333,8 @@ class TkValidateCommand
     end
   end
 
-  def initialize(cmd = Proc.new, *args)
-    _initialize_for_cb_class(self.class::ValidateArgs, cmd, *args)
+  def initialize(cmd = nil, *args, &block)
+    _initialize_for_cb_class(self.class::ValidateArgs, cmd || block, *args)
   end
 
   def to_eval
@@ -363,36 +364,4 @@ module TkValidation
   end
 
   Tk::ValidateConfigure.__def_validcmd(binding, ValidateCmd)
-
-=begin
-  def validatecommand(cmd = Proc.new, args = nil)
-    if cmd.kind_of?(ValidateCmd)
-      configure('validatecommand', cmd)
-    elsif args
-      configure('validatecommand', [cmd, args])
-    else
-      configure('validatecommand', cmd)
-    end
-  end
-=end
-#  def validatecommand(*args, &b)
-#    __validcmd_call(ValidateCmd, 'validatecommand', *args, &b)
-#  end
-#  alias vcmd validatecommand
-
-=begin
-  def invalidcommand(cmd = Proc.new, args = nil)
-    if cmd.kind_of?(ValidateCmd)
-      configure('invalidcommand', cmd)
-    elsif args
-      configure('invalidcommand', [cmd, args])
-    else
-      configure('invalidcommand', cmd)
-    end
-  end
-=end
-#  def invalidcommand(*args, &b)
-#    __validcmd_call(ValidateCmd, 'invalidcommand', *args, &b)
-#  end
-#  alias invcmd invalidcommand
 end

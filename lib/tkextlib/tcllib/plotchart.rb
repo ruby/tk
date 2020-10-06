@@ -709,15 +709,15 @@ module Tk::Tcllib::Plotchart
     end
     private :_create_chart
 
-    def plot_function(cmd=Proc.new)
-      Tk.ip_eval("proc #{@path}_#{@chart} {x y} {#{install_cmd(cmd)} $x $y}")
+    def plot_function(cmd=nil, &block)
+      Tk.ip_eval("proc #{@path}_#{@chart} {x y} {#{install_cmd(cmd || block)} $x $y}")
       tk_call_without_enc(@chart, 'plotfunc', "#{@path}_#{@chart}")
       self
     end
 
-    def plot_funcont(conts, cmd=Proc.new)
+    def plot_funcont(conts, cmd=nil, &block)
       conts = array2tk_list(conts) if conts.kind_of?(Array)
-      Tk.ip_eval("proc #{@path}_#{@chart} {x y} {#{install_cmd(cmd)} $x $y}")
+      Tk.ip_eval("proc #{@path}_#{@chart} {x y} {#{install_cmd(cmd || block)} $x $y}")
       tk_call_without_enc(@chart, 'plotfuncont', "#{@path}_#{@chart}", conts)
       self
     end

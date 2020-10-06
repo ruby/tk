@@ -118,8 +118,8 @@ class Tk::Iwidgets::Notebook
     self
   end
 
-  def scrollcommand(cmd=Proc.new)
-    configure_cmd 'scrollcommand', cmd
+  def scrollcommand(cmd=nil, &block)
+    configure_cmd('scrollcommand', cmd || block)
     self
   end
   alias xscrollcommand scrollcommand

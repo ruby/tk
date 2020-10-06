@@ -338,7 +338,7 @@ module Tk
         if script
           tk_send('instate', state, script)
         elsif b
-          tk_send('instate', state, Proc.new(&b))
+          tk_send('instate', state, b)
         else
           bool(tk_send('instate', state))
         end

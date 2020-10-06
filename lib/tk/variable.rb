@@ -131,9 +131,9 @@ class TkVariable
     self
   end
   alias default_value= set_default_value
-  def default_proc(cmd = Proc.new)
+  def default_proc(cmd = nil, &block)
     @def_default = :proc
-    @default_val = cmd
+    @default_val = cmd || block
     self
   end
 
@@ -1372,7 +1372,8 @@ end
   end
   private :_check_trace_opt
 
-  def trace(opts, cmd = Proc.new)
+  def trace(opts, cmd = nil, &block)
+    cmd ||= block
     opts = _check_trace_opt(opts)
     (@trace_var ||= []).unshift([opts,cmd])
 
@@ -1412,7 +1413,8 @@ end
     self
   end
 
-  def trace_element(elem, opts, cmd = Proc.new)
+  def trace_element(elem, opts, cmd = nil, &block)
+    cmd ||= block
     if @elem
       fail(RuntimeError,
            "invalid for a TkVariable which denotes an element of Tcl's array")

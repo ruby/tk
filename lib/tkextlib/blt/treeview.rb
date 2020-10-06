@@ -367,20 +367,20 @@ class Tk::BLT::Treeview
     list(tk_send('bbox', '-screen', *(tags.collect{|tag| tagid(tag)})))
   end
 
-  def tag_bind(tag, seq, *args)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+  def tag_bind(tag, seq, *args, &block)
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind([@path, 'bind', tagid(tag)], seq, cmd, *args)
     self
   end
-  def tag_bind_append(tag, seq, *args)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+  def tag_bind_append(tag, seq, *args, &block)
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append([@path, 'bind', tagid(tag)], seq, cmd, *args)
     self
@@ -398,20 +398,20 @@ class Tk::BLT::Treeview
     self
   end
 
-  def button_bind(tag, seq, *args)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+  def button_bind(tag, seq, *args, &block)
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind([@path, 'button', 'bind', tagid(tag)], seq, cmd, *args)
     self
   end
-  def button_bind_append(tag, seq, *args)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+  def button_bind_append(tag, seq, *args, &block)
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append([@path, 'button', 'bind', tagid(tag)], seq, cmd, *args)
     self

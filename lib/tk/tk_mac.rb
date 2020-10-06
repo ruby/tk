@@ -17,48 +17,48 @@ module Tk::Mac
   extend TkCore
 
   # event handler callbacks
-  def self.def_ShowPreferences(cmd=Proc.new)
-    ip_eval("proc ::tk::mac::ShowPreferences {} { #{install_cmd(cmd)} }")
+  def self.def_ShowPreferences(cmd=nil, &block)
+    ip_eval("proc ::tk::mac::ShowPreferences {} { #{install_cmd(cmd || block)} }")
     nil
   end
 
-  def self.def_OpenApplication(cmd=Proc.new)
-    ip_eval("proc ::tk::mac::OpenApplication {} { #{install_cmd(cmd)} }")
+  def self.def_OpenApplication(cmd=nil, &block)
+    ip_eval("proc ::tk::mac::OpenApplication {} { #{install_cmd(cmd || block)} }")
     nil
   end
 
-  def self.def_ReopenApplication(cmd=Proc.new)
-    ip_eval("proc ::tk::mac::ReopenApplication {} { #{install_cmd(cmd)} }")
+  def self.def_ReopenApplication(cmd=nil, &block)
+    ip_eval("proc ::tk::mac::ReopenApplication {} { #{install_cmd(cmd || block)} }")
     nil
   end
 
-  def self.def_OpenDocument(cmd=Proc.new)
-    ip_eval("proc ::tk::mac::OpenDocument {args} { eval #{install_cmd(cmd)} $args }")
+  def self.def_OpenDocument(cmd=nil, &block)
+    ip_eval("proc ::tk::mac::OpenDocument {args} { eval #{install_cmd(cmd || block)} $args }")
     nil
   end
 
-  def self.def_PrintDocument(cmd=Proc.new)
-    ip_eval("proc ::tk::mac::PrintDocument {args} { eval #{install_cmd(cmd)} $args }")
+  def self.def_PrintDocument(cmd=nil, &block)
+    ip_eval("proc ::tk::mac::PrintDocument {args} { eval #{install_cmd(cmd || block)} $args }")
     nil
   end
 
-  def self.def_Quit(cmd=Proc.new)
-    ip_eval("proc ::tk::mac::Quit {} { #{install_cmd(cmd)} }")
+  def self.def_Quit(cmd=nil, &block)
+    ip_eval("proc ::tk::mac::Quit {} { #{install_cmd(cmd || block)} }")
     nil
   end
 
-  def self.def_OnHide(cmd=Proc.new)
-    ip_eval("proc ::tk::mac::OnHide {} { #{install_cmd(cmd)} }")
+  def self.def_OnHide(cmd=nil, &block)
+    ip_eval("proc ::tk::mac::OnHide {} { #{install_cmd(cmd || block)} }")
     nil
   end
 
-  def self.def_OnShow(cmd=Proc.new)
-    ip_eval("proc ::tk::mac::OnShow {} { #{install_cmd(cmd)} }")
+  def self.def_OnShow(cmd=nil, &block)
+    ip_eval("proc ::tk::mac::OnShow {} { #{install_cmd(cmd || block)} }")
     nil
   end
 
-  def self.def_ShowHelp(cmd=Proc.new)
-    ip_eval("proc ::tk::mac::ShowHelp {} { #{install_cmd(cmd)} }")
+  def self.def_ShowHelp(cmd=nil, &block)
+    ip_eval("proc ::tk::mac::ShowHelp {} { #{install_cmd(cmd || block)} }")
     nil
   end
 
