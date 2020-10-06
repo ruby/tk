@@ -109,7 +109,7 @@ class << TkFont::Chooser
     if cmd
       configure_cmd('command', cmd)
     elsif b
-      configure_cmd('command', Proc.new(&b))
+      configure_cmd('command', b)
     else
       cget('command')
     end

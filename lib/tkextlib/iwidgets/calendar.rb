@@ -76,10 +76,6 @@ class Tk::Iwidgets::Calendar
       # array of config-option key (string or symbol)
       ['command']
     end
-
-    #def initialize(cmd = Proc.new, *args)
-    #  _initialize_for_cb_class(CalCmdArgs, cmd, *args)
-    #end
   end
 
   def __validation_class_list
@@ -87,17 +83,6 @@ class Tk::Iwidgets::Calendar
   end
 
   Tk::ValidateConfigure.__def_validcmd(binding, CalendarCommand)
-=begin
-  def command(cmd = Proc.new, args = nil)
-    if cmd.kind_of?(CalendarCommand)
-      configure('command', cmd)
-    elsif args
-      configure('command', [cmd, args])
-    else
-      configure('command', cmd)
-    end
-  end
-=end
 
   ####################################
 

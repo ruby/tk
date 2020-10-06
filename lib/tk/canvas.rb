@@ -131,31 +131,23 @@ class Tk::Canvas<TkWindow
                              *tags.collect{|t| tagid(t)}))
   end
 
-  #def itembind(tag, context, cmd=Proc.new, *args)
-  #  _bind([path, "bind", tagid(tag)], context, cmd, *args)
-  #  self
-  #end
-  def itembind(tag, context, *args)
+  def itembind(tag, context, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind([path, "bind", tagid(tag)], context, cmd, *args)
     self
   end
 
-  #def itembind_append(tag, context, cmd=Proc.new, *args)
-  #  _bind_append([path, "bind", tagid(tag)], context, cmd, *args)
-  #  self
-  #end
-  def itembind_append(tag, context, *args)
+  def itembind_append(tag, context, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append([path, "bind", tagid(tag)], context, cmd, *args)
     self

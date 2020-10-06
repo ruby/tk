@@ -320,7 +320,7 @@ class << Tk::Tile::Style
 
   def theme_settings(name, cmd=nil, &b)
     name = name.to_s
-    cmd = Proc.new(&b) if !cmd && b
+    cmd = b if !cmd && b
     tk_call(TkCommandNames[0], 'theme', 'settings', name, cmd)
     name
   end

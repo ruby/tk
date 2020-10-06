@@ -431,7 +431,7 @@ module Tk::BLT
         elsif TkComm._callback_entry?(args[-1])
           cmd = args.pop
         elsif b
-          cmd = Proc.new(&b)
+          cmd = b
         else
           fail ArgumentError, "lack of 'command' argument"
         end
@@ -536,7 +536,7 @@ module Tk::BLT
 
         if !cmd
           if b
-            cmd = Proc.new(&b)
+            cmd = b
           else
             fail ArgumentError, "lack of 'command' argument"
           end

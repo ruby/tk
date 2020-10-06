@@ -38,8 +38,8 @@ class Button_clone < TkLabel
               })
   end
 
-  def command(cmd = Proc.new)
-    @command = cmd
+  def command(cmd = nil, &block)
+    @command = cmd || block
   end
 
   def invoke

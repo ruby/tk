@@ -771,31 +771,23 @@ class Tk::Text<TkTextWin
   alias deltag tag_delete
   alias delete_tag tag_delete
 
-  #def tag_bind(tag, seq, cmd=Proc.new, *args)
-  #  _bind([@path, 'tag', 'bind', tag], seq, cmd, *args)
-  #  self
-  #end
-  def tag_bind(tag, seq, *args)
+  def tag_bind(tag, seq, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind([@path, 'tag', 'bind', tag], seq, cmd, *args)
     self
   end
 
-  #def tag_bind_append(tag, seq, cmd=Proc.new, *args)
-  #  _bind_append([@path, 'tag', 'bind', tag], seq, cmd, *args)
-  #  self
-  #end
-  def tag_bind_append(tag, seq, *args)
+  def tag_bind_append(tag, seq, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append([@path, 'tag', 'bind', tag], seq, cmd, *args)
     self

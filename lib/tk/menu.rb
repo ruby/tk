@@ -186,16 +186,16 @@ class Tk::Menu<TkWindow
     tk_send_without_enc('postcascade', _get_eval_enc_str(index))
     self
   end
-  def postcommand(cmd=Proc.new)
-    configure_cmd 'postcommand', cmd
+  def postcommand(cmd=nil, &block)
+    configure_cmd('postcommand', cmd || block)
     self
   end
   def set_focus
     tk_call_without_enc('tk_menuSetFocus', path)
     self
   end
-  def tearoffcommand(cmd=Proc.new)
-    configure_cmd 'tearoffcommand', cmd
+  def tearoffcommand(cmd=nil, &block)
+    configure_cmd('tearoffcommand', cmd || block)
     self
   end
   def menutype(index)

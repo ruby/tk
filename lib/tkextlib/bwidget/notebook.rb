@@ -47,32 +47,24 @@ class Tk::BWidget::NoteBook
     end
   end
 
-  #def tabbind(*args)
-  #  _bind_for_event_class(Event_for_Tabs, [path, 'bindtabs'], *args)
-  #  self
-  #end
-  def tabbind(context, *args)
+  def tabbind(context, *args, &block)
     #if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_for_event_class(Event_for_Tabs, [path, 'bindtabs'],
                           context, cmd, *args)
     self
   end
 
-  #def tabbind_append(*args)
-  #  _bind_append_for_event_class(Event_for_Tabs, [path, 'bindtabs'], *args)
-  #  self
-  #end
-  def tabbind_append(context, *args)
+  def tabbind_append(context, *args, &block)
     #if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append_for_event_class(Event_for_Tabs, [path, 'bindtabs'],
                                  context, cmd, *args)

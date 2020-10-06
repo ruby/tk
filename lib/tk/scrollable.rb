@@ -6,7 +6,8 @@ require 'tk'
 
 module Tk
   module XScrollable
-    def xscrollcommand(cmd=Proc.new)
+    def xscrollcommand(cmd=nil, &block)
+      cmd ||= block
       configure_cmd 'xscrollcommand', cmd
       # Tk.update  # avoid scrollbar trouble
       self

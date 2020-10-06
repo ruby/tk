@@ -191,31 +191,23 @@ class TkTextTag<TkObject
     @t.current_tag_configinfo @id, key
   end
 
-  #def bind(seq, cmd=Proc.new, *args)
-  #  _bind([@t.path, 'tag', 'bind', @id], seq, cmd, *args)
-  #  self
-  #end
-  def bind(seq, *args)
+  def bind(seq, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind([@t.path, 'tag', 'bind', @id], seq, cmd, *args)
     self
   end
 
-  #def bind_append(seq, cmd=Proc.new, *args)
-  #  _bind_append([@t.path, 'tag', 'bind', @id], seq, cmd, *args)
-  #  self
-  #end
-  def bind_append(seq, *args)
+  def bind_append(seq, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append([@t.path, 'tag', 'bind', @id], seq, cmd, *args)
     self

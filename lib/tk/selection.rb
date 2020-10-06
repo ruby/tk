@@ -43,18 +43,19 @@ module TkSelection
     TkSelection.get_on_display(self, sel)
   end
 
-  def self.handle(win, func=Proc.new, keys=nil, &b)
+  def self.handle(win, func=nil, keys=nil, &b)
+    func ||= b
     if func.kind_of?(Hash) && keys == nil
       keys = func
-      func = Proc.new(&b)
+      func = b
     end
     args = ['selection', 'handle']
     args.concat(hash_kv(keys))
     args.concat([win, func])
     tk_call_without_enc(*args)
   end
-  def handle(func=Proc.new, keys=nil, &b)
-    TkSelection.handle(self, func, keys, &b)
+  def handle(func=nil, keys=nil, &b)
+    TkSelection.handle(self, func || b, keys, &b)
   end
 
   def self.get_owner(sel=nil)

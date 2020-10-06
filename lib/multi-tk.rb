@@ -301,8 +301,8 @@ class MultiTkIp
 
   ######################################
 
-  def set_cb_error(cmd = Proc.new)
-    @cb_error_proc[0] = cmd
+  def set_cb_error(cmd = nil, &block)
+    @cb_error_proc[0] = cmd || block
   end
 
   def cb_error(e)
@@ -1775,7 +1775,8 @@ class MultiTkIp
     return obj
   end
 
-  def self.init_ip_env(script = Proc.new)
+  def self.init_ip_env(script = nil, &block)
+    script ||= block
     @@INIT_IP_ENV << script
     if __getip.slave?
       begin
@@ -1893,15 +1894,6 @@ end
 if (!defined?(Use_PseudoToplevel_Feature_of_MultiTkIp) ||
       Use_PseudoToplevel_Feature_of_MultiTkIp)
   module MultiTkIp_PseudoToplevel_Evaluable
-    #def pseudo_toplevel_eval(body = Proc.new)
-    #  Thread.current[:TOPLEVEL] = self
-    #  begin
-    #    body.call
-    #  ensure
-    #    Thread.current[:TOPLEVEL] = nil
-    #  end
-    #end
-
     def pseudo_toplevel_evaluable?
       @pseudo_toplevel_evaluable
     end
@@ -2072,12 +2064,8 @@ class MultiTkIp
 
 if false && WITH_RUBY_VM  ### Ruby 1.9
   # Not stable, so disable this feature
-  def eval_callback(*args)
-    if block_given?
-      cmd = Proc.new
-    else
-      cmd = args.shift
-    end
+  def eval_callback(*args, &block)
+    cmd = block || args.shift
     begin
       if @@CALLBACK_SUBTHREAD.table[self].index(Thread.current)
         last_th = nil
@@ -2098,12 +2086,8 @@ if false && WITH_RUBY_VM  ### Ruby 1.9
     end
   end
 else  ### Ruby 1.8
-  def eval_callback(*args)
-    if block_given?
-      cmd = Proc.new
-    else
-      cmd = args.shift
-    end
+  def eval_callback(*args, &block)
+    cmd = block || args.shift
     begin
       eval_proc_core(false, cmd, *args)
     rescue Exception=>e
@@ -2142,9 +2126,9 @@ end
   end
   alias call eval_proc
 
-  def bg_eval_proc(*args)
-    if block_given?
-      cmd = Proc.new
+  def bg_eval_proc(*args, &block)
+    if block
+      cmd = block
     else
       unless (cmd = args.shift)
         fail ArgumentError, "A Proc or Method object is expected for 1st argument"
@@ -3142,21 +3126,22 @@ class MultiTkIp
     self
   end
 
-  def set_bgerror_handler(cmd = Proc.new, slave = nil, &b)
+  def set_bgerror_handler(cmd = nil, slave = nil, &b)
+    cmd ||= b
     raise SecurityError, "no permission to manipulate" unless self.manipulable?
 
     unless TkComm._callback_entry?(cmd)
       if !slave && b
         slave = cmd
-        cmd = Proc.new(&b)
+        cmd = b
       end
     end
     slave = '' unless slave
 
     @interp._invoke('interp', 'bgerror', _slavearg(slave), cmd)
   end
-  def self.bgerror(cmd = Proc.new, slave = nil, &b)
-    __getip.bgerror(cmd, slave, &b)
+  def self.bgerror(cmd = nil, slave = nil, &b)
+    __getip.bgerror(cmd || b, slave, &b)
   end
 
   def get_bgerror_handler(slave = '')
@@ -3373,7 +3358,8 @@ class MultiTkIp
     ip._eval("::safe::interpFindInAccessPath #{@ip_name} #{dir}")
   end
 
-  def safeip_set_log_cmd(cmd = Proc.new)
+  def safeip_set_log_cmd(cmd = nil, &block)
+    cmd ||= block
     ip = MultiTkIp.__getip
     ip._eval("::safe::setLogCmd #{@ip_name} #{_get_eval_string(cmd)}")
   end

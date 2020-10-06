@@ -75,27 +75,6 @@ class Tk::Iwidgets::Entryfield
   end
 
   Tk::ValidateConfigure.__def_validcmd(binding, EntryfieldValidate)
-=begin
-  def validate(cmd = Proc.new, args = nil)
-    if cmd.kind_of?(ValidateCmd)
-      configure('validate', cmd)
-    elsif args
-      configure('validate', [cmd, args])
-    else
-      configure('validate', cmd)
-    end
-  end
-
-  def invalid(cmd = Proc.new, args = nil)
-    if cmd.kind_of?(ValidateCmd)
-      configure('invalid', cmd)
-    elsif args
-      configure('invalid', [cmd, args])
-    else
-      configure('invalid', cmd)
-    end
-  end
-=end
 
   ####################################
 

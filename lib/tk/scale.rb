@@ -78,8 +78,8 @@ class Tk::Scale<TkWindow
     super(slot, value)
   end
 
-  def command(cmd=Proc.new)
-    configure('command'=>cmd)
+  def command(cmd=nil, &block)
+    configure('command'=>cmd || block)
   end
 
   def get(x=None, y=None)

@@ -97,30 +97,22 @@ module Tk::BLT
         end
       end
 
-      #def bind(context, cmd=Proc.new, *args)
-      #  @t.tab_bind(@id, context, cmd, *args)
-      #  self
-      #end
-      def bind(context, *args)
+      def bind(context, *args, &block)
         # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-        if TkComm._callback_entry?(args[0]) || !block_given?
+        if TkComm._callback_entry?(args[0]) || !block
           cmd = args.shift
         else
-          cmd = Proc.new
+          cmd = block
         end
         @t.tab_bind(@id, context, cmd, *args)
         self
       end
-      #def bind_append(context, cmd=Proc.new, *args)
-      #  @t.tab_bind_append(@id, context, cmd, *args)
-      #  self
-      #end
-      def bind_append(context, *args)
+      def bind_append(context, *args, &block)
         # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-        if TkComm._callback_entry?(args[0]) || !block_given?
+        if TkComm._callback_entry?(args[0]) || !block
           cmd = args.shift
         else
-          cmd = Proc.new
+          cmd = block
         end
         @t.tab_bind_append(@id, context, cmd, *args)
         self
@@ -289,30 +281,23 @@ module Tk::BLT
     end
     alias highlight activate
 
-    #def tabbind(tag, context, cmd=Proc.new, *args)
-    #  _bind([path, "bind", tagid(tag)], context, cmd, *args)
-    #  self
-    #end
-    def tabbind(tag, context, *args)
+    def tabbind(tag, context, *args, &block)
       # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind([path, "bind", tagid(tag)], context, cmd, *args)
       self
     end
-    #def tabbind_append(tag, context, cmd=Proc.new, *args)
-    #  _bind_append([path, "bind", tagid(tag)], context, cmd, *args)
-    #  self
-    #end
-    def tabbind_append(tag, context, *args)
+
+    def tabbind_append(tag, context, *args, &block)
       # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-      if TkComm._callback_entry?(args[0]) || !block_given?
+      if TkComm._callback_entry?(args[0]) || !block
         cmd = args.shift
       else
-        cmd = Proc.new
+        cmd = block
       end
       _bind_append([path, "bind", tagid(tag)], context, cmd, *args)
       self
@@ -482,8 +467,8 @@ module Tk::BLT
       window(tk_send('tab', 'tearoff', tagindex(index), parent))
     end
 
-    def xscrollcommand(cmd=Proc.new)
-      configure_cmd 'scrollcommand', cmd
+    def xscrollcommand(cmd=nil, &block)
+      configure_cmd('scrollcommand', cmd || block)
       self
     end
     alias scrollcommand xscrollcommand

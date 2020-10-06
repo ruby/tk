@@ -1069,31 +1069,23 @@ module TkComm
           :_bind_append_for_event_class, :_bind_remove_for_event_class,
           :_bindinfo_for_event_class
 
-  #def bind(tagOrClass, context, cmd=Proc.new, *args)
-  #  _bind(["bind", tagOrClass], context, cmd, *args)
-  #  tagOrClass
-  #end
-  def bind(tagOrClass, context, *args)
+  def bind(tagOrClass, context, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind(["bind", tagOrClass], context, cmd, *args)
     tagOrClass
   end
 
-  #def bind_append(tagOrClass, context, cmd=Proc.new, *args)
-  #  _bind_append(["bind", tagOrClass], context, cmd, *args)
-  #  tagOrClass
-  #end
-  def bind_append(tagOrClass, context, *args)
+  def bind_append(tagOrClass, context, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append(["bind", tagOrClass], context, cmd, *args)
     tagOrClass
@@ -1108,31 +1100,23 @@ module TkComm
     _bindinfo(['bind', tagOrClass], context)
   end
 
-  #def bind_all(context, cmd=Proc.new, *args)
-  #  _bind(['bind', 'all'], context, cmd, *args)
-  #  TkBindTag::ALL
-  #end
-  def bind_all(context, *args)
+  def bind_all(context, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind(['bind', 'all'], context, cmd, *args)
     TkBindTag::ALL
   end
 
-  #def bind_append_all(context, cmd=Proc.new, *args)
-  #  _bind_append(['bind', 'all'], context, cmd, *args)
-  #  TkBindTag::ALL
-  #end
-  def bind_append_all(context, *args)
+  def bind_append_all(context, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     _bind_append(['bind', 'all'], context, cmd, *args)
     TkBindTag::ALL
@@ -1675,57 +1659,21 @@ EOS
     bool(tk_call('auto_load', tk_cmd))
   end
 
-  def after(ms, cmd=Proc.new)
+  def after(ms, cmd=nil, &block)
+    cmd ||= block
     cmdid = install_cmd(proc{ret = cmd.call;uninstall_cmd(cmdid); ret})
     after_id = tk_call_without_enc("after",ms,cmdid)
     after_id.instance_variable_set('@cmdid', cmdid)
     after_id
   end
-=begin
-  def after(ms, cmd=Proc.new)
-    crit_bup = Thread.critical
-    Thread.critical = true
 
-    myid = _curr_cmd_id
-    cmdid = install_cmd(proc{ret = cmd.call;uninstall_cmd(myid); ret})
-
-    Thread.critical = crit_bup
-
-    tk_call_without_enc("after",ms,cmdid)  # return id
-#    return
-#    if false #defined? Thread
-#      Thread.start do
-#       ms = Float(ms)/1000
-#       ms = 10 if ms == 0
-#       sleep ms/1000
-#       cmd.call
-#      end
-#    else
-#      cmdid = install_cmd(cmd)
-#      tk_call("after",ms,cmdid)
-#    end
-  end
-=end
-
-  def after_idle(cmd=Proc.new)
+  def after_idle(cmd=nil, &block)
+    cmd ||= block
     cmdid = install_cmd(proc{ret = cmd.call;uninstall_cmd(cmdid); ret})
     after_id = tk_call_without_enc('after','idle',cmdid)
     after_id.instance_variable_set('@cmdid', cmdid)
     after_id
   end
-=begin
-  def after_idle(cmd=Proc.new)
-    crit_bup = Thread.critical
-    Thread.critical = true
-
-    myid = _curr_cmd_id
-    cmdid = install_cmd(proc{ret = cmd.call;uninstall_cmd(myid); ret})
-
-    Thread.critical = crit_bup
-
-    tk_call_without_enc('after','idle',cmdid)
-  end
-=end
 
   def after_cancel(afterId)
     tk_call_without_enc('after','cancel',afterId)
@@ -3360,22 +3308,16 @@ end
 
 
 module TkBindCore
-  #def bind(context, cmd=Proc.new, *args)
-  #  Tk.bind(self, context, cmd, *args)
-  #end
-  def bind(context, *args)
+  def bind(context, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
-    if TkComm._callback_entry?(args[0]) || !block_given?
+    if TkComm._callback_entry?(args[0]) || !block
       cmd = args.shift
     else
-      cmd = Proc.new
+      cmd = block
     end
     Tk.bind(self, context, cmd, *args)
   end
 
-  #def bind_append(context, cmd=Proc.new, *args)
-  #  Tk.bind_append(self, context, cmd, *args)
-  #end
   def bind_append(context, *args, &block)
     # if args[0].kind_of?(Proc) || args[0].kind_of?(Method)
     if TkComm._callback_entry?(args[0]) || !block
@@ -5569,7 +5511,7 @@ class TkWindow<TkObject
     if cmd
       configure_cmd('command', cmd)
     elsif b
-      configure_cmd('command', Proc.new(&b))
+      configure_cmd('command', b)
     else
       cget('command')
     end

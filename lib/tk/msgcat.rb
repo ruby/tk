@@ -289,11 +289,11 @@ class TkMsgCatalog < TkObject
            })
   end
 
-  def self.def_unknown_proc(cmd=Proc.new)
-    TkMsgCatalog::UNKNOWN_CBTBL[TkCore::INTERP.__getip]['::'] = cmd
+  def self.def_unknown_proc(cmd=nil, &block)
+    TkMsgCatalog::UNKNOWN_CBTBL[TkCore::INTERP.__getip]['::'] = cmd || block
   end
-  def def_unknown_proc(cmd=Proc.new)
-    TkMsgCatalog::UNKNOWN_CBTBL[TkCore::INTERP.__getip][@namespace.path] = cmd
+  def def_unknown_proc(cmd=nil, &block)
+    TkMsgCatalog::UNKNOWN_CBTBL[TkCore::INTERP.__getip][@namespace.path] = cmd || block
   end
 end
 
