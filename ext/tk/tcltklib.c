@@ -6251,19 +6251,25 @@ ip_init(argc, argv, self)
     st = ruby_tcl_stubs_init();
     /* from Tcl_AppInit() */
     if (with_tk) {
+        const char *error;
         DUMP1("Tk_Init");
         st = ruby_tk_stubs_init(ptr->ip);
+        if (st != TCLTK_STUBS_OK) {
+                error = Tcl_GetStringResult(ptr->ip);
+                ip_finalize(ptr->ip);
+                Tcl_DeleteInterp(ptr->ip);
+                Tcl_Release(ptr->ip);
+                ptr->ip = (Tcl_Interp*)NULL;
+        }
         switch(st) {
         case TCLTK_STUBS_OK:
             break;
         case NO_Tk_Init:
             rb_raise(rb_eLoadError, "tcltklib: can't find Tk_Init()");
         case FAIL_Tk_Init:
-            rb_raise(rb_eRuntimeError, "tcltklib: fail to Tk_Init(). %s",
-                     Tcl_GetStringResult(ptr->ip));
+            rb_raise(rb_eRuntimeError, "tcltklib: fail to Tk_Init(). %s", error);
         case FAIL_Tk_InitStubs:
-            rb_raise(rb_eRuntimeError, "tcltklib: fail to Tk_InitStubs(). %s",
-                     Tcl_GetStringResult(ptr->ip));
+            rb_raise(rb_eRuntimeError, "tcltklib: fail to Tk_InitStubs(). %s", error);
         default:
             rb_raise(rb_eRuntimeError, "tcltklib: unknown error(%d) on ruby_tk_stubs_init", st);
         }
