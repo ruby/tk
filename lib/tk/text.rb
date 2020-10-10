@@ -326,7 +326,7 @@ class Tk::Text<TkTextWin
     _fromUTF8(tk_send_without_enc('get', "1.0", "end - 1 char"))
   end
 
-  def value= (val)
+  def value=(val)
     tk_send_without_enc('delete', "1.0", 'end')
     tk_send_without_enc('insert', "1.0", _get_eval_enc_str(val))
     val

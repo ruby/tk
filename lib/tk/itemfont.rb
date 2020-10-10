@@ -101,7 +101,7 @@ module TkTreatItemFont
               else
                 begin
                   tk_call(*(__item_config_cmd(tagid(tagOrId)) << "-#{optkey}" << fnt))
-                rescue => e
+                rescue
                   # ignore
                 end
               end
@@ -163,7 +163,7 @@ module TkTreatItemFont
         else
           begin
             tk_call(*(__item_config_cmd(tagid(tagOrId)) << "-#{optkey}" << ltn))
-          rescue => e
+          rescue
             # ignore
           end
         end
@@ -223,7 +223,7 @@ module TkTreatItemFont
         else
           begin
             tk_call(*(__item_config_cmd(tagid(tagOrId)) << "-#{optkey}" << knj))
-          rescue => e
+          rescue
             # ignore
           end
         end

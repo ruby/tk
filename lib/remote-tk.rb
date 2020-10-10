@@ -270,7 +270,7 @@ class RemoteTkIp
     false
   end
 
-  def allow_ruby_exit= (mode)
+  def allow_ruby_exit=(mode)
     fail RuntimeError, 'cannot change mode of the remote interpreter'
   end
 

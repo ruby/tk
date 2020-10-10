@@ -239,7 +239,7 @@ module TkWinfo
     TkWinfo.screendepth self
   end
 
-  def TkWinfo.screenheight (win)
+  def TkWinfo.screenheight(win)
     number(tk_call_without_enc('winfo', 'screenheight', win))
   end
   def winfo_screenheight

@@ -27,7 +27,7 @@ class TkVariable
     TkVar_ID_TBL.mutex.synchronize{ TkVar_ID_TBL.clear }
   }
 
-  major, minor, type, patchlevel = TclTkLib.get_version
+  major, minor, _, _ = TclTkLib.get_version
   USE_OLD_TRACE_OPTION_STYLE = (major < 8) || (major == 8 && minor < 4)
 
   #TkCore::INTERP.add_tk_procs('rb_var', 'args',
@@ -1772,11 +1772,11 @@ module Tk
   begin
     INTERP._invoke_without_enc('global', 'auto_path')
     auto_path = INTERP._invoke('set', 'auto_path')
-  rescue => e
+  rescue
     begin
       INTERP._invoke_without_enc('global', 'env')
       auto_path = INTERP._invoke('set', 'env(TCLLIBPATH)')
-    rescue => e
+    rescue
       auto_path = Tk::LIBRARY
     end
   end

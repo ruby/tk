@@ -36,7 +36,7 @@ module Tk
 
     def _remove_win(win)
       if win.kind_of?(Array)
-        widget, method = win
+        widget, _ = win
         @observ.delete_if{|x|
           if x.kind_of?(Array)
             x[0] == widget

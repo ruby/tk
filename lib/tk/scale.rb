@@ -102,7 +102,7 @@ class Tk::Scale<TkWindow
     get
   end
 
-  def value= (val)
+  def value=(val)
     set(val)
     val
   end

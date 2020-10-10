@@ -144,7 +144,6 @@ module Tk
       # Tcl/Tk interpreter working under Ruby/Tk.
       # Please give attention to use this method. It may conflict with
       # some definitions on Tcl/Tk scripts.
-      klass_name = self.name
       proc_name = 'LoadImages'
       if Tk::Tile::USE_TTK_NAMESPACE
         ns_list = ['::tile']

@@ -266,7 +266,7 @@ class MultiTkIp
 
         begin
           @interp._eval_without_enc(@interp._merge_tklist('bgerror', msg))
-        rescue Exception => e
+        rescue Exception
           warn("Warning (#{self}): " + msg)
         end
       end
@@ -659,7 +659,7 @@ class MultiTkIp
       loop do
         Thread.pass
         begin
-          thread, cmd, *args = @cmd_queue.deq(true) # non-block
+          thread, _, *_ = @cmd_queue.deq(true) # non-block
         rescue ThreadError
           # queue is empty
           retry_count -= 1
@@ -928,7 +928,6 @@ class MultiTkIp
 
     @init_ip_env_queue = Queue.new
     Thread.new{
-      current = Thread.current
       loop {
         mtx, cond, ret, table, script = @init_ip_env_queue.deq
         begin
@@ -1917,7 +1916,7 @@ if (!defined?(Use_PseudoToplevel_Feature_of_MultiTkIp) ||
             top.respond_to?(:pseudo_toplevel_evaluable?) &&
             top.pseudo_toplevel_evaluable? &&
             top.respond_to?(id)
-        rescue Exception => e
+        rescue Exception
           has_top = false
         end
 
@@ -2316,7 +2315,7 @@ class << MultiTkIp
     __getip.allow_ruby_exit?
   end
 
-  def allow_ruby_exit= (mode)
+  def allow_ruby_exit=(mode)
     __getip.allow_ruby_exit = mode
   end
 
@@ -2642,7 +2641,7 @@ class MultiTkIp
     @interp.allow_ruby_exit?
   end
 
-  def allow_ruby_exit= (mode)
+  def allow_ruby_exit=(mode)
     raise SecurityError, "no permission to manipulate" unless self.manipulable?
     @interp.allow_ruby_exit = mode
   end

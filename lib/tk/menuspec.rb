@@ -210,7 +210,6 @@ module TkMenuSpec
   private :_create_menu
 
   def _use_menubar?(parent)
-    use_menubar = false
     if parent.kind_of?(Tk::Root) || parent.kind_of?(Tk::Toplevel)
       true
     elsif parent.current_configinfo.has_key?('menu')

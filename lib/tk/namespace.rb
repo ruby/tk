@@ -257,7 +257,7 @@ class TkNamespace < TkObject
         if name =~ /^::/
           @fullname = parent + name
         else
-          @fullname = parent +'::'+ name
+          @fullname = parent + '::' + name
         end
       else
         ancestor = __tk_call('namespace', 'current')
@@ -265,7 +265,7 @@ class TkNamespace < TkObject
         if name =~ /^::/
           @fullname = ancestor + '::' + parent + name
         else
-          @fullname = ancestor + '::'+ parent +'::'+ name
+          @fullname = ancestor + '::' + parent + '::' + name
         end
       end
     else # parent == nil

@@ -32,7 +32,7 @@ module Tk::Tile::TreeviewConfig
         if slot
           slot = slot.to_s
 
-          alias_name, real_name = __item_optkey_aliases(tagid(tagOrId)).find{|k, v| k.to_s == slot}
+          _, real_name = __item_optkey_aliases(tagid(tagOrId)).find{|k, v| k.to_s == slot}
           if real_name
             slot = real_name.to_s
           end
@@ -203,7 +203,7 @@ module Tk::Tile::TreeviewConfig
         if slot
           slot = slot.to_s
 
-          alias_name, real_name = __item_optkey_aliases(tagid(tagOrId)).find{|k, v| k.to_s == slot}
+          _, real_name = __item_optkey_aliases(tagid(tagOrId)).find{|k, v| k.to_s == slot}
           if real_name
             slot = real_name.to_s
           end

@@ -66,15 +66,15 @@ module TkGrid
     params = []
     args.flatten(1).each{|win|
       case win
-      when '-', ?-              # RELATIVE PLACEMENT (increase columnspan)
+      when '-', ?-.ord              # RELATIVE PLACEMENT (increase columnspan)
         params.push('-')
       when /^-+$/             # RELATIVE PLACEMENT (increase columnspan)
         params.concat(win.to_s.split(//))
-      when '^', ?^              # RELATIVE PLACEMENT (increase rowspan)
+      when '^', ?^.ord              # RELATIVE PLACEMENT (increase rowspan)
         params.push('^')
       when /^\^+$/             # RELATIVE PLACEMENT (increase rowspan)
         params.concat(win.to_s.split(//))
-      when 'x', :x, ?x, nil, '' # RELATIVE PLACEMENT (empty column)
+      when 'x', :x, ?x.ord, nil, '' # RELATIVE PLACEMENT (empty column)
         params.push('x')
       when /^x+$/             # RELATIVE PLACEMENT (empty column)
         params.concat(win.to_s.split(//))

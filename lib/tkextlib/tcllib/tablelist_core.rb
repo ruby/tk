@@ -212,7 +212,7 @@ class Tk::Tcllib::Tablelist
                        nil
                      else # cmd
                        tk_tcl2ruby(cmd)
-                       end
+                     end
                    })
   end
   private :__val2ruby_optkeys

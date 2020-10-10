@@ -96,7 +96,7 @@ class Tk::Iwidgets::Spinner
   def value
     _fromUTF8(tk_send_without_enc('get'))
   end
-  def value= (val)
+  def value=(val)
     tk_send_without_enc('delete', 0, 'end')
     tk_send_without_enc('insert', 0, _get_eval_enc_str(val))
     val
