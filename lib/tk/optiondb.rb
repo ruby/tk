@@ -210,7 +210,6 @@ module TkOptionDB
     unless func.kind_of?(Array)
       fail ArgumentError, "method-list must be Array"
     end
-    func_str = func.join(' ')
 
     if parent.kind_of?(Class) && parent <= @@resource_proc_class
       cmd_klass = Class.new(parent)

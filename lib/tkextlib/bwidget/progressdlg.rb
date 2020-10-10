@@ -37,7 +37,7 @@ class Tk::BWidget::ProgressDlg
     @keys['textvariable'].value
   end
 
-  def text= (txt)
+  def text=(txt)
     @keys['textvariable'].value = txt
   end
 
@@ -49,7 +49,7 @@ class Tk::BWidget::ProgressDlg
     @keys['variable'].value
   end
 
-  def value= (val)
+  def value=(val)
     @keys['variable'].value = val
   end
 

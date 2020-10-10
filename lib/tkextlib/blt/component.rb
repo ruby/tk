@@ -84,13 +84,13 @@ module Tk::BLT
     private :__item_pathname
 
     def axis_cget_tkstring(id, option)
-      ret = itemcget_tkstring(['axis', tagid(id)], option)
+      itemcget_tkstring(['axis', tagid(id)], option)
     end
     def axis_cget(id, option)
-      ret = itemcget(['axis', tagid(id)], option)
+      itemcget(['axis', tagid(id)], option)
     end
     def axis_cget_strict(id, option)
-      ret = itemcget_strict(['axis', tagid(id)], option)
+      itemcget_strict(['axis', tagid(id)], option)
     end
     def axis_configure(*args)
       slot = args.pop

@@ -88,7 +88,7 @@ class Tk::Listbox<TkTextWin
     get('0', 'end')
   end
 
-  def value= (vals)
+  def value=(vals)
     unless vals.kind_of?(Array)
       fail ArgumentError, 'an Array is expected'
     end

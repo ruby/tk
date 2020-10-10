@@ -1294,7 +1294,7 @@ class Tk::TreeCtrl
 
   def item_state_get(item, *args)
     if args.empty?
-      list(tk_send('item', 'state', 'get', item *args))
+      list(tk_send('item', 'state', 'get', item * args))
     else
       bool(tk_send('item', 'state', 'get', item))
     end

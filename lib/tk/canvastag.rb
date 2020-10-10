@@ -187,7 +187,7 @@ module TkcTagAccess
   #      ltag = tag1 | tag2; ltag.path => "(t1)||(t2)"
   #      ltag = tag1 ^ tag2; ltag.path => "(t1)^(t2)"
   #      ltag = - tag1;      ltag.path => "!(t1)"
-  def & (tag)
+  def &(tag)
     if tag.kind_of? TkObject
       TkcTagString.new(@c, '(' + @id + ')&&(' + tag.path + ')')
     else
@@ -195,7 +195,7 @@ module TkcTagAccess
     end
   end
 
-  def | (tag)
+  def |(tag)
     if tag.kind_of? TkObject
       TkcTagString.new(@c, '(' + @id + ')||(' + tag.path + ')')
     else
@@ -203,7 +203,7 @@ module TkcTagAccess
     end
   end
 
-  def ^ (tag)
+  def ^(tag)
     if tag.kind_of? TkObject
       TkcTagString.new(@c, '(' + @id + ')^(' + tag.path + ')')
     else

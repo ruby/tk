@@ -818,7 +818,7 @@ end
 
   def _curr_cmd_id
     #id = format("c%.4d", Tk_IDs[0])
-    id = "c" + TkCore::INTERP._ip_id_ + TkComm::Tk_IDs[0]
+    "c" + TkCore::INTERP._ip_id_ + TkComm::Tk_IDs[0]
   end
   def _next_cmd_id
     TkComm::Tk_IDs.mutex.synchronize{
@@ -3487,7 +3487,7 @@ module TkTreatFont
         else
           begin
             tk_call(*(__config_cmd << "-#{optkey}" << ltn))
-          rescue => e
+          rescue
             # ignore
           end
         end
@@ -3547,7 +3547,7 @@ module TkTreatFont
         else
           begin
             tk_call(*(__config_cmd << "-#{optkey}" << knj))
-          rescue => e
+          rescue
             # ignore
           end
         end
@@ -3804,7 +3804,7 @@ module TkConfigMethod
       fail ArgumentError, "Invalid option `#{orig_slot.inspect}'"
     end
 
-    alias_name, real_name = __optkey_aliases.find{|k, v| k.to_s == slot}
+    _, real_name = __optkey_aliases.find{|k, v| k.to_s == slot}
     if real_name
       slot = real_name.to_s
     end
@@ -3948,7 +3948,7 @@ module TkConfigMethod
         fail ArgumentError, "Invalid option `#{orig_slot.inspect}'"
       end
 
-      alias_name, real_name = __optkey_aliases.find{|k, v| k.to_s == slot}
+      _, real_name = __optkey_aliases.find{|k, v| k.to_s == slot}
       if real_name
         slot = real_name.to_s
       end
@@ -4051,7 +4051,7 @@ module TkConfigMethod
         if slot
           slot = slot.to_s
 
-          alias_name, real_name = __optkey_aliases.find{|k, v| k.to_s == slot}
+          _, real_name = __optkey_aliases.find{|k, v| k.to_s == slot}
           if real_name
             slot = real_name.to_s
           end
@@ -4431,7 +4431,7 @@ module TkConfigMethod
         if slot
           slot = slot.to_s
 
-          alias_name, real_name = __optkey_aliases.find{|k,var| k.to_s == slot}
+          _, real_name = __optkey_aliases.find{|k,var| k.to_s == slot}
           if real_name
             slot = real_name.to_s
           end
