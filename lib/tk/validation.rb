@@ -303,7 +303,7 @@ class TkValidateCommand
       args = args.join(' ')
       keys = klass._get_subst_key(args)
       if cmd.kind_of?(String)
-        id = cmd
+        @id = cmd
       elsif cmd.kind_of?(TkCallbackEntry)
         @id = install_cmd(cmd)
       else
@@ -318,7 +318,7 @@ class TkValidateCommand
     else
       keys, args = klass._get_all_subst_keys
       if cmd.kind_of?(String)
-        id = cmd
+        @id = cmd
       elsif cmd.kind_of?(TkCallbackEntry)
         @id = install_cmd(cmd)
       else
