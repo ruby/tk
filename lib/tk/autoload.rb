@@ -452,7 +452,7 @@ class << Tk
 
     reg = /^#{Regexp.quote(auto)}(\.rb|\.so|)$/
     @TOPLEVEL_ALIAS_TABLE.each_key{|set|
-      if @TOPLEVEL_ALIAS_TABLE[set][sym] =~ reg
+      if reg =~ @TOPLEVEL_ALIAS_TABLE[set][sym].to_s
         @TOPLEVEL_ALIAS_TABLE[set][sym] = obj
         if @TOPLEVEL_ALIAS_OWNER[sym].nil? || @TOPLEVEL_ALIAS_OWNER[sym] == set
           replace_topalias(sym, obj)
@@ -460,10 +460,10 @@ class << Tk
         end
       end
     }
-    if (f = Object.autoload?(sym)) && f =~ reg
+    if (f = Object.autoload?(sym)) && reg =~ f.to_s
       replace_topobj(sym, obj)
     end
-    if (f = Tk::TOPLEVEL_ALIASES.autoload?(sym)) && f =~ reg
+    if (f = Tk::TOPLEVEL_ALIASES.autoload?(sym)) && reg =~ f.to_s
       replace_topalias(sym, obj)
     end
   end
