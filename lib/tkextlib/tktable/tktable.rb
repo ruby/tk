@@ -155,7 +155,7 @@ class Tk::TkTable::CellTag
 
   def initialize(parent, keys=nil)
     @parent = @t = parent
-    @tpath - parent.path
+    @tpath = parent.path
     CellTag_ID.mutex.synchronize{
       @path = @id = CellTag_ID.join(TkCore::INTERP._ip_id_)
       CellTag_ID[1].succ!
