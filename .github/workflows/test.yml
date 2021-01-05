@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         ruby: [ 2.7, 2.6, 2.5, head ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
@@ -17,7 +17,7 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
     - name: Install dependencies
       run: |
-        sudo apt install tk tk-dev
+        sudo apt install tk8.5 tk8.5-dev
         gem install bundler --no-document
         bundle install
     - name: Run test
