@@ -1210,7 +1210,7 @@ module TkCore
 =end
           end
         else
-          RUN_EVENTLOOP_ON_MAIN_THREAD = false
+          RUN_EVENTLOOP_ON_MAIN_THREAD = true
         end
 
       else # Ruby 1.8.x
