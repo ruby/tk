@@ -17,8 +17,13 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
     - name: Install dependencies
       run: |
-        sudo apt install tk8.5 tk8.5-dev
+        sudo apt install tk-dev
         gem install bundler --no-document
         bundle install
     - name: Run test
-      run: rake compile
+      run: |
+        rake compile -- --with-tcltkversion=8.6 \
+        --with-tcl-lib=/usr/lib/x86_64-linux-gnu \
+        --with-tk-lib=/usr/lib/x86_64-linux-gnu \
+        --with-tcl-include=/usr/include/tcl8.6 \
+        --with-tk-include=/usr/include/tcl8.6
