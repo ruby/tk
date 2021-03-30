@@ -1,6 +1,0 @@
-language: ruby
-rvm:
-  - ruby-head
-before_install:
-  - sudo apt-get install tk tk-dev
-  - gem install bundler --no-document

@@ -1,0 +1,29 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: build (${{ matrix.ruby }}
+    strategy:
+      matrix:
+        ruby: [ 2.7, 2.6, 2.5, head ]
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+    - name: Install dependencies
+      run: |
+        sudo apt install tk-dev
+        gem install bundler --no-document
+        bundle install
+    - name: Run test
+      run: |
+        rake compile -- --with-tcltkversion=8.6 \
+        --with-tcl-lib=/usr/lib/x86_64-linux-gnu \
+        --with-tk-lib=/usr/lib/x86_64-linux-gnu \
+        --with-tcl-include=/usr/include/tcl8.6 \
+        --with-tk-include=/usr/include/tcl8.6
