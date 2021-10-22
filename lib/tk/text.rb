@@ -327,8 +327,15 @@ class Tk::Text<TkTextWin
   end
 
   def value=(val)
-    tk_send_without_enc('delete', "1.0", 'end')
-    tk_send_without_enc('insert', "1.0", _get_eval_enc_str(val))
+    enc_val = _get_eval_enc_str(val.to_s)
+    if enc_val.start_with?(value)
+      tk_send_without_enc('insert', 'end', enc_val[value.size..-1])
+    elsif val.end_with?(value)
+      tk_send_without_enc('insert', "1.0", enc_val[0...(enc_val.size - value.size)])
+    else
+      tk_send_without_enc('delete', "1.0", 'end')
+      tk_send_without_enc('insert', "1.0", enc_val)
+    end
     val
   end
 
