@@ -31,7 +31,7 @@ Tk.ip_eval(<<'EOS')
     }
 EOS
 
-# use a traditional dialog for Tk.getSaveFile() and Tk.getMultipleSaveFile()
+# use a traditional dialog for Tk.getSaveFile()
 Tk.ip_eval(<<'EOS')
     proc ::tk_getSaveFile {args} {
         if {$::tk_strictMotif} {
