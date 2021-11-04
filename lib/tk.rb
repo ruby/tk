@@ -1935,9 +1935,6 @@ EOS
   def getSaveFile(keys = nil)
     tk_call('tk_getSaveFile', *hash_kv(keys))
   end
-  def getMultipleSaveFile(keys = nil)
-    simplelist(tk_call('tk_getSaveFile', '-multiple', '1', *hash_kv(keys)))
-  end
 
   def chooseColor(keys = nil)
     tk_call('tk_chooseColor', *hash_kv(keys))
