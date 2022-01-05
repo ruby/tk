@@ -510,9 +510,9 @@ def get_tclConfig_dirs
       '/usr/local/opt', '/usr/local/pkg', '/usr/local/share', '/usr/local',
       '/usr/opt', '/usr/pkg', '/usr/share', '/usr/contrib', '/usr'
     ].map{|dir|
-      Dir.glob(dir + "/{tcltk,tcl,tk}[#{TkLib_Config['major_nums']}*/lib",
+      Dir.glob(dir + "/{tcltk,tcl,tk}[#{TkLib_Config['major_nums']}]*/lib",
                File::FNM_CASEFOLD)
-      Dir.glob(dir + "/{tcltk,tcl,tk}[#{TkLib_Config['major_nums']}*",
+      Dir.glob(dir + "/{tcltk,tcl,tk}[#{TkLib_Config['major_nums']}]*",
                File::FNM_CASEFOLD)
       Dir.glob(dir + '/{tcltk,tcl,tk}/lib', File::FNM_CASEFOLD)
       Dir.glob(dir + '/{tcltk,tcl,tk}', File::FNM_CASEFOLD)
