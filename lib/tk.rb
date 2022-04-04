@@ -1158,64 +1158,8 @@ module TkCore
       opts = ''
     end
 
-    # RUN_EVENTLOOP_ON_MAIN_THREAD = true
-
     unless self.const_defined? :RUN_EVENTLOOP_ON_MAIN_THREAD
-      if WITH_RUBY_VM ### check Ruby 1.9 !!!!!!!
-        # *** NEED TO FIX ***
-        case RUBY_PLATFORM
-        when /cygwin/
-          RUN_EVENTLOOP_ON_MAIN_THREAD = true
-        when /darwin/ # MacOS X
-=begin
-          ip = TclTkIp.new(name, opts)
-          if ip._invoke_without_enc('tk', 'windowingsystem') == 'aqua' &&
-             (TclTkLib.get_version<=>[8,4,TclTkLib::RELEASE_TYPE::FINAL,6]) > 0
-=end
-          if TclTkLib::WINDOWING_SYSTEM == 'aqua' &&
-             (TclTkLib.get_version<=>[8,4,TclTkLib::RELEASE_TYPE::FINAL,6]) > 0
-            # *** KNOWN BUG ***
-            #  Main event loop thread of TkAqua (> Tk8.4.9) must be the main
-            #  application thread. So, ruby1.9 users must call Tk.mainloop on
-            #  the main application thread.
-            #
-            # *** ADD (2009/05/10) ***
-            #  In some cases (I don't know the description of conditions),
-            #  TkAqua 8.4.7 has a same kind of hang-up trouble.
-            #  So, if 8.4.7 or later, set RUN_EVENTLOOP_ON_MAIN_THREAD to true.
-            #  When you want to control this mode, please call the following
-            #  (set true/false as you want) before "require 'tk'".
-            #  ----------------------------------------------------------
-            #  module TkCore; RUN_EVENTLOOP_ON_MAIN_THREAD = true; end
-            #  ----------------------------------------------------------
-            #
-            # *** ADD (2010/07/05) ***
-            #  The value of TclTkLib::WINDOWING_SYSTEM is defined at compiling.
-            #  If it is inconsistent with linked DLL, please call the following
-            #  before "require 'tk'".
-            #  ----------------------------------------------------------
-            #  require 'tcltklib'
-            #  module TclTkLib
-            #    remove_const :WINDOWING_SYSTEM
-            #    WINDOWING_SYSTEM = 'x11' # or 'aqua'
-            #  end
-            #  ----------------------------------------------------------
-            #
-            RUN_EVENTLOOP_ON_MAIN_THREAD = true
-          else
-            RUN_EVENTLOOP_ON_MAIN_THREAD = false
-=begin
-            ip.delete
-            ip = nil
-=end
-          end
-        else
-          RUN_EVENTLOOP_ON_MAIN_THREAD = true
-        end
-
-      else # Ruby 1.8.x
-        RUN_EVENTLOOP_ON_MAIN_THREAD = false
-      end
+      RUN_EVENTLOOP_ON_MAIN_THREAD = WITH_RUBY_VM
     end
 
     if !WITH_RUBY_VM || RUN_EVENTLOOP_ON_MAIN_THREAD ### check Ruby 1.9 !!!!!!!
