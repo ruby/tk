@@ -327,7 +327,7 @@ tk_symbolkey2str(self, keys)
 
     if (NIL_P(keys)) return new_keys;
     keys = rb_convert_type(keys, T_HASH, "Hash", "to_hash");
-    st_foreach_check(RHASH_TBL(keys), to_strkey, new_keys, Qundef);
+    rb_hash_foreach(keys, to_strkey, new_keys);
     return new_keys;
 }
 
@@ -718,7 +718,7 @@ hash2kv(hash, ary, self)
     volatile VALUE dst = rb_ary_new2(2 * RHASH_SIZE(hash));
     volatile VALUE args = rb_ary_new3(2, dst, self);
 
-    st_foreach_check(RHASH_TBL(hash), push_kv, args, Qundef);
+    rb_hash_foreach(hash, push_kv, args);
 
     if (NIL_P(ary)) {
         return dst;
@@ -762,7 +762,7 @@ hash2kv_enc(hash, ary, self)
     volatile VALUE dst = rb_ary_new2(2 * RHASH_SIZE(hash));
     volatile VALUE args = rb_ary_new3(2, dst, self);
 
-    st_foreach_check(RHASH_TBL(hash), push_kv_enc, args, Qundef);
+    rb_hash_foreach(hash, push_kv_enc, args);
 
     if (NIL_P(ary)) {
         return dst;
