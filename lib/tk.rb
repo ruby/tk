@@ -1158,8 +1158,16 @@ module TkCore
       opts = ''
     end
 
+    if defined? ::TK_MAINLOOP_ON_MAIN_THREAD_ONLY
+      RUN_EVENTLOOP_ON_MAIN_THREAD = ::TK_MAINLOOP_ON_MAIN_THREAD_ONLY
+    end
+
     unless self.const_defined? :RUN_EVENTLOOP_ON_MAIN_THREAD
-      RUN_EVENTLOOP_ON_MAIN_THREAD = WITH_RUBY_VM
+      if defined? ::IRB
+        RUN_EVENTLOOP_ON_MAIN_THREAD = false
+      else
+        RUN_EVENTLOOP_ON_MAIN_THREAD = WITH_RUBY_VM
+      end
     end
 
     if !WITH_RUBY_VM || RUN_EVENTLOOP_ON_MAIN_THREAD ### check Ruby 1.9 !!!!!!!
