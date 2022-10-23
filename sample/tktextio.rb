@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby -r thread_tk
 # frozen_string_literal: false
 #
 #  TkTextIO class :: handling I/O stream on a TkText widget
@@ -394,6 +394,10 @@ class TkTextIO < TkText
   private :_block_read, :_block_write
 
   ####################################
+
+  def set_encoding(extern, intern = nil)
+    # not suppot -> do nothing
+  end
 
   def <<(obj)
     _write(obj)

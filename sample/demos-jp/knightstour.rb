@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby -r thread_tk
 # -*- coding: utf-8 -*-
 # frozen_string_literal: false
 #

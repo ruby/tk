@@ -9,6 +9,8 @@
 #   'remote-tk.rb' includes 'multi-tk.rb'.
 #   ( There is no trouble even if you give both options. )
 #
+require "thread_tk"
+
 require 'remote-tk' if ARGV.delete('--remote-tk')
 require 'multi-tk'  if ARGV.delete('--multi-tk')
 
