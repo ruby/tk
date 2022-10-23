@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby -r thread_tk
 # frozen_string_literal: false
 # Based on the widget demo of Tcl/Tk8.5.2
 # The following is the original copyright text.

@@ -6,14 +6,13 @@
 #
 release = '2008/03/08'
 
+require 'thread_tk'
 require 'tk'
 begin
   require 'tktextio'
 rescue LoadError
   require File.join(File.dirname(File.expand_path(__FILE__)), 'tktextio.rb')
 end
-
-require 'irb'
 
 if TkCore::WITH_ENCODING
 else
@@ -110,8 +109,15 @@ def STDIN.tty?
 end
 
 # IRB setup
+require 'irb'
+
 IRB.init_config(nil)
 IRB.conf[:USE_READLINE] = false
+IRB.conf[:USE_MULTILINE] = false
+IRB.conf[:USE_SINGLELINE] = false
+IRB.conf[:USE_COLORIZE] = false
+IRB.conf[:PROMPT_MODE] = :DEFAULT
+IRB.conf[:VERBOSE] = false
 IRB.init_error
 irb = IRB::Irb.new
 IRB.conf[:MAIN_CONTEXT] = irb.context
@@ -152,5 +158,8 @@ console.bind('Control-c'){
 irb_thread.join
 
 # exit
-ev_loop.kill
-Tk.exit
+begin
+  ev_loop.kill
+  Tk.exit
+rescue
+end
