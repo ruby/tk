@@ -1797,6 +1797,7 @@ Init_tkutil(void)
     rb_define_singleton_method(cCB_SUBST, "inspect", cbsubst_inspect, 0);
 
     cSUBST_INFO = rb_define_class_under(cCB_SUBST, "Info", rb_cObject);
+    rb_undef_alloc_func(cSUBST_INFO);
     rb_define_singleton_method(cSUBST_INFO, "inspect", substinfo_inspect, 0);
 
     ID_SUBST_INFO = rb_intern("SUBST_INFO");
