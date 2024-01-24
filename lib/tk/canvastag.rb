@@ -2,7 +2,7 @@
 #
 # tk/canvastag.rb - methods for treating canvas tags
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/tagfont'
 
 module TkcTagAccess

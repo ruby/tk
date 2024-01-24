@@ -7,7 +7,7 @@
 #   * select and use some 'style' of option (resource) DB
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 module Tk::Tcllib

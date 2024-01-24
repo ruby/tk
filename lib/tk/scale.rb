@@ -2,7 +2,7 @@
 #
 # tk/scale.rb : treat scale widget
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 class Tk::Scale<TkWindow
   TkCommandNames = ['scale'.freeze].freeze

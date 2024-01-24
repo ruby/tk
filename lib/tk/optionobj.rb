@@ -8,7 +8,7 @@
 #        e.g. hash_kv({'aaa'=>1, 'bbb'=>Tk::None, 'ccc'=>3})
 #                 => ["-aaa", 1, "-bbb", "-ccc", 3]
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module Tk
   class OptionObj < Hash

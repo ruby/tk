@@ -7,7 +7,7 @@
 #   *
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('widget::canvas_zoom', '0.1')

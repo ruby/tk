@@ -7,7 +7,7 @@
 #   * Procedures to handle CURSOR data
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 module Tk

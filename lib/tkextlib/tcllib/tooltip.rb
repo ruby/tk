@@ -8,7 +8,7 @@
 #     mouse hovers over a widget.
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('tooltip', '1.1')

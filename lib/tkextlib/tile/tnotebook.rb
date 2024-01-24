@@ -3,7 +3,7 @@
 #  tnotebook widget
 #                               by Hidetoshi NAGAI (nagai@ai.kyutech.ac.jp)
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tile.rb'
 
 module Tk

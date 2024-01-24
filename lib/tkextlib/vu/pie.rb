@@ -3,7 +3,7 @@
 #  ::vu::pie widget
 #                               by Hidetoshi NAGAI (nagai@ai.kyutech.ac.jp)
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 # create module/class
 module Tk

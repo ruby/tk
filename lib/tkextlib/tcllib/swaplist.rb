@@ -7,7 +7,7 @@
 #   * A dialog which allows a user to move options between two lists
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('swaplist', '0.1')

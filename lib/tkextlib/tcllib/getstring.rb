@@ -7,7 +7,7 @@
 #   * A dialog which consists of an Entry, OK, and Cancel buttons.
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/entry'
 require 'tkextlib/tcllib.rb'
 

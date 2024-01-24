@@ -7,7 +7,7 @@
 #   * Provides a history for Entry widgets
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/entry'
 require 'tkextlib/tcllib.rb'
 

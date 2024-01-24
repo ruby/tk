@@ -7,7 +7,7 @@
 #   * Ntext bindtag
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('ntext', '0.81')

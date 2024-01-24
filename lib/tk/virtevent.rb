@@ -3,7 +3,7 @@
 #   tk/virtevent.rb : treats virtual events
 #                     1998/07/16 by Hidetoshi Nagai <nagai@ai.kyutech.ac.jp>
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 class TkVirtualEvent<TkObject
   extend Tk

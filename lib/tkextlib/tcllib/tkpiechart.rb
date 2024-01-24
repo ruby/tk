@@ -7,7 +7,7 @@
 #   * Create 2D or 3D pies with labels in Tcl canvases
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/canvas'
 require 'tkextlib/tcllib.rb'
 

@@ -6,7 +6,7 @@
 #  a standard spinbox (<= 8.3)
 #  This is the same as the 8.4 core spinbox widget.
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 if (Tk::TK_MAJOR_VERSION < 8 ||
     (Tk::TK_MAJOR_VERSION == 8 && Tk::TK_MINOR_VERSION < 4))

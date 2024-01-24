@@ -85,7 +85,7 @@
 # To use add_menu, configuration must be done by calling configure after
 # adding all menus by add_menu, not by the constructor arguments.
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/frame'
 require 'tk/composite'
 require 'tk/menuspec'

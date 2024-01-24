@@ -2,7 +2,7 @@
 #
 # tk/label.rb : treat label widget
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 class Tk::Label<TkWindow
   TkCommandNames = ['label'.freeze].freeze

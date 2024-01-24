@@ -6,7 +6,7 @@
 #   * Part of tcllib extension
 #   * A multi-column listbox
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('tablelist_tile', '4.2')

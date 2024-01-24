@@ -58,7 +58,7 @@
 #    * 3D plots (both for displaying surfaces and 3D bars)
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('Plotchart', '0.9')

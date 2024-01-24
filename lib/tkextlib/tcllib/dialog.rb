@@ -7,7 +7,7 @@
 #   * Generic dialog widget (themed)
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('widget::dialog', '1.2')

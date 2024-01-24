@@ -3,7 +3,7 @@
 #  TkTable support
 #                               by Hidetoshi NAGAI (nagai@ai.kyutech.ac.jp)
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 # call setup script for general 'tkextlib' libraries
 require 'tkextlib/setup.rb'

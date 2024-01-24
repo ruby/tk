@@ -3,7 +3,7 @@
 #               tk/canvas.rb - Tk canvas classes
 #                       by Yukihiro Matsumoto <matz@caelum.co.jp>
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/canvastag'
 require 'tk/itemconfig'
 require 'tk/scrollable'

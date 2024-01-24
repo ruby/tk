@@ -2,7 +2,7 @@
 #
 # tk/busy.rb: support 'tk busy' command (Tcl/Tk8.6 or later)
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module Tk::Busy
   include TkCore

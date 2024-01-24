@@ -2,7 +2,7 @@
 #
 # tk/labelframe.rb : treat labelframe widget
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/frame'
 
 class Tk::LabelFrame<Tk::Frame

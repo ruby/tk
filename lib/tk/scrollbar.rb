@@ -2,7 +2,7 @@
 #
 # tk/scrollbar.rb : treat scrollbar widget
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 class Tk::Scrollbar<TkWindow
   TkCommandNames = ['scrollbar'.freeze].freeze

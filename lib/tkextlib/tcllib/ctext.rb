@@ -7,7 +7,7 @@
 #   * Overloads the text widget and provides new commands
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/text'
 require 'tkextlib/tcllib.rb'
 

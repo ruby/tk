@@ -10,4 +10,4 @@ if defined?(TkCore::RUN_EVENTLOOP_ON_MAIN_THREAD) && TkCore::RUN_EVENTLOOP_ON_MA
 end
 
 module TkCore; RUN_EVENTLOOP_ON_MAIN_THREAD = false; end
-require 'tk'
+require 'tk' unless defined?(Tk)

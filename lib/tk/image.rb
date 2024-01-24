@@ -3,7 +3,7 @@
 # tk/image.rb : treat Tk image objects
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 class TkImage<TkObject
   include Tk

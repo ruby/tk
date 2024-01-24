@@ -5,7 +5,7 @@
 module TkWinfo
 end
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module TkWinfo
   include Tk

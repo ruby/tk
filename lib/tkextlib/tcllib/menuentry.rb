@@ -7,7 +7,7 @@
 #   * menuentry widget
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('widget::menuentry', '1.0')

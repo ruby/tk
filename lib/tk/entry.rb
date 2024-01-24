@@ -3,7 +3,7 @@
 #               tk/entry.rb - Tk entry classes
 #                       by Yukihiro Matsumoto <matz@caelum.co.jp>
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/label'
 require 'tk/scrollable'
 require 'tk/validation'

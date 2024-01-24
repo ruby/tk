@@ -2,7 +2,7 @@
 #
 # tk/clipboard.rb : methods to treat clipboard
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module TkClipboard
   include Tk

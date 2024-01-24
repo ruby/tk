@@ -7,7 +7,7 @@
 #   *
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('widget::canvas_sqmap', '0.2')

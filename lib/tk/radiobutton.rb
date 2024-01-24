@@ -2,7 +2,7 @@
 #
 # tk/radiobutton.rb : treat radiobutton widget
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/button'
 
 class Tk::RadioButton<Tk::Button

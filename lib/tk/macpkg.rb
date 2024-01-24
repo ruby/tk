@@ -7,7 +7,7 @@
 #         This is NOT TESTED. Because I have no test-environment.
 #
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module Tk
   def Tk.load_tclscript_rsrc(resource_name, file=None)

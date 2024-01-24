@@ -7,7 +7,7 @@
 #   * megawidget package that uses snit as the object system (snidgets)
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('widget', '3.0')

@@ -2,7 +2,7 @@
 #
 # tk/xim.rb : control input_method
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module TkXIM
   include Tk

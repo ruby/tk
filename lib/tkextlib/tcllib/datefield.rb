@@ -16,7 +16,7 @@
 # bindings. This means all the command and options for an entry widget apply
 # equally here.
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/entry'
 require 'tkextlib/tcllib.rb'
 

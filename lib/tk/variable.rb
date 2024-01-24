@@ -2,7 +2,7 @@
 #
 # tk/variable.rb : treat Tk variable object
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 class TkVariable
   include Tk

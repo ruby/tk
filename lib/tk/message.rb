@@ -2,7 +2,7 @@
 #
 # tk/message.rb : treat message widget
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/label'
 
 class Tk::Message<Tk::Label
