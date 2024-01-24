@@ -11,7 +11,7 @@
 # This package provides a widget for the entering of a IP address.
 # It guarantees a valid address at all times.
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('ipentry', '0.1')

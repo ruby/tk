@@ -7,7 +7,7 @@
 #   * Kevin's Hacky Input Method
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('khim', '1.0')

@@ -8,7 +8,7 @@
 #                  chat room or irc channel information
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('chatwidget', '1.1.0')

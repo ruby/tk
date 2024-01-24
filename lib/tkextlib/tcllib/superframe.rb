@@ -7,7 +7,7 @@
 #   * Superframe widget - enhanced labelframe widget
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('widget::superframe', '1.0')

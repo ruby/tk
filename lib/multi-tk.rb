@@ -3519,4 +3519,4 @@ end
 module TkCore
   INTERP = MultiTkIp
 end
-require 'tk'
+require 'tk' unless defined?(Tk)

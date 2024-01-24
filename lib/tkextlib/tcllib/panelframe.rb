@@ -7,7 +7,7 @@
 #   * Create PanelFrame widgets.
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('widget::panelframe', '1.0')

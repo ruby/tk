@@ -2,7 +2,7 @@
 #
 # tk/txtwin_abst.rb : TkTextWin abstract class
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 class TkTextWin<TkWindow
   TkCommandNames = [].freeze

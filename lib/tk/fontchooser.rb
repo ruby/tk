@@ -2,7 +2,7 @@
 #
 # tk/fontchooser.rb -- "tk fontchooser" support (Tcl/Tk8.6 or later)
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/font'
 
 module TkFont::Chooser

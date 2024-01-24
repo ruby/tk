@@ -2,7 +2,7 @@
 #
 #               tk/text.rb - Tk text classes
 #                       by Yukihiro Matsumoto <matz@caelum.co.jp>
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/itemfont'
 require 'tk/itemconfig'
 require 'tk/scrollable'

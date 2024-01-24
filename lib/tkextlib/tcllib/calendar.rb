@@ -7,7 +7,7 @@
 #   * calendar widget
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('widget::calendar', '0.9')

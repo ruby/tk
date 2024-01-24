@@ -2,7 +2,7 @@
 #
 # tk/encodedstr.rb : Tk::EncodedString class
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 ###########################################
 #  string with Tcl's encoding

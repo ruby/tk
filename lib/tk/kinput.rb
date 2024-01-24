@@ -2,7 +2,7 @@
 #
 # tk/kinput.rb : control kinput
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module TkKinput
   include Tk

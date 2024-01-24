@@ -3,7 +3,7 @@
 #               tk/spinbox.rb - Tk spinbox classes
 #                       by Yukihiro Matsumoto <matz@caelum.co.jp>
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/entry'
 
 class Tk::Spinbox<Tk::Entry

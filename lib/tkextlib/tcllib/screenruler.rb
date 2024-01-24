@@ -7,7 +7,7 @@
 #   * screenruler dialog
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('widget::screenruler', '1.1')

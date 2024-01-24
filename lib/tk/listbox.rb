@@ -2,7 +2,7 @@
 #
 # tk/listbox.rb : treat listbox widget
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/itemconfig'
 require 'tk/scrollable'
 require 'tk/txtwin_abst'

@@ -7,7 +7,7 @@
 #   * Draw diagrams
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('Diagrams', '0.3')

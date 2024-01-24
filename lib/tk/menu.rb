@@ -2,7 +2,7 @@
 #
 # tk/menu.rb : treat menu and menubutton
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/itemconfig'
 require 'tk/menuspec'
 

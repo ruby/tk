@@ -2,7 +2,7 @@
 #
 #   tk/dialog.rb : create dialog boxes
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/variable.rb'
 
 class TkDialogObj < TkWindow

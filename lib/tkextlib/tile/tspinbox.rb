@@ -3,7 +3,7 @@
 #  ttk::spinbox widget  (Tcl/Tk 8.6b1 or later)
 #                               by Hidetoshi NAGAI (nagai@ai.kyutech.ac.jp)
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tile.rb'
 
 module Tk

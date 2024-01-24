@@ -25,7 +25,7 @@
 # subcommand is not used then this package will have no effect.
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/scrollbar'
 require 'tkextlib/tcllib.rb'
 

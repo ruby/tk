@@ -2,7 +2,7 @@
 #
 # tk/composite.rb :
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module TkComposite
   include Tk

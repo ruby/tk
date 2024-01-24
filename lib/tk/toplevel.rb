@@ -2,7 +2,7 @@
 #
 # tk/toplevel.rb : treat toplevel widget
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/wm'
 require 'tk/menuspec'
 

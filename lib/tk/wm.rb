@@ -2,7 +2,7 @@
 #
 # tk/wm.rb : methods for wm command
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module Tk
   module Wm

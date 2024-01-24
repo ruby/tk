@@ -2,7 +2,7 @@
 #
 # tk/itemfont.rb : control font of widget items
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module TkItemFontOptkeys
   def __item_font_optkeys(id)

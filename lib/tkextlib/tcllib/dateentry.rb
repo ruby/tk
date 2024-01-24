@@ -7,7 +7,7 @@
 #   * dateentry widget
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('widget::dateentry', '0.91')

@@ -2,7 +2,7 @@
 #
 # tk/button.rb : treat button widget
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/label'
 
 class Tk::Button<Tk::Label

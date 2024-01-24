@@ -2,7 +2,7 @@
 #
 # tk/panedwindow.rb : treat panedwindow
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 class Tk::PanedWindow<TkWindow
   TkCommandNames = ['panedwindow'.freeze].freeze

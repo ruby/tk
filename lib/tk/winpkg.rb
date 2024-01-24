@@ -6,7 +6,7 @@
 #     ATTENTION !!
 #         This is NOT TESTED. Because I have no test-environment.
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module Tk::WinDDE
 end

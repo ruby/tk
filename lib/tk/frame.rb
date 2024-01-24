@@ -2,7 +2,7 @@
 #
 # tk/frame.rb : treat frame widget
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 class Tk::Frame<TkWindow
   TkCommandNames = ['frame'.freeze].freeze

@@ -7,7 +7,7 @@
 #   * Reading and writing windows icons
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/image'
 #require 'tkextlib/tcllib.rb'
 

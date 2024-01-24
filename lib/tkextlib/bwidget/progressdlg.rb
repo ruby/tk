@@ -4,7 +4,7 @@
 #                               by Hidetoshi NAGAI (nagai@ai.kyutech.ac.jp)
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/variable'
 require 'tkextlib/bwidget.rb'
 require 'tkextlib/bwidget/progressbar'

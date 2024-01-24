@@ -4,7 +4,7 @@
 #                                 as an example of Composite Widget
 #                       by Yukihiro Matsumoto <matz@netlab.co.jp>
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tk/listbox'
 
 class TkScrollbox<Tk::Listbox

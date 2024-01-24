@@ -3,7 +3,7 @@
 #   tk/palette.rb : methods for Tcl/Tk standard library 'palette.tcl'
 #                     1998/06/21 by Hidetoshi Nagai <nagai@ai.kyutech.ac.jp>
 #
-require 'tk'
+require 'tk' unless defined?(Tk)
 
 module TkPalette
   include Tk

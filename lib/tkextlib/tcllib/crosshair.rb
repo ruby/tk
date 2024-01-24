@@ -7,7 +7,7 @@
 #   * Crosshairs for Tk canvas
 #
 
-require 'tk'
+require 'tk' unless defined?(Tk)
 require 'tkextlib/tcllib.rb'
 
 # TkPackage.require('crosshair', '1.0.2')
