@@ -18,6 +18,14 @@ Or install it yourself as:
 
     $ gem install tk
 
+You may need to set options when using `gem install` so that the gem can find the Tcl/Tk headers and library:
+
+    $ gem install tk -- \
+        --with-tcl-include='/path/to/tcl/header/directory' \
+        --with-tk-include='/path/to/tk/header/directory' \
+        --with-tcl-lib='/path/to/tcl/shared/library/directory' \
+        --with-tk-lib='/path/to/tk/shared/library/directory'
+
 ## Documentation
 
 ### Read this first
