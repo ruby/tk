@@ -1317,8 +1317,10 @@ EOS
       @add_tk_procs = []  # table of [name, args, body]
 
       @force_default_encoding ||= [false]
-      @encoding ||= [nil]
-      def @encoding.to_s; self.join(nil); end
+      unless @encoding
+        @encoding = [nil]
+        def @encoding.to_s; self.join(nil); end
+      end
 
       @cb_entry_class = Class.new(TkCallbackEntry){
         class << self
