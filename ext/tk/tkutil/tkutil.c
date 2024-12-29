@@ -1067,14 +1067,14 @@ static VALUE
 tkstr_to_int(value)
     VALUE value;
 {
-    return rb_cstr_to_inum(RSTRING_PTR(value), 0, 1);
+    return rb_str_to_inum(value, 0, 1);
 }
 
 static VALUE
 tkstr_to_float(value)
     VALUE value;
 {
-    return rb_float_new(rb_cstr_to_dbl(RSTRING_PTR(value), 1));
+    return rb_float_new(rb_str_to_dbl(value, 1));
 }
 
 static VALUE
