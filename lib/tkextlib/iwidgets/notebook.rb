@@ -150,7 +150,7 @@ class Tk::Iwidgets::Notebook
   def view(*idxs)
     if idxs.size == 0
       idx = num_or_str(tk_send_without_enc('view'))
-      if idx.kind_of?(Fixnum) && idx < 0
+      if idx.kind_of?(Integer) && idx < 0
         nil
       else
         idx

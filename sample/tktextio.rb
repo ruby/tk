@@ -596,7 +596,7 @@ class TkTextIO < TkText
 
   def putc(c)
     _check_writable
-    c = c.chr if c.kind_of?(Fixnum)
+    c = c.chr if c.kind_of?(Integer)
     _write(c)
     c
   end
@@ -854,7 +854,7 @@ class TkTextIO < TkText
     end
 
     _check_readable
-    c = c.chr if c.kind_of?(Fixnum)
+    c = c.chr if c.kind_of?(Integer)
     if compare(@txtpos, '>', '1.0')
       @txtpos.set(@txtpos - '1 char')
       delete(@txtpos)

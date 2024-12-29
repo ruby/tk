@@ -1279,7 +1279,7 @@ class MultiTkIp
 
     name, safe, safe_opts, tk_opts = _parse_slaveopts(keys)
 
-    safe = 1 if safe && !safe.kind_of?(Fixnum)
+    safe = 1 if safe && !safe.kind_of?(Integer)
 
     @safe_base = false
 
