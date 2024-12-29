@@ -482,15 +482,15 @@ class Tk::Tcllib::Tablelist
 
   def containing(y)
     idx = num_or_str(tk_send('containing', y))
-    (idx.kind_of?(Fixnum) && idx < 0)?  nil: idx
+    (idx.kind_of?(Integer) && idx < 0)?  nil: idx
   end
 
   def containing_cell(x, y)
     idx = _from_idx(tk_send('containingcell', x, y))
     if idx.kind_of?(Array)
       [
-        ((idx[0].kind_of?(Fixnum) && idx[0] < 0)?  nil: idx[0]),
-        ((idx[1].kind_of?(Fixnum) && idx[1] < 0)?  nil: idx[1])
+        ((idx[0].kind_of?(Integer) && idx[0] < 0)?  nil: idx[0]),
+        ((idx[1].kind_of?(Integer) && idx[1] < 0)?  nil: idx[1])
       ]
     else
       idx
@@ -500,7 +500,7 @@ class Tk::Tcllib::Tablelist
 
   def containing_column(x)
     idx = num_or_str(tk_send('containingcolumn', x))
-    (idx.kind_of?(Fixnum) && idx < 0)?  nil: idx
+    (idx.kind_of?(Integer) && idx < 0)?  nil: idx
   end
   alias containingcolumn containing_column
 
@@ -889,7 +889,7 @@ class Tk::Tcllib::Tablelist
 
   def sortcolumn
     idx = num_or_str(tk_send('sortcolumn'))
-    (idx.kind_of?(Fixnum) && idx < 0)?  nil: idx
+    (idx.kind_of?(Integer) && idx < 0)?  nil: idx
   end
 
   def sortcolumnlist

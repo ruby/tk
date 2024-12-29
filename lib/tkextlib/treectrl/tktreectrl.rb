@@ -1170,7 +1170,7 @@ class Tk::TreeCtrl
       ret = num_or_str(tk_send('item', 'order', item))
     end
 
-    (ret.kind_of?(Fixnum) && ret < 0)? nil: ret
+    (ret.kind_of?(Integer) && ret < 0)? nil: ret
   end
   def item_visible_order(item)
     item_order(item, true)
