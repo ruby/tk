@@ -255,7 +255,7 @@ static ID ID_inspect;
 static VALUE ip_invoke_real _((int, VALUE*, VALUE));
 static VALUE ip_invoke _((int, VALUE*, VALUE));
 static VALUE ip_invoke_with_position _((int, VALUE*, VALUE, Tcl_QueuePosition));
-static VALUE tk_funcall _((VALUE(), int, VALUE*, VALUE));
+static VALUE tk_funcall _((VALUE(*)(VALUE, int, VALUE *), int, VALUE*, VALUE));
 
 /* Tcl's object type */
 #if TCL_MAJOR_VERSION >= 8
@@ -436,7 +436,7 @@ struct eval_queue {
 
 struct call_queue {
     Tcl_Event ev;
-    VALUE (*func)();
+    VALUE (*func)(VALUE, int, VALUE *);
     int argc;
     VALUE *argv;
     VALUE interp;
@@ -2017,12 +2017,7 @@ rbtk_EventCheckProc(ClientData clientData, int flag)
 
 #ifdef RUBY_USE_NATIVE_THREAD  /* Ruby 1.9+ !!! */
 static VALUE
-#ifdef HAVE_PROTOTYPES
-call_DoOneEvent_core(VALUE flag_val)
-#else
-call_DoOneEvent_core(flag_val)
-    VALUE flag_val;
-#endif
+call_DoOneEvent_core(VALUE flag_val, RB_UNUSED_VAR(int argc), RB_UNUSED_VAR(VALUE *argv))
 {
     int flag;
 
@@ -3365,7 +3360,7 @@ tcl_protect_core(interp, proc, data) /* should not raise exception */
 static int
 tcl_protect(interp, proc, data)
     Tcl_Interp *interp;
-    VALUE (*proc)();
+    VALUE (*proc)(VALUE);
     VALUE data;
 {
     int code;
@@ -7039,11 +7034,7 @@ call_queue_handler(evPtr, flags)
 }
 
 static VALUE
-tk_funcall(func, argc, argv, obj)
-    VALUE (*func)();
-    int argc;
-    VALUE *argv;
-    VALUE obj;
+tk_funcall(VALUE (*func)(VALUE, int, VALUE *), int argc, VALUE *argv, VALUE obj)
 {
     struct call_queue *callq;
     struct tcltkip *ptr;
