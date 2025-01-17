@@ -1000,7 +1000,7 @@ tkstr_to_float(VALUE value)
 }
 
 static VALUE
-tkstr_invalid_numstr(VALUE value)
+tkstr_invalid_numstr(VALUE value, VALUE unused)
 {
     rb_raise(rb_eArgError,
              "invalid value for Number: '%s'", RSTRING_PTR(value));
@@ -1008,7 +1008,7 @@ tkstr_invalid_numstr(VALUE value)
 }
 
 static VALUE
-tkstr_rescue_float(VALUE value)
+tkstr_rescue_float(VALUE value, VALUE unused)
 {
     return rb_rescue2(tkstr_to_float, value,
                       tkstr_invalid_numstr, value,
@@ -1034,7 +1034,7 @@ tcl2rb_number(VALUE self, VALUE value)
 }
 
 static VALUE
-tkstr_to_str(VALUE value)
+tkstr_to_str(VALUE value, VALUE unused)
 {
     char * ptr;
     long len;
@@ -1055,7 +1055,7 @@ tcl2rb_string(VALUE self, VALUE value)
 
     if (RSTRING_PTR(value) == (char*)NULL) return rb_str_new2("");
 
-    return tkstr_to_str(value);
+    return tkstr_to_str(value, Qnil);
 }
 
 static VALUE
@@ -1095,16 +1095,18 @@ struct cbsubst_info {
 };
 
 static void
-subst_mark(struct cbsubst_info *ptr)
+subst_mark(void *arg)
 {
+    struct cbsubst_info *ptr = (struct cbsubst_info *)arg;
     rb_gc_mark(ptr->proc);
     rb_gc_mark(ptr->aliases);
 }
 
 static void
-subst_free(struct cbsubst_info *ptr)
+subst_free(void *arg)
 {
     int i;
+    struct cbsubst_info *ptr = (struct cbsubst_info *)arg;
 
     if (ptr) {
       for(i = 0; i < CBSUBST_TBL_MAX; i++) {
@@ -1118,8 +1120,9 @@ subst_free(struct cbsubst_info *ptr)
 }
 
 static size_t
-subst_memsize(const struct cbsubst_info *ptr)
+subst_memsize(const void *arg)
 {
+    struct cbsubst_info *ptr = (struct cbsubst_info *)arg;
     return sizeof(*ptr);
 }
 
