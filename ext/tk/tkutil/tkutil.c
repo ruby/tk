@@ -128,13 +128,10 @@ rb_ary_cat(ary, argv, len)
 /*************************************/
 
 #if defined(HAVE_RB_OBJ_INSTANCE_EXEC) && !defined(RUBY_VM)
-extern VALUE rb_obj_instance_exec _((int, VALUE*, VALUE));
+extern VALUE rb_obj_instance_exec (int, VALUE*, VALUE);
 #endif
 static VALUE
-tk_s_new(argc, argv, klass)
-    int argc;
-    VALUE *argv;
-    VALUE klass;
+tk_s_new(int argc, VALUE *argv, VALUE klass)
 {
     VALUE obj = rb_class_new_instance(argc, argv, klass);
 
@@ -151,15 +148,13 @@ tk_s_new(argc, argv, klass)
 /*************************************/
 
 static VALUE
-tkNone_to_s(self)
-    VALUE self;
+tkNone_to_s(VALUE self)
 {
     return rb_str_new2("");
 }
 
 static VALUE
-tkNone_inspect(self)
-    VALUE self;
+tkNone_inspect(VALUE self)
 {
     return rb_str_new2("None");
 }
@@ -167,18 +162,13 @@ tkNone_inspect(self)
 /*************************************/
 
 static VALUE
-tk_obj_untrust(self, obj)
-    VALUE self;
-    VALUE obj;
+tk_obj_untrust(VALUE self, VALUE obj)
 {
   return obj;
 }
 
 static VALUE
-tk_eval_cmd(argc, argv, self)
-    int argc;
-    VALUE argv[];
-    VALUE self;
+tk_eval_cmd(int argc, VALUE *argv, VALUE self)
 {
     VALUE cmd, rest;
 
@@ -191,10 +181,7 @@ tk_eval_cmd(argc, argv, self)
 }
 
 static VALUE
-tk_do_callback(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+tk_do_callback(int argc, VALUE *argv, VALUE self)
 {
 #if 0
     volatile VALUE id;
@@ -211,8 +198,7 @@ static const char cmd_id_head[] = "ruby_cmd TkUtil callback ";
 static const char cmd_id_prefix[] = "cmd";
 
 static VALUE
-tk_install_cmd_core(cmd)
-    VALUE cmd;
+tk_install_cmd_core(VALUE cmd)
 {
     volatile VALUE id_num;
 
@@ -224,10 +210,7 @@ tk_install_cmd_core(cmd)
 }
 
 static VALUE
-tk_install_cmd(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+tk_install_cmd(int argc, VALUE *argv, VALUE self)
 {
     volatile VALUE cmd;
 
@@ -246,9 +229,7 @@ tk_install_cmd(argc, argv, self)
 }
 
 static VALUE
-tk_uninstall_cmd(self, cmd_id)
-    VALUE self;
-    VALUE cmd_id;
+tk_uninstall_cmd(VALUE self, VALUE cmd_id)
 {
     size_t head_len = strlen(cmd_id_head);
     size_t prefix_len = strlen(cmd_id_prefix);
@@ -267,27 +248,19 @@ tk_uninstall_cmd(self, cmd_id)
 }
 
 static VALUE
-tk_toUTF8(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+tk_toUTF8(int argc, VALUE *argv, VALUE self)
 {
     return rb_funcall2(cTclTkLib, ID_toUTF8, argc, argv);
 }
 
 static VALUE
-tk_fromUTF8(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+tk_fromUTF8(int argc, VALUE *argv, VALUE self)
 {
     return rb_funcall2(cTclTkLib, ID_fromUTF8, argc, argv);
 }
 
 static VALUE
-fromDefaultEnc_toUTF8(str, self)
-    VALUE str;
-    VALUE self;
+fromDefaultEnc_toUTF8(VALUE str, VALUE self)
 {
     VALUE argv[1];
 
@@ -297,9 +270,7 @@ fromDefaultEnc_toUTF8(str, self)
 
 #if 0
 static VALUE
-fromUTF8_toDefaultEnc(str, self)
-    VALUE str;
-    VALUE self;
+fromUTF8_toDefaultEnc(VALUE str, VALUE self)
 {
     VALUE argv[1];
 
@@ -309,19 +280,14 @@ fromUTF8_toDefaultEnc(str, self)
 #endif
 
 static int
-to_strkey(key, value, hash)
-    VALUE key;
-    VALUE value;
-    VALUE hash;
+to_strkey(VALUE key, VALUE value, VALUE hash)
 {
     rb_hash_aset(hash, rb_funcallv(key, ID_to_s, 0, 0), value);
     return ST_CHECK;
 }
 
 static VALUE
-tk_symbolkey2str(self, keys)
-    VALUE self;
-    VALUE keys;
+tk_symbolkey2str(VALUE self, VALUE keys)
 {
     volatile VALUE new_keys = rb_hash_new();
 
@@ -331,19 +297,16 @@ tk_symbolkey2str(self, keys)
     return new_keys;
 }
 
-static VALUE get_eval_string_core _((VALUE, VALUE, VALUE));
-static VALUE ary2list _((VALUE, VALUE, VALUE));
-static VALUE ary2list2 _((VALUE, VALUE, VALUE));
-static VALUE hash2list _((VALUE, VALUE));
-static VALUE hash2list_enc _((VALUE, VALUE));
-static VALUE hash2kv _((VALUE, VALUE, VALUE));
-static VALUE hash2kv_enc _((VALUE, VALUE, VALUE));
+static VALUE get_eval_string_core (VALUE, VALUE, VALUE);
+static VALUE ary2list (VALUE, VALUE, VALUE);
+static VALUE ary2list2 (VALUE, VALUE, VALUE);
+static VALUE hash2list (VALUE, VALUE);
+static VALUE hash2list_enc (VALUE, VALUE);
+static VALUE hash2kv (VALUE, VALUE, VALUE);
+static VALUE hash2kv_enc (VALUE, VALUE, VALUE);
 
 static VALUE
-ary2list(ary, enc_flag, self)
-    VALUE ary;
-    VALUE enc_flag;
-    VALUE self;
+ary2list(VALUE ary, VALUE enc_flag, VALUE self)
 {
     long idx, idx2, size, size2;
     int req_chk_flag;
@@ -494,10 +457,7 @@ ary2list(ary, enc_flag, self)
 }
 
 static VALUE
-ary2list2(ary, enc_flag, self)
-    VALUE ary;
-    VALUE enc_flag;
-    VALUE self;
+ary2list2(VALUE ary, VALUE enc_flag, VALUE self)
 {
     long idx, size;
     int req_chk_flag;
@@ -588,17 +548,13 @@ ary2list2(ary, enc_flag, self)
 }
 
 static VALUE
-key2keyname(key)
-    VALUE key;
+key2keyname(VALUE key)
 {
     return rb_str_append(rb_str_new2("-"), rb_funcallv(key, ID_to_s, 0, 0));
 }
 
 static VALUE
-assoc2kv(assoc, ary, self)
-    VALUE assoc;
-    VALUE ary;
-    VALUE self;
+assoc2kv(VALUE assoc, VALUE ary, VALUE self)
 {
     long i, len;
     volatile VALUE pair;
@@ -641,10 +597,7 @@ assoc2kv(assoc, ary, self)
 }
 
 static VALUE
-assoc2kv_enc(assoc, ary, self)
-    VALUE assoc;
-    VALUE ary;
-    VALUE self;
+assoc2kv_enc(VALUE assoc, VALUE ary, VALUE self)
 {
     long i, len;
     volatile VALUE pair;
@@ -687,10 +640,7 @@ assoc2kv_enc(assoc, ary, self)
 }
 
 static int
-push_kv(key, val, args)
-    VALUE key;
-    VALUE val;
-    VALUE args;
+push_kv(VALUE key, VALUE val, VALUE args)
 {
     volatile VALUE ary;
 
@@ -710,10 +660,7 @@ push_kv(key, val, args)
 }
 
 static VALUE
-hash2kv(hash, ary, self)
-    VALUE hash;
-    VALUE ary;
-    VALUE self;
+hash2kv(VALUE hash, VALUE ary, VALUE self)
 {
     volatile VALUE dst = rb_ary_new2(2 * RHASH_SIZE(hash));
     volatile VALUE args = rb_ary_new3(2, dst, self);
@@ -728,10 +675,7 @@ hash2kv(hash, ary, self)
 }
 
 static int
-push_kv_enc(key, val, args)
-    VALUE key;
-    VALUE val;
-    VALUE args;
+push_kv_enc(VALUE key, VALUE val, VALUE args)
 {
     volatile VALUE ary;
 
@@ -754,10 +698,7 @@ push_kv_enc(key, val, args)
 }
 
 static VALUE
-hash2kv_enc(hash, ary, self)
-    VALUE hash;
-    VALUE ary;
-    VALUE self;
+hash2kv_enc(VALUE hash, VALUE ary, VALUE self)
 {
     volatile VALUE dst = rb_ary_new2(2 * RHASH_SIZE(hash));
     volatile VALUE args = rb_ary_new3(2, dst, self);
@@ -772,27 +713,20 @@ hash2kv_enc(hash, ary, self)
 }
 
 static VALUE
-hash2list(hash, self)
-    VALUE hash;
-    VALUE self;
+hash2list(VALUE hash, VALUE self)
 {
     return ary2list2(hash2kv(hash, Qnil, self), Qfalse, self);
 }
 
 
 static VALUE
-hash2list_enc(hash, self)
-    VALUE hash;
-    VALUE self;
+hash2list_enc(VALUE hash, VALUE self)
 {
     return ary2list2(hash2kv_enc(hash, Qnil, self), Qfalse, self);
 }
 
 static VALUE
-tk_hash_kv(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+tk_hash_kv(int argc, VALUE *argv, VALUE self)
 {
     volatile VALUE hash, enc_flag, ary;
 
@@ -850,10 +784,7 @@ tk_hash_kv(argc, argv, self)
 }
 
 static VALUE
-get_eval_string_core(obj, enc_flag, self)
-    VALUE obj;
-    VALUE enc_flag;
-    VALUE self;
+get_eval_string_core(VALUE obj, VALUE enc_flag, VALUE self)
 {
     switch(TYPE(obj)) {
     case T_FLOAT:
@@ -944,10 +875,7 @@ get_eval_string_core(obj, enc_flag, self)
 }
 
 static VALUE
-tk_get_eval_string(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+tk_get_eval_string(int argc, VALUE *argv, VALUE self)
 {
     VALUE obj, enc_flag;
 
@@ -959,9 +887,7 @@ tk_get_eval_string(argc, argv, self)
 }
 
 static VALUE
-tk_get_eval_enc_str(self, obj)
-    VALUE self;
-    VALUE obj;
+tk_get_eval_enc_str(VALUE self, VALUE obj)
 {
     if (obj == TK_None) {
         return obj;
@@ -971,10 +897,11 @@ tk_get_eval_enc_str(self, obj)
 }
 
 static VALUE
-tk_conv_args(argc, argv, self)
-    int   argc;
-    VALUE *argv; /* [0]:base_array, [1]:enc_mode, [2]..[n]:args */
-    VALUE self;
+tk_conv_args(
+    int   argc,
+    VALUE *argv, /* [0]:base_array, [1]:enc_mode, [2]..[n]:args */
+    VALUE self
+)
 {
     int idx;
     long size;
@@ -1021,9 +948,7 @@ tk_conv_args(argc, argv, self)
 /*************************************/
 
 static VALUE
-tcl2rb_bool(self, value)
-    VALUE self;
-    VALUE value;
+tcl2rb_bool(VALUE self, VALUE value)
 {
     if (RB_TYPE_P(value, T_FIXNUM)) {
         if (NUM2INT(value) == 0) {
@@ -1056,30 +981,26 @@ tcl2rb_bool(self, value)
 
 #if 0
 static VALUE
-tkstr_to_dec(value)
-    VALUE value;
+tkstr_to_dec(VALUE value)
 {
     return rb_cstr_to_inum(RSTRING_PTR(value), 10, 1);
 }
 #endif
 
 static VALUE
-tkstr_to_int(value)
-    VALUE value;
+tkstr_to_int(VALUE value)
 {
     return rb_str_to_inum(value, 0, 1);
 }
 
 static VALUE
-tkstr_to_float(value)
-    VALUE value;
+tkstr_to_float(VALUE value)
 {
     return rb_float_new(rb_str_to_dbl(value, 1));
 }
 
 static VALUE
-tkstr_invalid_numstr(value)
-    VALUE value;
+tkstr_invalid_numstr(VALUE value)
 {
     rb_raise(rb_eArgError,
              "invalid value for Number: '%s'", RSTRING_PTR(value));
@@ -1087,8 +1008,7 @@ tkstr_invalid_numstr(value)
 }
 
 static VALUE
-tkstr_rescue_float(value)
-    VALUE value;
+tkstr_rescue_float(VALUE value)
 {
     return rb_rescue2(tkstr_to_float, value,
                       tkstr_invalid_numstr, value,
@@ -1096,8 +1016,7 @@ tkstr_rescue_float(value)
 }
 
 static VALUE
-tkstr_to_number(value)
-    VALUE value;
+tkstr_to_number(VALUE value)
 {
     rb_check_type(value, T_STRING);
 
@@ -1109,16 +1028,13 @@ tkstr_to_number(value)
 }
 
 static VALUE
-tcl2rb_number(self, value)
-    VALUE self;
-    VALUE value;
+tcl2rb_number(VALUE self, VALUE value)
 {
     return tkstr_to_number(value);
 }
 
 static VALUE
-tkstr_to_str(value)
-    VALUE value;
+tkstr_to_str(VALUE value)
 {
     char * ptr;
     long len;
@@ -1133,9 +1049,7 @@ tkstr_to_str(value)
 }
 
 static VALUE
-tcl2rb_string(self, value)
-    VALUE self;
-    VALUE value;
+tcl2rb_string(VALUE self, VALUE value)
 {
     rb_check_type(value, T_STRING);
 
@@ -1145,9 +1059,7 @@ tcl2rb_string(self, value)
 }
 
 static VALUE
-tcl2rb_num_or_str(self, value)
-    VALUE self;
-    VALUE value;
+tcl2rb_num_or_str(VALUE self, VALUE value)
 {
     rb_check_type(value, T_STRING);
 
@@ -1159,9 +1071,7 @@ tcl2rb_num_or_str(self, value)
 }
 
 static VALUE
-tcl2rb_num_or_nil(self, value)
-    VALUE self;
-    VALUE value;
+tcl2rb_num_or_nil(VALUE self, VALUE value)
 {
     rb_check_type(value, T_STRING);
 
@@ -1185,16 +1095,14 @@ struct cbsubst_info {
 };
 
 static void
-subst_mark(ptr)
-    struct cbsubst_info *ptr;
+subst_mark(struct cbsubst_info *ptr)
 {
     rb_gc_mark(ptr->proc);
     rb_gc_mark(ptr->aliases);
 }
 
 static void
-subst_free(ptr)
-    struct cbsubst_info *ptr;
+subst_free(struct cbsubst_info *ptr)
 {
     int i;
 
@@ -1210,8 +1118,7 @@ subst_free(ptr)
 }
 
 static size_t
-subst_memsize(ptr)
-    const struct cbsubst_info *ptr;
+subst_memsize(const struct cbsubst_info *ptr)
 {
     return sizeof(*ptr);
 }
@@ -1264,17 +1171,13 @@ cbsubst_init(void)
 }
 
 static struct cbsubst_info *
-cbsubst_get_ptr(klass)
-    VALUE klass;
+cbsubst_get_ptr(VALUE klass)
 {
     return rb_check_typeddata(rb_const_get(klass, ID_SUBST_INFO), &cbsubst_info_type);
 }
 
 static VALUE
-cbsubst_initialize(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+cbsubst_initialize(int argc, VALUE *argv, VALUE self)
 {
     struct cbsubst_info *inf;
     int idx, iv_idx;
@@ -1294,9 +1197,7 @@ cbsubst_initialize(argc, argv, self)
 }
 
 static VALUE
-cbsubst_ret_val(self, val)
-    VALUE self;
-    VALUE val;
+cbsubst_ret_val(VALUE self, VALUE val)
 {
     /* This method may be overwritten on some sub-classes.                  */
     /* This method is used for converting from ruby's callback-return-value */
@@ -1305,8 +1206,7 @@ cbsubst_ret_val(self, val)
 }
 
 static int
-each_attr_def(key, value, klass)
-    VALUE key, value, klass;
+each_attr_def(VALUE key, VALUE value, VALUE klass)
 {
     ID key_id, value_id;
 
@@ -1342,9 +1242,7 @@ each_attr_def(key, value, klass)
 }
 
 static VALUE
-cbsubst_def_attr_aliases(self, tbl)
-    VALUE self;
-    VALUE tbl;
+cbsubst_def_attr_aliases(VALUE self, VALUE tbl)
 {
     struct cbsubst_info *inf;
 
@@ -1360,10 +1258,7 @@ cbsubst_def_attr_aliases(self, tbl)
 }
 
 static VALUE
-cbsubst_append_inf_key(str, inf, idx)
-    VALUE str;
-    const struct cbsubst_info *inf;
-    int idx;
+cbsubst_append_inf_key(VALUE str, const struct cbsubst_info *inf, int idx)
 {
     const long len = inf->keylen[idx];
     const long olen = RSTRING_LEN(str);
@@ -1393,9 +1288,7 @@ cbsubst_append_inf_key(str, inf, idx)
 }
 
 static VALUE
-cbsubst_sym_to_subst(self, sym)
-    VALUE self;
-    VALUE sym;
+cbsubst_sym_to_subst(VALUE self, VALUE sym)
 {
     struct cbsubst_info *inf;
     VALUE str;
@@ -1424,10 +1317,7 @@ cbsubst_sym_to_subst(self, sym)
 }
 
 static VALUE
-cbsubst_get_subst_arg(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+cbsubst_get_subst_arg(int argc, VALUE *argv, VALUE self)
 {
     struct cbsubst_info *inf;
     VALUE str;
@@ -1476,9 +1366,7 @@ cbsubst_get_subst_arg(argc, argv, self)
 }
 
 static VALUE
-cbsubst_get_subst_key(self, str)
-    VALUE self;
-    VALUE str;
+cbsubst_get_subst_key(VALUE self, VALUE str)
 {
     struct cbsubst_info *inf;
     VALUE list;
@@ -1528,8 +1416,7 @@ cbsubst_get_subst_key(self, str)
 }
 
 static VALUE
-cbsubst_get_all_subst_keys(self)
-    VALUE self;
+cbsubst_get_all_subst_keys(VALUE self)
 {
     struct cbsubst_info *inf;
     char *keys_buf, *keys_ptr;
@@ -1555,10 +1442,7 @@ cbsubst_get_all_subst_keys(self)
 }
 
 static VALUE
-cbsubst_table_setup(argc, argv, self)
-     int   argc;
-     VALUE *argv;
-     VALUE self;
+cbsubst_table_setup(int argc, VALUE *argv, VALUE self)
 {
   VALUE cbsubst_obj;
   VALUE key_inf;
@@ -1670,17 +1554,13 @@ cbsubst_table_setup(argc, argv, self)
 }
 
 static VALUE
-cbsubst_get_extra_args_tbl(self)
-    VALUE self;
+cbsubst_get_extra_args_tbl(VALUE self)
 {
   return rb_ary_new();
 }
 
 static VALUE
-cbsubst_scan_args(self, arg_key, val_ary)
-    VALUE self;
-    VALUE arg_key;
-    VALUE val_ary;
+cbsubst_scan_args(VALUE self, VALUE arg_key, VALUE val_ary)
 {
     struct cbsubst_info *inf;
     long idx;
@@ -1728,15 +1608,13 @@ cbsubst_scan_args(self, arg_key, val_ary)
 }
 
 static VALUE
-cbsubst_inspect(self)
-    VALUE self;
+cbsubst_inspect(VALUE self)
 {
     return rb_str_new2("CallbackSubst");
 }
 
 static VALUE
-substinfo_inspect(self)
-    VALUE self;
+substinfo_inspect(VALUE self)
 {
     return rb_str_new2("SubstInfo");
 }
@@ -1744,8 +1622,7 @@ substinfo_inspect(self)
 /*************************************/
 
 static VALUE
-tk_cbe_inspect(self)
-    VALUE self;
+tk_cbe_inspect(VALUE self)
 {
     return rb_str_new2("TkCallbackEntry");
 }
@@ -1753,8 +1630,7 @@ tk_cbe_inspect(self)
 /*************************************/
 
 static VALUE
-tkobj_path(self)
-    VALUE self;
+tkobj_path(VALUE self)
 {
     return rb_ivar_get(self, ID_at_path);
 }
