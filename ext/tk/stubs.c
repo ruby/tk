@@ -39,8 +39,7 @@ _macinit(void)
 static int nativethread_checked = 0;
 
 static void
-_nativethread_consistency_check(ip)
-    Tcl_Interp *ip;
+_nativethread_consistency_check(Tcl_Interp *ip)
 {
     if (nativethread_checked || ip == (Tcl_Interp *)NULL) {
         return;

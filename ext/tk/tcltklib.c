@@ -59,7 +59,7 @@ int rb_thread_check_trap_pending(void);
 
 #if defined(HAVE_RB_PROC_NEW) && !defined(RUBY_VM)
 /* Ruby 1.8 :: rb_proc_new() was hidden from intern.h at 2008/04/22 */
-extern VALUE rb_proc_new _((VALUE (*)(ANYARGS/* VALUE yieldarg[, VALUE procarg] */), VALUE));
+extern VALUE rb_proc_new (VALUE (*)(ANYARGS/* VALUE yieldarg[, VALUE procarg] */), VALUE);
 #endif
 
 #undef EXTERN   /* avoid conflict with tcl.h of tcl8.2 or before */
@@ -188,8 +188,8 @@ static const char tcltklib_release_date[] = TCLTKLIB_RELEASE_DATE;
 /* finalize_proc_name */
 static const char finalize_hook_name[] = "INTERP_FINALIZE_HOOK";
 
-static void ip_finalize _((Tcl_Interp*));
-static void ip_free _((void *p));
+static void ip_finalize (Tcl_Interp*);
+static void ip_free (void *p);
 
 static int at_exit = 0;
 
@@ -203,15 +203,15 @@ static int ENCODING_INDEX_BINARY;
 static VALUE ENCODING_NAME_UTF8;
 static VALUE ENCODING_NAME_BINARY;
 
-static VALUE create_dummy_encoding_for_tk_core _((VALUE, VALUE, VALUE));
-static VALUE create_dummy_encoding_for_tk _((VALUE, VALUE));
-static int update_encoding_table _((VALUE, VALUE, VALUE));
-static VALUE encoding_table_get_name_core _((VALUE, VALUE, VALUE));
-static VALUE encoding_table_get_obj_core _((VALUE, VALUE, VALUE));
-static VALUE encoding_table_get_name _((VALUE, VALUE));
-static VALUE encoding_table_get_obj _((VALUE, VALUE));
-static VALUE create_encoding_table _((VALUE));
-static VALUE ip_get_encoding_table _((VALUE));
+static VALUE create_dummy_encoding_for_tk_core (VALUE, VALUE, VALUE);
+static VALUE create_dummy_encoding_for_tk (VALUE, VALUE);
+static int update_encoding_table (VALUE, VALUE, VALUE);
+static VALUE encoding_table_get_name_core (VALUE, VALUE, VALUE);
+static VALUE encoding_table_get_obj_core (VALUE, VALUE, VALUE);
+static VALUE encoding_table_get_name (VALUE, VALUE);
+static VALUE encoding_table_get_obj (VALUE, VALUE);
+static VALUE create_encoding_table (VALUE);
+static VALUE ip_get_encoding_table (VALUE);
 
 
 /* for callback break & continue */
@@ -252,10 +252,10 @@ static ID ID_next;
 static ID ID_to_s;
 static ID ID_inspect;
 
-static VALUE ip_invoke_real _((int, VALUE*, VALUE));
-static VALUE ip_invoke _((int, VALUE*, VALUE));
-static VALUE ip_invoke_with_position _((int, VALUE*, VALUE, Tcl_QueuePosition));
-static VALUE tk_funcall _((VALUE(*)(VALUE, int, VALUE *), int, VALUE*, VALUE));
+static VALUE ip_invoke_real (int, VALUE*, VALUE);
+static VALUE ip_invoke (int, VALUE*, VALUE);
+static VALUE ip_invoke_with_position (int, VALUE*, VALUE, Tcl_QueuePosition);
+static VALUE tk_funcall (VALUE(*)(VALUE, int, VALUE *), int, VALUE*, VALUE);
 
 /* Tcl's object type */
 #if TCL_MAJOR_VERSION >= 8
@@ -549,11 +549,11 @@ static int check_rootwidget_flag = 0;
 
 /* call ruby interpreter */
 #if TCL_MAJOR_VERSION >= 8
-static int ip_ruby_eval _((ClientData, Tcl_Interp *, int, Tcl_Obj *CONST*));
-static int ip_ruby_cmd _((ClientData, Tcl_Interp *, int, Tcl_Obj *CONST*));
+static int ip_ruby_eval (ClientData, Tcl_Interp *, int, Tcl_Obj *CONST*);
+static int ip_ruby_cmd (ClientData, Tcl_Interp *, int, Tcl_Obj *CONST*);
 #else /* TCL_MAJOR_VERSION < 8 */
-static int ip_ruby_eval _((ClientData, Tcl_Interp *, int, char **));
-static int ip_ruby_cmd _((ClientData, Tcl_Interp *, int, char **));
+static int ip_ruby_eval (ClientData, Tcl_Interp *, int, char **);
+static int ip_ruby_cmd (ClientData, Tcl_Interp *, int, char **);
 #endif
 
 struct cmd_body_arg {
@@ -580,7 +580,7 @@ EXTERN struct TclIntStubs *tclIntStubsPtr;
 /* Tcl7.x doesn't have namespace support.                            */
 /* Tcl8.5+ has definition of Tcl_GetCurrentNamespace() in tclDecls.h */
 #  ifndef Tcl_GetCurrentNamespace
-EXTERN Tcl_Namespace *  Tcl_GetCurrentNamespace _((Tcl_Interp *));
+EXTERN Tcl_Namespace *  Tcl_GetCurrentNamespace (Tcl_Interp *);
 #  endif
 #  if defined(USE_TCL_STUBS) && !defined(USE_TCL_STUB_PROCS)
 #    ifndef Tcl_GetCurrentNamespace
@@ -591,7 +591,7 @@ struct DummyTclIntStubs_for_GetCurrentNamespace {
     int magic;
     struct TclIntStubHooks *hooks;
     void (*func[FunctionNum_of_GetCurrentNamespace])();
-    Tcl_Namespace * (*tcl_GetCurrentNamespace) _((Tcl_Interp *));
+    Tcl_Namespace * (*tcl_GetCurrentNamespace) (Tcl_Interp *);
 };
 
 #define Tcl_GetCurrentNamespace \
@@ -636,7 +636,7 @@ typedef struct CallFrame {
 #  endif
 
 #  if !defined(TclGetFrame) && !defined(TclGetFrame_TCL_DECLARED)
-EXTERN int  TclGetFrame _((Tcl_Interp *, CONST char *, CallFrame **));
+EXTERN int  TclGetFrame (Tcl_Interp *, CONST char *, CallFrame **);
 #  endif
 #  if defined(USE_TCL_STUBS) && !defined(USE_TCL_STUB_PROCS)
 #    ifndef TclGetFrame
@@ -647,7 +647,7 @@ struct DummyTclIntStubs_for_GetFrame {
     int magic;
     struct TclIntStubHooks *hooks;
     void (*func[FunctionNum_of_GetFrame])();
-    int (*tclGetFrame) _((Tcl_Interp *, CONST char *, CallFrame **));
+    int (*tclGetFrame) (Tcl_Interp *, CONST char *, CallFrame **);
 };
 #define TclGetFrame \
    (((struct DummyTclIntStubs_for_GetFrame *)tclIntStubsPtr)->tclGetFrame)
@@ -655,8 +655,8 @@ struct DummyTclIntStubs_for_GetFrame {
 #  endif
 
 #  if !defined(Tcl_PopCallFrame) && !defined(Tcl_PopCallFrame_TCL_DECLARED)
-EXTERN void Tcl_PopCallFrame _((Tcl_Interp *));
-EXTERN int  Tcl_PushCallFrame _((Tcl_Interp *, Tcl_CallFrame *, Tcl_Namespace *, int));
+EXTERN void Tcl_PopCallFrame (Tcl_Interp *);
+EXTERN int  Tcl_PushCallFrame (Tcl_Interp *, Tcl_CallFrame *, Tcl_Namespace *, int);
 #  endif
 #  if defined(USE_TCL_STUBS) && !defined(USE_TCL_STUB_PROCS)
 #    ifndef Tcl_PopCallFrame
@@ -667,8 +667,8 @@ struct DummyTclIntStubs_for_PopCallFrame {
     int magic;
     struct TclIntStubHooks *hooks;
     void (*func[FunctionNum_of_PopCallFrame])();
-    void (*tcl_PopCallFrame) _((Tcl_Interp *));
-    int  (*tcl_PushCallFrame) _((Tcl_Interp *, Tcl_CallFrame *, Tcl_Namespace *, int));
+    void (*tcl_PopCallFrame) (Tcl_Interp *);
+    int  (*tcl_PushCallFrame) (Tcl_Interp *, Tcl_CallFrame *, Tcl_Namespace *, int);
 };
 
 #define Tcl_PopCallFrame \
@@ -694,7 +694,7 @@ typedef struct CallFrame {
 #  endif
 
 #  if !defined(TclGetFrame) && !defined(TclGetFrame_TCL_DECLARED)
-EXTERN int  TclGetFrame _((Tcl_Interp *, CONST char *, CallFrame **));
+EXTERN int  TclGetFrame (Tcl_Interp *, CONST char *, CallFrame **);
 #  endif
 
 #  if !defined(Tcl_PopCallFrame) && !defined(Tcl_PopCallFrame_TCL_DECLARED)
@@ -781,8 +781,7 @@ static const rb_data_type_t tcltkip_type = {
 };
 
 static struct tcltkip *
-get_ip(self)
-    VALUE self;
+get_ip(VALUE self)
 {
     struct tcltkip *ptr;
 
@@ -799,8 +798,7 @@ get_ip(self)
 }
 
 static int
-deleted_ip(ptr)
-    struct tcltkip *ptr;
+deleted_ip(struct tcltkip *ptr)
 {
     if (!ptr || !ptr->ip || Tcl_InterpDeleted(ptr->ip)
 #if TCL_NAMESPACE_DEBUG
@@ -815,8 +813,7 @@ deleted_ip(ptr)
 
 /* increment/decrement reference count of tcltkip */
 static int
-rbtk_preserve_ip(ptr)
-    struct tcltkip *ptr;
+rbtk_preserve_ip(struct tcltkip *ptr)
 {
     ptr->ref_count++;
     if (ptr->ip == (Tcl_Interp*)NULL) {
@@ -829,8 +826,7 @@ rbtk_preserve_ip(ptr)
 }
 
 static int
-rbtk_release_ip(ptr)
-    struct tcltkip *ptr;
+rbtk_release_ip(struct tcltkip *ptr)
 {
     ptr->ref_count--;
     if (ptr->ref_count < 0) {
@@ -920,12 +916,12 @@ Software used in Tclkit, which each have very liberal BSD/MIT-like licenses:
 
 #if 10 * TCL_MAJOR_VERSION + TCL_MINOR_VERSION < 86
 EXTERN Tcl_Obj* TclGetStartupScriptPath();
-EXTERN void TclSetStartupScriptPath _((Tcl_Obj*));
+EXTERN void TclSetStartupScriptPath (Tcl_Obj*);
 #define Tcl_GetStartupScript(encPtr) TclGetStartupScriptPath()
 #define Tcl_SetStartupScript(path,enc) TclSetStartupScriptPath(path)
 #endif
 #if !defined(TclSetPreInitScript) && !defined(TclSetPreInitScript_TCL_DECLARED)
-EXTERN char* TclSetPreInitScript _((char *));
+EXTERN char* TclSetPreInitScript (char *);
 #endif
 
 #ifndef KIT_INCLUDES_TK
@@ -1324,8 +1320,7 @@ tcl_stubs_check(void)
 
 
 static VALUE
-tcltkip_init_tk(interp)
-    VALUE interp;
+tcltkip_init_tk(VALUE interp)
 {
     struct tcltkip *ptr = get_ip(interp);
 
@@ -1432,9 +1427,7 @@ pending_exception_check0(void)
 }
 
 static int
-pending_exception_check1(thr_crit_bup, ptr)
-    int thr_crit_bup;
-    struct tcltkip *ptr;
+pending_exception_check1(int thr_crit_bup, struct tcltkip *ptr)
 {
     volatile VALUE exc = rbtk_pending_exception;
 
@@ -1477,9 +1470,7 @@ pending_exception_check1(thr_crit_bup, ptr)
 
 /* call original 'exit' command */
 static void
-call_original_exit(ptr, state)
-    struct tcltkip *ptr;
-    int state;
+call_original_exit(struct tcltkip *ptr, int state)
 {
     int  thr_crit_bup;
     Tcl_CmdInfo *info;
@@ -1626,10 +1617,8 @@ call_original_exit(ptr, state)
 static Tcl_TimerToken timer_token = (Tcl_TimerToken)NULL;
 
 /* timer callback */
-static void _timer_for_tcl _((ClientData));
 static void
-_timer_for_tcl(clientData)
-    ClientData clientData;
+_timer_for_tcl(ClientData clientData)
 {
     int thr_crit_bup;
 
@@ -1679,9 +1668,7 @@ toggle_eventloop_window_mode_for_idle(void)
 #endif
 
 static VALUE
-set_eventloop_window_mode(self, mode)
-    VALUE self;
-    VALUE mode;
+set_eventloop_window_mode(VALUE self, VALUE mode)
 {
 
     if (RTEST(mode)) {
@@ -1694,8 +1681,7 @@ set_eventloop_window_mode(self, mode)
 }
 
 static VALUE
-get_eventloop_window_mode(self)
-    VALUE self;
+get_eventloop_window_mode(VALUE self)
 {
     if ( ~window_event_mode ) {
       return Qfalse;
@@ -1705,9 +1691,7 @@ get_eventloop_window_mode(self)
 }
 
 static VALUE
-set_eventloop_tick(self, tick)
-    VALUE self;
-    VALUE tick;
+set_eventloop_tick(VALUE self, VALUE tick)
 {
     int ttick = NUM2INT(tick);
     int thr_crit_bup;
@@ -1739,16 +1723,13 @@ set_eventloop_tick(self, tick)
 }
 
 static VALUE
-get_eventloop_tick(self)
-    VALUE self;
+get_eventloop_tick(VALUE self)
 {
     return INT2NUM(timer_tick);
 }
 
 static VALUE
-ip_set_eventloop_tick(self, tick)
-    VALUE self;
-    VALUE tick;
+ip_set_eventloop_tick(VALUE self, VALUE tick)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -1765,16 +1746,13 @@ ip_set_eventloop_tick(self, tick)
 }
 
 static VALUE
-ip_get_eventloop_tick(self)
-    VALUE self;
+ip_get_eventloop_tick(VALUE self)
 {
     return get_eventloop_tick(self);
 }
 
 static VALUE
-set_no_event_wait(self, wait)
-    VALUE self;
-    VALUE wait;
+set_no_event_wait(VALUE self, VALUE wait)
 {
     int t_wait = NUM2INT(wait);
 
@@ -1790,16 +1768,13 @@ set_no_event_wait(self, wait)
 }
 
 static VALUE
-get_no_event_wait(self)
-    VALUE self;
+get_no_event_wait(VALUE self)
 {
     return INT2NUM(no_event_wait);
 }
 
 static VALUE
-ip_set_no_event_wait(self, wait)
-    VALUE self;
-    VALUE wait;
+ip_set_no_event_wait(VALUE self, VALUE wait)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -1816,17 +1791,13 @@ ip_set_no_event_wait(self, wait)
 }
 
 static VALUE
-ip_get_no_event_wait(self)
-    VALUE self;
+ip_get_no_event_wait(VALUE self)
 {
     return get_no_event_wait(self);
 }
 
 static VALUE
-set_eventloop_weight(self, loop_max, no_event)
-    VALUE self;
-    VALUE loop_max;
-    VALUE no_event;
+set_eventloop_weight(VALUE self, VALUE loop_max, VALUE no_event)
 {
     int lpmax = NUM2INT(loop_max);
     int no_ev = NUM2INT(no_event);
@@ -1843,17 +1814,13 @@ set_eventloop_weight(self, loop_max, no_event)
 }
 
 static VALUE
-get_eventloop_weight(self)
-    VALUE self;
+get_eventloop_weight(VALUE self)
 {
     return rb_ary_new3(2, INT2NUM(event_loop_max), INT2NUM(no_event_tick));
 }
 
 static VALUE
-ip_set_eventloop_weight(self, loop_max, no_event)
-    VALUE self;
-    VALUE loop_max;
-    VALUE no_event;
+ip_set_eventloop_weight(VALUE self, VALUE loop_max, VALUE no_event)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -1870,16 +1837,13 @@ ip_set_eventloop_weight(self, loop_max, no_event)
 }
 
 static VALUE
-ip_get_eventloop_weight(self)
-    VALUE self;
+ip_get_eventloop_weight(VALUE self)
 {
     return get_eventloop_weight(self);
 }
 
 static VALUE
-set_max_block_time(self, time)
-    VALUE self;
-    VALUE time;
+set_max_block_time(VALUE self, VALUE time)
 {
     struct Tcl_Time tcl_time;
     VALUE divmod;
@@ -1910,8 +1874,7 @@ set_max_block_time(self, time)
 }
 
 static VALUE
-lib_evloop_thread_p(self)
-    VALUE self;
+lib_evloop_thread_p(VALUE self)
 {
     if (NIL_P(eventloop_thread)) {
         return Qnil;    /* no eventloop */
@@ -1923,8 +1886,7 @@ lib_evloop_thread_p(self)
 }
 
 static VALUE
-lib_evloop_abort_on_exc(self)
-    VALUE self;
+lib_evloop_abort_on_exc(VALUE self)
 {
     if (event_loop_abort_on_exc > 0) {
         return Qtrue;
@@ -1936,15 +1898,13 @@ lib_evloop_abort_on_exc(self)
 }
 
 static VALUE
-ip_evloop_abort_on_exc(self)
-    VALUE self;
+ip_evloop_abort_on_exc(VALUE self)
 {
     return lib_evloop_abort_on_exc(self);
 }
 
 static VALUE
-lib_evloop_abort_on_exc_set(self, val)
-    VALUE self, val;
+lib_evloop_abort_on_exc_set(VALUE self, VALUE val)
 {
     if (RTEST(val)) {
         event_loop_abort_on_exc =  1;
@@ -1957,8 +1917,7 @@ lib_evloop_abort_on_exc_set(self, val)
 }
 
 static VALUE
-ip_evloop_abort_on_exc_set(self, val)
-    VALUE self, val;
+ip_evloop_abort_on_exc_set(VALUE self, VALUE val)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -1976,10 +1935,7 @@ ip_evloop_abort_on_exc_set(self, val)
 }
 
 static VALUE
-lib_num_of_mainwindows_core(self, argc, argv)
-    VALUE self;
-    int   argc;   /* dummy */
-    VALUE *argv;  /* dummy */
+lib_num_of_mainwindows_core(VALUE self, int argc /* dummy */, VALUE *argv /* dummy */)
 {
     if (tk_stubs_init_p()) {
         return INT2FIX(Tk_GetNumMainWindows());
@@ -1989,8 +1945,7 @@ lib_num_of_mainwindows_core(self, argc, argv)
 }
 
 static VALUE
-lib_num_of_mainwindows(self)
-    VALUE self;
+lib_num_of_mainwindows(VALUE self)
 {
 #ifdef RUBY_USE_NATIVE_THREAD  /* Ruby 1.9+ !!! */
     return tk_funcall(lib_num_of_mainwindows_core, 0, (VALUE*)NULL, self);
@@ -2030,24 +1985,14 @@ call_DoOneEvent_core(VALUE flag_val, RB_UNUSED_VAR(int argc), RB_UNUSED_VAR(VALU
 }
 
 static VALUE
-#ifdef HAVE_PROTOTYPES
 call_DoOneEvent(VALUE flag_val)
-#else
-call_DoOneEvent(flag_val)
-    VALUE flag_val;
-#endif
 {
   return tk_funcall(call_DoOneEvent_core, 0, (VALUE*)NULL, flag_val);
 }
 
 #else  /* Ruby 1.8- */
 static VALUE
-#ifdef HAVE_PROTOTYPES
 call_DoOneEvent(VALUE flag_val)
-#else
-call_DoOneEvent(flag_val)
-    VALUE flag_val;
-#endif
 {
     int flag;
 
@@ -2189,11 +2134,7 @@ check_eventloop_interp(void)
 }
 
 static int
-lib_eventloop_core(check_root, update_flag, check_var, interp)
-    int check_root;
-    int update_flag;
-    int *check_var;
-    Tcl_Interp *interp;
+lib_eventloop_core(int check_root, int update_flag, int *check_var, Tcl_Interp *interp)
 {
     volatile VALUE current = eventloop_thread;
     int found_event = 1;
@@ -2565,8 +2506,7 @@ struct evloop_params {
 };
 
 VALUE
-lib_eventloop_main_core(args)
-    VALUE args;
+lib_eventloop_main_core(VALUE args)
 {
     struct evloop_params *params = (struct evloop_params *)args;
 
@@ -2585,8 +2525,7 @@ lib_eventloop_main_core(args)
 }
 
 VALUE
-lib_eventloop_main(args)
-    VALUE args;
+lib_eventloop_main(VALUE args)
 {
     return lib_eventloop_main_core(args);
 
@@ -2620,8 +2559,7 @@ lib_eventloop_main(args)
 }
 
 VALUE
-lib_eventloop_ensure(args)
-    VALUE args;
+lib_eventloop_ensure(VALUE args)
 {
     struct evloop_params *ptr = (struct evloop_params *)args;
     volatile VALUE current_evloop = rb_thread_current();
@@ -2682,11 +2620,7 @@ lib_eventloop_ensure(args)
 }
 
 static VALUE
-lib_eventloop_launcher(check_root, update_flag, check_var, interp)
-    int check_root;
-    int update_flag;
-    int *check_var;
-    Tcl_Interp *interp;
+lib_eventloop_launcher(int check_root, int update_flag, int *check_var, Tcl_Interp *interp)
 {
     volatile VALUE parent_evloop = eventloop_thread;
     struct evloop_params *args = ALLOC(struct evloop_params);
@@ -2736,10 +2670,7 @@ lib_eventloop_launcher(check_root, update_flag, check_var, interp)
 
 /* execute Tk_MainLoop */
 static VALUE
-lib_mainloop(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+lib_mainloop(int argc, VALUE *argv, VALUE self)
 {
     VALUE check_rootwidget;
 
@@ -2756,10 +2687,7 @@ lib_mainloop(argc, argv, self)
 }
 
 static VALUE
-ip_mainloop(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+ip_mainloop(int argc, VALUE *argv, VALUE self)
 {
     volatile VALUE ret;
     struct tcltkip *ptr = get_ip(self);
@@ -2782,8 +2710,7 @@ ip_mainloop(argc, argv, self)
 
 
 static VALUE
-watchdog_evloop_launcher(check_rootwidget)
-    VALUE check_rootwidget;
+watchdog_evloop_launcher(VALUE check_rootwidget)
 {
     return lib_eventloop_launcher(RTEST(check_rootwidget), 0,
                                   (int*)NULL, (Tcl_Interp*)NULL);
@@ -2792,8 +2719,7 @@ watchdog_evloop_launcher(check_rootwidget)
 #define EVLOOP_WAKEUP_CHANCE 3
 
 static VALUE
-lib_watchdog_core(check_rootwidget)
-    VALUE check_rootwidget;
+lib_watchdog_core(VALUE check_rootwidget)
 {
     VALUE evloop;
     int   prev_val = -1;
@@ -2849,8 +2775,7 @@ lib_watchdog_core(check_rootwidget)
 }
 
 VALUE
-lib_watchdog_ensure(arg)
-    VALUE arg;
+lib_watchdog_ensure(VALUE arg)
 {
     eventloop_thread = Qnil; /* stop eventloops */
 #ifdef RUBY_USE_NATIVE_THREAD
@@ -2860,10 +2785,7 @@ lib_watchdog_ensure(arg)
 }
 
 static VALUE
-lib_mainloop_watchdog(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+lib_mainloop_watchdog(int argc, VALUE *argv, VALUE self)
 {
     VALUE check_rootwidget;
 
@@ -2885,10 +2807,7 @@ lib_mainloop_watchdog(argc, argv, self)
 }
 
 static VALUE
-ip_mainloop_watchdog(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+ip_mainloop_watchdog(int argc, VALUE *argv, VALUE self)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -2918,16 +2837,14 @@ _thread_call_proc_arg_mark(struct thread_call_proc_arg *q)
 }
 
 static VALUE
-_thread_call_proc_core(arg)
-    VALUE arg;
+_thread_call_proc_core(VALUE arg)
 {
     struct thread_call_proc_arg *q = (struct thread_call_proc_arg*)arg;
     return rb_funcall(q->proc, ID_call, 0);
 }
 
 static VALUE
-_thread_call_proc_ensure(arg)
-    VALUE arg;
+_thread_call_proc_ensure(VALUE arg)
 {
     struct thread_call_proc_arg *q = (struct thread_call_proc_arg*)arg;
     *(q->done) = 1;
@@ -2935,8 +2852,7 @@ _thread_call_proc_ensure(arg)
 }
 
 static VALUE
-_thread_call_proc(arg)
-    VALUE arg;
+_thread_call_proc(VALUE arg)
 {
     struct thread_call_proc_arg *q = (struct thread_call_proc_arg*)arg;
 
@@ -2945,21 +2861,13 @@ _thread_call_proc(arg)
 }
 
 static VALUE
-#ifdef HAVE_PROTOTYPES
 _thread_call_proc_value(VALUE th)
-#else
-_thread_call_proc_value(th)
-    VALUE th;
-#endif
 {
     return rb_funcall(th, ID_value, 0);
 }
 
 static VALUE
-lib_thread_callback(argc, argv, self)
-    int argc;
-    VALUE *argv;
-    VALUE self;
+lib_thread_callback(int argc, VALUE *argv, VALUE self)
 {
     struct thread_call_proc_arg *q;
     VALUE proc, th, ret;
@@ -3015,11 +2923,7 @@ lib_thread_callback(argc, argv, self)
 
 /* do_one_event */
 static VALUE
-lib_do_one_event_core(argc, argv, self, is_ip)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
-    int   is_ip;
+lib_do_one_event_core(int argc, VALUE *argv, VALUE self, int is_ip)
 {
     VALUE vflags;
     int flags;
@@ -3068,28 +2972,20 @@ lib_do_one_event_core(argc, argv, self, is_ip)
 }
 
 static VALUE
-lib_do_one_event(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+lib_do_one_event(int argc, VALUE *argv, VALUE self)
 {
     return lib_do_one_event_core(argc, argv, self, 0);
 }
 
 static VALUE
-ip_do_one_event(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+ip_do_one_event(int argc, VALUE *argv, VALUE self)
 {
     return lib_do_one_event_core(argc, argv, self, 0);
 }
 
 
 static void
-ip_set_exc_message(interp, exc)
-    Tcl_Interp *interp;
-    VALUE exc;
+ip_set_exc_message(Tcl_Interp *interp, VALUE exc)
 {
     char *buf;
     Tcl_DString dstr;
@@ -3150,8 +3046,7 @@ ip_set_exc_message(interp, exc)
 }
 
 static VALUE
-TkStringValue(obj)
-    VALUE obj;
+TkStringValue(VALUE obj)
 {
     switch(TYPE(obj)) {
     case T_STRING:
@@ -3179,14 +3074,7 @@ TkStringValue(obj)
 }
 
 static int
-#ifdef HAVE_PROTOTYPES
-tcl_protect_core(Tcl_Interp *interp, VALUE (*proc)(VALUE), VALUE data)
-#else
-tcl_protect_core(interp, proc, data) /* should not raise exception */
-    Tcl_Interp *interp;
-    VALUE (*proc)();
-    VALUE data;
-#endif
+tcl_protect_core(Tcl_Interp *interp, VALUE (*proc)(VALUE), VALUE data)  /* should not raise exception */
 {
     volatile VALUE ret, exc = Qnil;
     int status = 0;
@@ -3358,10 +3246,7 @@ tcl_protect_core(interp, proc, data) /* should not raise exception */
 }
 
 static int
-tcl_protect(interp, proc, data)
-    Tcl_Interp *interp;
-    VALUE (*proc)(VALUE);
-    VALUE data;
+tcl_protect(Tcl_Interp *interp, VALUE (*proc)(VALUE), VALUE data)
 {
     int code;
 
@@ -3388,19 +3273,16 @@ tcl_protect(interp, proc, data)
 }
 
 static int
+ip_ruby_eval(
+    ClientData clientData,
+    Tcl_Interp *interp,
+    int argc,
 #if TCL_MAJOR_VERSION >= 8
-ip_ruby_eval(clientData, interp, argc, argv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int argc;
-    Tcl_Obj *CONST argv[];
+    Tcl_Obj *CONST argv[]
 #else /* TCL_MAJOR_VERSION < 8 */
-ip_ruby_eval(clientData, interp, argc, argv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int argc;
-    char *argv[];
+    char *argv[]
 #endif
+)
 {
     char *arg;
     int thr_crit_bup;
@@ -3467,8 +3349,7 @@ ip_ruby_eval(clientData, interp, argc, argv)
 
 /* Tcl command `ruby_cmd' */
 static VALUE
-ip_ruby_cmd_core(arg)
-    struct cmd_body_arg *arg;
+ip_ruby_cmd_core(struct cmd_body_arg *arg)
 {
     volatile VALUE ret;
     int thr_crit_bup;
@@ -3485,15 +3366,13 @@ ip_ruby_cmd_core(arg)
 }
 
 static VALUE
-ip_ruby_cmd_receiver_const_get(name)
-     char *name;
+ip_ruby_cmd_receiver_const_get(char *name)
 {
     return rb_path2class(name);
 }
 
 static VALUE
-ip_ruby_cmd_receiver_get(str)
-     char *str;
+ip_ruby_cmd_receiver_get(char *str)
 {
   volatile VALUE receiver;
   int state;
@@ -3526,19 +3405,16 @@ ip_ruby_cmd_receiver_get(str)
 
 /* ruby_cmd receiver method arg ... */
 static int
+ip_ruby_cmd(
+    ClientData clientData,
+    Tcl_Interp *interp,
+    int argc,
 #if TCL_MAJOR_VERSION >= 8
-ip_ruby_cmd(clientData, interp, argc, argv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int argc;
-    Tcl_Obj *CONST argv[];
+    Tcl_Obj *CONST argv[]
 #else /* TCL_MAJOR_VERSION < 8 */
-ip_ruby_cmd(clientData, interp, argc, argv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int argc;
-    char *argv[];
+    char *argv[]
 #endif
+)
 {
     volatile VALUE receiver;
     volatile ID method;
@@ -3646,29 +3522,16 @@ ip_ruby_cmd(clientData, interp, argc, argv)
 /* relpace of 'exit' command */
 /*****************************/
 static int
+ip_InterpExitObjCmd(
+    ClientData clientData,
+    Tcl_Interp *interp,
+    int argc,
 #if TCL_MAJOR_VERSION >= 8
-#ifdef HAVE_PROTOTYPES
-ip_InterpExitObjCmd(ClientData clientData, Tcl_Interp *interp,
-		    int argc, Tcl_Obj *CONST argv[])
+    Tcl_Obj *CONST argv[]
 #else
-ip_InterpExitObjCmd(clientData, interp, argc, argv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int argc;
-    Tcl_Obj *CONST argv[];
+    char *argv[]
 #endif
-#else /* TCL_MAJOR_VERSION < 8 */
-#ifdef HAVE_PROTOTYPES
-ip_InterpExitCommand(ClientData clientData, Tcl_Interp *interp,
-		     int argc, char *argv[])
-#else
-ip_InterpExitCommand(clientData, interp, argc, argv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int argc;
-    char *argv[];
-#endif
-#endif
+)
 {
     DUMP1("start ip_InterpExitCommand");
     if (interp != (Tcl_Interp*)NULL
@@ -3691,29 +3554,16 @@ ip_InterpExitCommand(clientData, interp, argc, argv)
 }
 
 static int
+ip_RubyExitObjCmd(
+    ClientData clientData,
+    Tcl_Interp *interp,
+    int argc,
 #if TCL_MAJOR_VERSION >= 8
-#ifdef HAVE_PROTOTYPES
-ip_RubyExitObjCmd(ClientData clientData, Tcl_Interp *interp,
-		  int argc, Tcl_Obj *CONST argv[])
-#else
-ip_RubyExitObjCmd(clientData, interp, argc, argv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int argc;
-    Tcl_Obj *CONST argv[];
-#endif
+    Tcl_Obj *CONST argv[]
 #else /* TCL_MAJOR_VERSION < 8 */
-#ifdef HAVE_PROTOTYPES
-ip_RubyExitCommand(ClientData clientData, Tcl_Interp *interp,
-		   int argc, char *argv[])
-#else
-ip_RubyExitCommand(clientData, interp, argc, argv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int argc;
-    char *argv[];
+    char *argv[]
 #endif
-#endif
+)
 {
     int state;
     char *cmd, *param;
@@ -3808,24 +3658,17 @@ ip_RubyExitCommand(clientData, interp, argc, argv)
 /*********************/
 /* replace of update */
 /*********************/
+static int
+ip_rbUpdateObjCmd(
+    ClientData clientData,
+    Tcl_Interp *interp,
+    int objc,
 #if TCL_MAJOR_VERSION >= 8
-static int ip_rbUpdateObjCmd _((ClientData, Tcl_Interp *, int,
-                               Tcl_Obj *CONST []));
-static int
-ip_rbUpdateObjCmd(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    Tcl_Obj *CONST objv[];
+    Tcl_Obj *CONST objv[]
 #else /* TCL_MAJOR_VERSION < 8 */
-static int ip_rbUpdateCommand _((ClientData, Tcl_Interp *, int, char *[]));
-static int
-ip_rbUpdateCommand(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    char *objv[];
+    char *objv[]
 #endif
+)
 {
     int  flags = 0;
     static CONST char *updateOptions[] = {"idletasks", (char *) NULL};
@@ -3942,10 +3785,10 @@ struct th_update_param {
     int   done;
 };
 
-static void rb_threadUpdateProc _((ClientData));
 static void
-rb_threadUpdateProc(clientData)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
+rb_threadUpdateProc(
+    ClientData clientData      /* Pointer to integer to set to 1. */
+)
 {
     struct th_update_param *param = (struct th_update_param *) clientData;
 
@@ -3956,25 +3799,17 @@ rb_threadUpdateProc(clientData)
     return;
 }
 
+static int
+ip_rb_threadUpdateObjCmd(
+    ClientData clientData,
+    Tcl_Interp *interp,
+    int objc,
 #if TCL_MAJOR_VERSION >= 8
-static int ip_rb_threadUpdateObjCmd _((ClientData, Tcl_Interp *, int,
-                                       Tcl_Obj *CONST []));
-static int
-ip_rb_threadUpdateObjCmd(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    Tcl_Obj *CONST objv[];
+    Tcl_Obj *CONST objv[]
 #else /* TCL_MAJOR_VERSION < 8 */
-static int ip_rb_threadUpdateCommand _((ClientData, Tcl_Interp *, int,
-                                       char *[]));
-static int
-ip_rb_threadUpdateCommand(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    char *objv[];
+    char *objv[]
 #endif
+)
 {
 # if 0
     int  flags = 0;
@@ -4110,43 +3945,36 @@ ip_rb_threadUpdateCommand(clientData, interp, objc, objv)
 /* replace of vwait/tkwait */
 /***************************/
 #if TCL_MAJOR_VERSION >= 8
-static int ip_rbVwaitObjCmd _((ClientData, Tcl_Interp *, int,
-                               Tcl_Obj *CONST []));
-static int ip_rb_threadVwaitObjCmd _((ClientData, Tcl_Interp *, int,
-                                      Tcl_Obj *CONST []));
-static int ip_rbTkWaitObjCmd _((ClientData, Tcl_Interp *, int,
-                                Tcl_Obj *CONST []));
-static int ip_rb_threadTkWaitObjCmd _((ClientData, Tcl_Interp *, int,
-                                       Tcl_Obj *CONST []));
+static int ip_rbVwaitObjCmd (ClientData, Tcl_Interp *, int,
+                               Tcl_Obj *CONST []);
+static int ip_rb_threadVwaitObjCmd (ClientData, Tcl_Interp *, int,
+                                      Tcl_Obj *CONST []);
+static int ip_rbTkWaitObjCmd (ClientData, Tcl_Interp *, int,
+                                Tcl_Obj *CONST []);
+static int ip_rb_threadTkWaitObjCmd (ClientData, Tcl_Interp *, int,
+                                       Tcl_Obj *CONST []);
 #else
-static int ip_rbVwaitCommand _((ClientData, Tcl_Interp *, int, char *[]));
-static int ip_rb_threadVwaitCommand _((ClientData, Tcl_Interp *, int,
-                                       char *[]));
-static int ip_rbTkWaitCommand _((ClientData, Tcl_Interp *, int, char *[]));
-static int ip_rb_threadTkWaitCommand _((ClientData, Tcl_Interp *, int,
-                                        char *[]));
+static int ip_rbVwaitCommand (ClientData, Tcl_Interp *, int, char *[]);
+static int ip_rb_threadVwaitCommand (ClientData, Tcl_Interp *, int,
+                                       char *[]);
+static int ip_rbTkWaitCommand (ClientData, Tcl_Interp *, int, char *[]);
+static int ip_rb_threadTkWaitCommand (ClientData, Tcl_Interp *, int,
+                                        char *[]);
 #endif
 
+static char *
+VwaitVarProc(
+    ClientData clientData,      /* Pointer to integer to set to 1. */
+    Tcl_Interp *interp,         /* Interpreter containing variable. */
 #if TCL_MAJOR_VERSION >= 8
-static char *VwaitVarProc _((ClientData, Tcl_Interp *,
-                             CONST84 char *,CONST84 char *, int));
-static char *
-VwaitVarProc(clientData, interp, name1, name2, flags)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
-    Tcl_Interp *interp;         /* Interpreter containing variable. */
-    CONST84 char *name1;        /* Name of variable. */
-    CONST84 char *name2;        /* Second part of variable name. */
-    int flags;                  /* Information about what happened. */
-#else /* TCL_MAJOR_VERSION < 8 */
-static char *VwaitVarProc _((ClientData, Tcl_Interp *, char *, char *, int));
-static char *
-VwaitVarProc(clientData, interp, name1, name2, flags)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
-    Tcl_Interp *interp;         /* Interpreter containing variable. */
-    char *name1;                /* Name of variable. */
-    char *name2;                /* Second part of variable name. */
-    int flags;                  /* Information about what happened. */
+    CONST84 char *name1,        /* Name of variable. */
+    CONST84 char *name2,        /* Second part of variable name. */
+#else
+    char *name1,                /* Name of variable. */
+    char *name2,                /* Second part of variable name. */
 #endif
+    int flags                  /* Information about what happened. */
+)
 {
     int *donePtr = (int *) clientData;
 
@@ -4154,21 +3982,17 @@ VwaitVarProc(clientData, interp, name1, name2, flags)
     return (char *) NULL;
 }
 
+static int
+ip_rbVwaitObjCmd(
+    ClientData clientData, /* Not used */
+    Tcl_Interp *interp,
+    int objc,
 #if TCL_MAJOR_VERSION >= 8
-static int
-ip_rbVwaitObjCmd(clientData, interp, objc, objv)
-    ClientData clientData; /* Not used */
-    Tcl_Interp *interp;
-    int objc;
-    Tcl_Obj *CONST objv[];
+    Tcl_Obj *CONST objv[]
 #else /* TCL_MAJOR_VERSION < 8 */
-static int
-ip_rbVwaitCommand(clientData, interp, objc, objv)
-    ClientData clientData; /* Not used */
-    Tcl_Interp *interp;
-    int objc;
-    char *objv[];
+    char *objv[]
 #endif
+)
 {
     int  ret, done, foundEvent;
     char *nameString;
@@ -4337,27 +4161,19 @@ ip_rbVwaitCommand(clientData, interp, objc, objv)
 /**************************/
 /*  based on tkCmd.c      */
 /**************************/
+static char *
+WaitVariableProc(
+    ClientData clientData,      /* Pointer to integer to set to 1. */
+    Tcl_Interp *interp,         /* Interpreter containing variable. */
 #if TCL_MAJOR_VERSION >= 8
-static char *WaitVariableProc _((ClientData, Tcl_Interp *,
-                                 CONST84 char *,CONST84 char *, int));
-static char *
-WaitVariableProc(clientData, interp, name1, name2, flags)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
-    Tcl_Interp *interp;         /* Interpreter containing variable. */
-    CONST84 char *name1;        /* Name of variable. */
-    CONST84 char *name2;        /* Second part of variable name. */
-    int flags;                  /* Information about what happened. */
+    CONST84 char *name1,        /* Name of variable. */
+    CONST84 char *name2,        /* Second part of variable name. */
 #else /* TCL_MAJOR_VERSION < 8 */
-static char *WaitVariableProc _((ClientData, Tcl_Interp *,
-                                 char *, char *, int));
-static char *
-WaitVariableProc(clientData, interp, name1, name2, flags)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
-    Tcl_Interp *interp;         /* Interpreter containing variable. */
-    char *name1;                /* Name of variable. */
-    char *name2;                /* Second part of variable name. */
-    int flags;                  /* Information about what happened. */
+    char *name1,                /* Name of variable. */
+    char *name2,                /* Second part of variable name. */
 #endif
+    int flags                  /* Information about what happened. */
+)
 {
     int *donePtr = (int *) clientData;
 
@@ -4365,11 +4181,11 @@ WaitVariableProc(clientData, interp, name1, name2, flags)
     return (char *) NULL;
 }
 
-static void WaitVisibilityProc _((ClientData, XEvent *));
 static void
-WaitVisibilityProc(clientData, eventPtr)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
-    XEvent *eventPtr;           /* Information about event (not used). */
+WaitVisibilityProc(
+    ClientData clientData,      /* Pointer to integer to set to 1. */
+    XEvent *eventPtr           /* Information about event (not used). */
+)
 {
     int *donePtr = (int *) clientData;
 
@@ -4381,11 +4197,11 @@ WaitVisibilityProc(clientData, eventPtr)
     }
 }
 
-static void WaitWindowProc _((ClientData, XEvent *));
 static void
-WaitWindowProc(clientData, eventPtr)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
-    XEvent *eventPtr;           /* Information about event. */
+WaitWindowProc(
+    ClientData clientData,      /* Pointer to integer to set to 1. */
+    XEvent *eventPtr           /* Information about event. */
+)
 {
     int *donePtr = (int *) clientData;
 
@@ -4394,21 +4210,17 @@ WaitWindowProc(clientData, eventPtr)
     }
 }
 
+static int
+ip_rbTkWaitObjCmd(
+    ClientData clientData,
+    Tcl_Interp *interp,
+    int objc,
 #if TCL_MAJOR_VERSION >= 8
-static int
-ip_rbTkWaitObjCmd(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    Tcl_Obj *CONST objv[];
+    Tcl_Obj *CONST objv[]
 #else /* TCL_MAJOR_VERSION < 8 */
-static int
-ip_rbTkWaitCommand(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    char *objv[];
+    char *objv[]
 #endif
+)
 {
     Tk_Window tkwin = (Tk_Window) clientData;
     Tk_Window window;
@@ -4770,27 +4582,19 @@ struct th_vwait_param {
     int   done;
 };
 
+static char *
+rb_threadVwaitProc(
+    ClientData clientData,      /* Pointer to integer to set to 1. */
+    Tcl_Interp *interp,         /* Interpreter containing variable. */
 #if TCL_MAJOR_VERSION >= 8
-static char *rb_threadVwaitProc _((ClientData, Tcl_Interp *,
-                                   CONST84 char *,CONST84 char *, int));
-static char *
-rb_threadVwaitProc(clientData, interp, name1, name2, flags)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
-    Tcl_Interp *interp;         /* Interpreter containing variable. */
-    CONST84 char *name1;        /* Name of variable. */
-    CONST84 char *name2;        /* Second part of variable name. */
-    int flags;                  /* Information about what happened. */
+    CONST84 char *name1,        /* Name of variable. */
+    CONST84 char *name2,        /* Second part of variable name. */
 #else /* TCL_MAJOR_VERSION < 8 */
-static char *rb_threadVwaitProc _((ClientData, Tcl_Interp *,
-                                   char *, char *, int));
-static char *
-rb_threadVwaitProc(clientData, interp, name1, name2, flags)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
-    Tcl_Interp *interp;         /* Interpreter containing variable. */
-    char *name1;                /* Name of variable. */
-    char *name2;                /* Second part of variable name. */
-    int flags;                  /* Information about what happened. */
+    char *name1,                /* Name of variable. */
+    char *name2,                /* Second part of variable name. */
 #endif
+    int flags                  /* Information about what happened. */
+)
 {
     struct th_vwait_param *param = (struct th_vwait_param *) clientData;
 
@@ -4807,11 +4611,11 @@ rb_threadVwaitProc(clientData, interp, name1, name2, flags)
 #define TKWAIT_MODE_VISIBILITY 1
 #define TKWAIT_MODE_DESTROY    2
 
-static void rb_threadWaitVisibilityProc _((ClientData, XEvent *));
 static void
-rb_threadWaitVisibilityProc(clientData, eventPtr)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
-    XEvent *eventPtr;           /* Information about event (not used). */
+rb_threadWaitVisibilityProc(
+    ClientData clientData,      /* Pointer to integer to set to 1. */
+    XEvent *eventPtr           /* Information about event (not used). */
+)
 {
     struct th_vwait_param *param = (struct th_vwait_param *) clientData;
 
@@ -4824,11 +4628,11 @@ rb_threadWaitVisibilityProc(clientData, eventPtr)
     if (param->done != 0) rb_thread_wakeup(param->thread);
 }
 
-static void rb_threadWaitWindowProc _((ClientData, XEvent *));
 static void
-rb_threadWaitWindowProc(clientData, eventPtr)
-    ClientData clientData;      /* Pointer to integer to set to 1. */
-    XEvent *eventPtr;           /* Information about event. */
+rb_threadWaitWindowProc(
+    ClientData clientData,      /* Pointer to integer to set to 1. */
+    XEvent *eventPtr           /* Information about event. */
+)
 {
     struct th_vwait_param *param = (struct th_vwait_param *) clientData;
 
@@ -4838,21 +4642,17 @@ rb_threadWaitWindowProc(clientData, eventPtr)
     if (param->done != 0) rb_thread_wakeup(param->thread);
 }
 
+static int
+ip_rb_threadVwaitObjCmd(
+    ClientData clientData,
+    Tcl_Interp *interp,
+    int objc,
 #if TCL_MAJOR_VERSION >= 8
-static int
-ip_rb_threadVwaitObjCmd(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    Tcl_Obj *CONST objv[];
+    Tcl_Obj *CONST objv[]
 #else /* TCL_MAJOR_VERSION < 8 */
-static int
-ip_rb_threadVwaitCommand(clientData, interp, objc, objv)
-    ClientData clientData; /* Not used */
-    Tcl_Interp *interp;
-    int objc;
-    char *objv[];
+    char *objv[]
 #endif
+)
 {
     struct th_vwait_param *param;
     char *nameString;
@@ -4995,21 +4795,17 @@ ip_rb_threadVwaitCommand(clientData, interp, objc, objv)
     return TCL_OK;
 }
 
+static int
+ip_rb_threadTkWaitObjCmd(
+    ClientData clientData,
+    Tcl_Interp *interp,
+    int objc,
 #if TCL_MAJOR_VERSION >= 8
-static int
-ip_rb_threadTkWaitObjCmd(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    Tcl_Obj *CONST objv[];
+    Tcl_Obj *CONST objv[]
 #else /* TCL_MAJOR_VERSION < 8 */
-static int
-ip_rb_threadTkWaitCommand(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    char *objv[];
+    char *objv[]
 #endif
+)
 {
     struct th_vwait_param *param;
     Tk_Window tkwin = (Tk_Window) clientData;
@@ -5437,9 +5233,7 @@ ip_rb_threadTkWaitCommand(clientData, interp, objc, objv)
 }
 
 static VALUE
-ip_thread_vwait(self, var)
-    VALUE self;
-    VALUE var;
+ip_thread_vwait(VALUE self, VALUE var)
 {
     VALUE argv[2];
     volatile VALUE cmd_str = rb_str_new2("thread_vwait");
@@ -5451,10 +5245,7 @@ ip_thread_vwait(self, var)
 }
 
 static VALUE
-ip_thread_tkwait(self, mode, target)
-    VALUE self;
-    VALUE mode;
-    VALUE target;
+ip_thread_tkwait(VALUE self, VALUE mode, VALUE target)
 {
     VALUE argv[3];
     volatile VALUE cmd_str = rb_str_new2("thread_tkwait");
@@ -5470,8 +5261,7 @@ ip_thread_tkwait(self, mode, target)
 /* delete slave interpreters */
 #if TCL_MAJOR_VERSION >= 8
 static void
-delete_slaves(ip)
-    Tcl_Interp *ip;
+delete_slaves(Tcl_Interp *ip)
 {
     int  thr_crit_bup;
     Tcl_Interp *slave;
@@ -5522,8 +5312,7 @@ delete_slaves(ip)
 }
 #else /* TCL_MAJOR_VERSION < 8 */
 static void
-delete_slaves(ip)
-    Tcl_Interp *ip;
+delete_slaves(Tcl_Interp *ip)
 {
     int  thr_crit_bup;
     Tcl_Interp *slave;
@@ -5566,38 +5355,17 @@ delete_slaves(ip)
 
 /* finalize operation */
 static void
-#ifdef HAVE_PROTOTYPES
 lib_mark_at_exit(VALUE self)
-#else
-lib_mark_at_exit(self)
-    VALUE self;
-#endif
 {
     at_exit = 1;
 }
 
 static int
 #if TCL_MAJOR_VERSION >= 8
-#ifdef HAVE_PROTOTYPES
 ip_null_proc(ClientData clientData, Tcl_Interp *interp,
 	     int argc, Tcl_Obj *CONST argv[])
-#else
-ip_null_proc(clientData, interp, argc, argv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int argc;
-    Tcl_Obj *CONST argv[];
-#endif
 #else /* TCL_MAJOR_VERSION < 8 */
-#ifdef HAVE_PROTOTYPES
 ip_null_proc(ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
-#else
-ip_null_proc(clientData, interp, argc, argv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int argc;
-    char *argv[];
-#endif
 #endif
 {
     Tcl_ResetResult(interp);
@@ -5605,8 +5373,7 @@ ip_null_proc(clientData, interp, argc, argv)
 }
 
 static void
-ip_finalize(ip)
-    Tcl_Interp *ip;
+ip_finalize(Tcl_Interp *ip)
 {
     Tcl_CmdInfo info;
     int  thr_crit_bup;
@@ -5747,8 +5514,7 @@ ip_finalize(ip)
 
 /* destroy interpreter */
 static void
-ip_free(p)
-    void *p;
+ip_free(void *p)
 {
     struct tcltkip *ptr = p;
     int  thr_crit_bup;
@@ -5799,18 +5565,15 @@ ip_free(p)
 
 
 /* create and initialize interpreter */
-static VALUE ip_alloc _((VALUE));
+static VALUE ip_alloc (VALUE);
 static VALUE
-ip_alloc(self)
-    VALUE self;
+ip_alloc(VALUE self)
 {
     return TypedData_Wrap_Struct(self, &tcltkip_type, 0);
 }
 
 static void
-ip_replace_wait_commands(interp, mainWin)
-    Tcl_Interp *interp;
-    Tk_Window mainWin;
+ip_replace_wait_commands(Tcl_Interp *interp, Tk_Window mainWin)
 {
     /* replace 'vwait' command */
 #if TCL_MAJOR_VERSION >= 8
@@ -5880,21 +5643,17 @@ ip_replace_wait_commands(interp, mainWin)
 }
 
 
+static int
+ip_rb_replaceSlaveTkCmdsObjCmd(
+    ClientData clientData,
+    Tcl_Interp *interp,
+    int objc,
 #if TCL_MAJOR_VERSION >= 8
-static int
-ip_rb_replaceSlaveTkCmdsObjCmd(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    Tcl_Obj *CONST objv[];
+    Tcl_Obj *CONST objv[]
 #else /* TCL_MAJOR_VERSION < 8 */
-static int
-ip_rb_replaceSlaveTkCmdsCommand(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    char *objv[];
+    char *objv[]
 #endif
+)
 {
     char *slave_name;
     Tcl_Interp *slave;
@@ -5951,14 +5710,8 @@ ip_rb_replaceSlaveTkCmdsCommand(clientData, interp, objc, objv)
 #endif
 
 #if TCL_MAJOR_VERSION >= 8
-static int ip_rbNamespaceObjCmd _((ClientData, Tcl_Interp *, int,
-                                   Tcl_Obj *CONST []));
 static int
-ip_rbNamespaceObjCmd(clientData, interp, objc, objv)
-    ClientData clientData;
-    Tcl_Interp *interp;
-    int objc;
-    Tcl_Obj *CONST objv[];
+ip_rbNamespaceObjCmd(ClientData clientData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[])
 {
     Tcl_CmdInfo info;
     int ret;
@@ -6044,8 +5797,7 @@ ip_rbNamespaceObjCmd(clientData, interp, objc, objv)
 #endif
 
 static void
-ip_wrap_namespace_command(interp)
-    Tcl_Interp *interp;
+ip_wrap_namespace_command(Tcl_Interp *interp)
 {
 #if TCL_MAJOR_VERSION >= 8
 
@@ -6079,13 +5831,7 @@ ip_wrap_namespace_command(interp)
 
 /* call when interpreter is deleted */
 static void
-#ifdef HAVE_PROTOTYPES
 ip_CallWhenDeleted(ClientData clientData, Tcl_Interp *ip)
-#else
-ip_CallWhenDeleted(clientData, ip)
-    ClientData clientData;
-    Tcl_Interp *ip;
-#endif
 {
     int  thr_crit_bup;
     /* Tk_Window main_win = (Tk_Window) clientData; */
@@ -6104,10 +5850,7 @@ ip_CallWhenDeleted(clientData, ip)
 
 /* initialize interpreter */
 static VALUE
-ip_init(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+ip_init(int argc, VALUE *argv, VALUE self)
 {
     struct tcltkip *ptr;        /* tcltkip data struct */
     VALUE argv0, opts;
@@ -6360,10 +6103,7 @@ ip_init(argc, argv, self)
 }
 
 static VALUE
-ip_create_slave_core(interp, argc, argv)
-    VALUE interp;
-    int   argc;
-    VALUE *argv;
+ip_create_slave_core(VALUE interp, int argc, VALUE *argv)
 {
     struct tcltkip *master = get_ip(interp);
     struct tcltkip *slave;
@@ -6474,10 +6214,7 @@ ip_create_slave_core(interp, argc, argv)
 }
 
 static VALUE
-ip_create_slave(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+ip_create_slave(int argc, VALUE *argv, VALUE self)
 {
     struct tcltkip *master = get_ip(self);
     VALUE safemode;
@@ -6508,8 +6245,7 @@ ip_create_slave(argc, argv, self)
 
 /* self is slave of master? */
 static VALUE
-ip_is_slave_of_p(self, master)
-    VALUE self, master;
+ip_is_slave_of_p(VALUE self, VALUE master)
 {
     if (!rb_obj_is_kind_of(master, tcltkip_class)) {
         rb_raise(rb_eArgError, "expected TclTkIp object");
@@ -6531,21 +6267,18 @@ ip_is_slave_of_p(self, master)
         && (TCL_RELEASE_LEVEL == TCL_ALPHA_RELEASE \
            || (TCL_RELEASE_LEVEL == TCL_BETA_RELEASE \
                && TCL_RELEASE_SERIAL < 2) ) )
-EXTERN void TkConsoleCreate _((void));
+EXTERN void TkConsoleCreate (void);
 #endif
 #if TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION == 1 \
     && ( (TCL_RELEASE_LEVEL == TCL_FINAL_RELEASE \
           && TCL_RELEASE_SERIAL == 0) \
        || (TCL_RELEASE_LEVEL == TCL_BETA_RELEASE \
            && TCL_RELEASE_SERIAL >= 2) )
-EXTERN void TkConsoleCreate_ _((void));
+EXTERN void TkConsoleCreate_ (void);
 #endif
 #endif
 static VALUE
-ip_create_console_core(interp, argc, argv)
-    VALUE interp;
-    int   argc;   /* dummy */
-    VALUE *argv;  /* dummy */
+ip_create_console_core(VALUE interp, int argc /* dummy */, VALUE *argv /* dummy */)
 {
     struct tcltkip *ptr = get_ip(interp);
 
@@ -6590,8 +6323,7 @@ ip_create_console_core(interp, argc, argv)
 }
 
 static VALUE
-ip_create_console(self)
-    VALUE self;
+ip_create_console(VALUE self)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -6605,10 +6337,7 @@ ip_create_console(self)
 
 /* make ip "safe" */
 static VALUE
-ip_make_safe_core(interp, argc, argv)
-    VALUE interp;
-    int   argc;   /* dummy */
-    VALUE *argv;  /* dummy */
+ip_make_safe_core(VALUE interp, int argc /* dummy */, VALUE *argv /* dummy */)
 {
     struct tcltkip *ptr = get_ip(interp);
     Tk_Window mainWin;
@@ -6643,8 +6372,7 @@ ip_make_safe_core(interp, argc, argv)
 }
 
 static VALUE
-ip_make_safe(self)
-    VALUE self;
+ip_make_safe(VALUE self)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -6658,8 +6386,7 @@ ip_make_safe(self)
 
 /* is safe? */
 static VALUE
-ip_is_safe_p(self)
-    VALUE self;
+ip_is_safe_p(VALUE self)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -6677,8 +6404,7 @@ ip_is_safe_p(self)
 
 /* allow_ruby_exit? */
 static VALUE
-ip_allow_ruby_exit_p(self)
-    VALUE self;
+ip_allow_ruby_exit_p(VALUE self)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -6696,8 +6422,7 @@ ip_allow_ruby_exit_p(self)
 
 /* allow_ruby_exit = mode */
 static VALUE
-ip_allow_ruby_exit_set(self, val)
-    VALUE self, val;
+ip_allow_ruby_exit_set(VALUE self, VALUE val)
 {
     struct tcltkip *ptr = get_ip(self);
     Tk_Window mainWin;
@@ -6751,8 +6476,7 @@ ip_allow_ruby_exit_set(self, val)
 
 /* delete interpreter */
 static VALUE
-ip_delete(self)
-    VALUE self;
+ip_delete(VALUE self)
 {
     int  thr_crit_bup;
     struct tcltkip *ptr = get_ip(self);
@@ -6783,8 +6507,7 @@ ip_delete(self)
 
 /* is deleted? */
 static VALUE
-ip_has_invalid_namespace_p(self)
-    VALUE self;
+ip_has_invalid_namespace_p(VALUE self)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -6805,8 +6528,7 @@ ip_has_invalid_namespace_p(self)
 }
 
 static VALUE
-ip_is_deleted_p(self)
-    VALUE self;
+ip_is_deleted_p(VALUE self)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -6818,10 +6540,7 @@ ip_is_deleted_p(self)
 }
 
 static VALUE
-ip_has_mainwindow_p_core(self, argc, argv)
-    VALUE self;
-    int   argc;   /* dummy */
-    VALUE *argv;  /* dummy */
+ip_has_mainwindow_p_core(VALUE self, int argc /* dummy */, VALUE *argv /* dummy */)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -6835,8 +6554,7 @@ ip_has_mainwindow_p_core(self, argc, argv)
 }
 
 static VALUE
-ip_has_mainwindow_p(self)
-    VALUE self;
+ip_has_mainwindow_p(VALUE self)
 {
     return tk_funcall(ip_has_mainwindow_p_core, 0, (VALUE*)NULL, self);
 }
@@ -6845,8 +6563,7 @@ ip_has_mainwindow_p(self)
 /*** ruby string <=> tcl object ***/
 #if TCL_MAJOR_VERSION >= 8
 static VALUE
-get_str_from_obj(obj)
-    Tcl_Obj *obj;
+get_str_from_obj(Tcl_Obj *obj)
 {
     int len, binary = 0;
     const char *s;
@@ -6893,8 +6610,7 @@ get_str_from_obj(obj)
 }
 
 static Tcl_Obj *
-get_obj_from_str(str)
-    VALUE str;
+get_obj_from_str(VALUE str)
 {
     const char *s = StringValueCStr(str);
 
@@ -6929,8 +6645,7 @@ get_obj_from_str(str)
 #endif /* ruby string <=> tcl object */
 
 static VALUE
-ip_get_result_string_obj(interp)
-    Tcl_Interp *interp;
+ip_get_result_string_obj(Tcl_Interp *interp)
 {
 #if TCL_MAJOR_VERSION >= 8
     Tcl_Obj *retObj;
@@ -6948,11 +6663,8 @@ ip_get_result_string_obj(interp)
 #endif
 }
 
-static int call_queue_handler _((Tcl_Event *, int));
 static int
-call_queue_handler(evPtr, flags)
-    Tcl_Event *evPtr;
-    int flags;
+call_queue_handler(Tcl_Event *evPtr, int flags)
 {
     struct call_queue *q = (struct call_queue *)evPtr;
     volatile VALUE ret;
@@ -7230,12 +6942,7 @@ struct call_eval_info {
 };
 
 static VALUE
-#ifdef HAVE_PROTOTYPES
 call_tcl_eval(VALUE arg)
-#else
-call_tcl_eval(arg)
-    VALUE arg;
-#endif
 {
     struct call_eval_info *inf = (struct call_eval_info *)arg;
 
@@ -7247,10 +6954,7 @@ call_tcl_eval(arg)
 #endif
 
 static VALUE
-ip_eval_real(self, cmd_str, cmd_len)
-    VALUE self;
-    char *cmd_str;
-    int  cmd_len;
+ip_eval_real(VALUE self, char *cmd_str, int cmd_len)
 {
     volatile VALUE ret;
     struct tcltkip *ptr = get_ip(self);
@@ -7407,11 +7111,8 @@ ip_eval_real(self, cmd_str, cmd_len)
 #endif
 }
 
-int eval_queue_handler _((Tcl_Event *, int));
 int
-eval_queue_handler(evPtr, flags)
-    Tcl_Event *evPtr;
-    int flags;
+eval_queue_handler(Tcl_Event *evPtr, int flags)
 {
     struct eval_queue *q = (struct eval_queue *)evPtr;
     volatile VALUE ret;
@@ -7490,9 +7191,7 @@ eval_queue_handler(evPtr, flags)
 }
 
 static VALUE
-ip_eval(self, str)
-    VALUE self;
-    VALUE str;
+ip_eval(VALUE self, VALUE str)
 {
     struct eval_queue *evq;
 #ifdef RUBY_USE_NATIVE_THREAD
@@ -7668,10 +7367,7 @@ ip_eval(self, str)
 
 
 static int
-ip_cancel_eval_core(interp, msg, flag)
-    Tcl_Interp *interp;
-    VALUE msg;
-    int flag;
+ip_cancel_eval_core(Tcl_Interp *interp, VALUE msg, int flag)
 {
 #if TCL_MAJOR_VERSION < 8 || (TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION < 6)
     rb_raise(rb_eNotImpError,
@@ -7694,10 +7390,7 @@ ip_cancel_eval_core(interp, msg, flag)
 }
 
 static VALUE
-ip_cancel_eval(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+ip_cancel_eval(int argc, VALUE *argv, VALUE self)
 {
     VALUE retval;
 
@@ -7715,10 +7408,7 @@ ip_cancel_eval(argc, argv, self)
 #define TCL_CANCEL_UNWIND 0x100000
 #endif
 static VALUE
-ip_cancel_eval_unwind(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+ip_cancel_eval_unwind(int argc, VALUE *argv, VALUE self)
 {
     int flag = 0;
     VALUE retval;
@@ -7737,10 +7427,7 @@ ip_cancel_eval_unwind(argc, argv, self)
 
 /* restart Tk */
 static VALUE
-lib_restart_core(interp, argc, argv)
-    VALUE interp;
-    int   argc;   /* dummy */
-    VALUE *argv;  /* dummy */
+lib_restart_core(VALUE interp, int argc /* dummy */, VALUE *argv /* dummy */)
 {
     volatile VALUE exc;
     struct tcltkip *ptr = get_ip(interp);
@@ -7798,8 +7485,7 @@ lib_restart_core(interp, argc, argv)
 }
 
 static VALUE
-lib_restart(self)
-    VALUE self;
+lib_restart(VALUE self)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -7816,8 +7502,7 @@ lib_restart(self)
 
 
 static VALUE
-ip_restart(self)
-    VALUE self;
+ip_restart(VALUE self)
 {
     struct tcltkip *ptr = get_ip(self);
 
@@ -7837,10 +7522,7 @@ ip_restart(self)
 }
 
 static VALUE
-lib_toUTF8_core(ip_obj, src, encodename)
-    VALUE ip_obj;
-    VALUE src;
-    VALUE encodename;
+lib_toUTF8_core(VALUE ip_obj, VALUE src, VALUE encodename)
 {
     volatile VALUE str = src;
 
@@ -7995,10 +7677,7 @@ lib_toUTF8_core(ip_obj, src, encodename)
 }
 
 static VALUE
-lib_toUTF8(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+lib_toUTF8(int argc, VALUE *argv, VALUE self)
 {
     VALUE str, encodename;
 
@@ -8009,10 +7688,7 @@ lib_toUTF8(argc, argv, self)
 }
 
 static VALUE
-ip_toUTF8(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+ip_toUTF8(int argc, VALUE *argv, VALUE self)
 {
     VALUE str, encodename;
 
@@ -8023,10 +7699,7 @@ ip_toUTF8(argc, argv, self)
 }
 
 static VALUE
-lib_fromUTF8_core(ip_obj, src, encodename)
-    VALUE ip_obj;
-    VALUE src;
-    VALUE encodename;
+lib_fromUTF8_core(VALUE ip_obj, VALUE src, VALUE encodename)
 {
     volatile VALUE str = src;
 
@@ -8195,10 +7868,7 @@ lib_fromUTF8_core(ip_obj, src, encodename)
 }
 
 static VALUE
-lib_fromUTF8(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+lib_fromUTF8(int argc, VALUE *argv, VALUE self)
 {
     VALUE str, encodename;
 
@@ -8209,10 +7879,7 @@ lib_fromUTF8(argc, argv, self)
 }
 
 static VALUE
-ip_fromUTF8(argc, argv, self)
-    int   argc;
-    VALUE *argv;
-    VALUE self;
+ip_fromUTF8(int argc, VALUE *argv, VALUE self)
 {
     VALUE str, encodename;
 
@@ -8223,10 +7890,7 @@ ip_fromUTF8(argc, argv, self)
 }
 
 static VALUE
-lib_UTF_backslash_core(self, str, all_bs)
-    VALUE self;
-    VALUE str;
-    int all_bs;
+lib_UTF_backslash_core(VALUE self, VALUE str, int all_bs)
 {
 #ifdef TCL_UTF_MAX
     char *src_buf, *dst_buf, *ptr;
@@ -8301,24 +7965,19 @@ lib_UTF_backslash_core(self, str, all_bs)
 }
 
 static VALUE
-lib_UTF_backslash(self, str)
-    VALUE self;
-    VALUE str;
+lib_UTF_backslash(VALUE self, VALUE str)
 {
     return lib_UTF_backslash_core(self, str, 0);
 }
 
 static VALUE
-lib_Tcl_backslash(self, str)
-    VALUE self;
-    VALUE str;
+lib_Tcl_backslash(VALUE self, VALUE str)
 {
     return lib_UTF_backslash_core(self, str, 1);
 }
 
 static VALUE
-lib_get_system_encoding(self)
-    VALUE self;
+lib_get_system_encoding(VALUE self)
 {
 #if TCL_MAJOR_VERSION > 8 || (TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION > 0)
     tcl_stubs_check();
@@ -8329,9 +7988,7 @@ lib_get_system_encoding(self)
 }
 
 static VALUE
-lib_set_system_encoding(self, enc_name)
-    VALUE self;
-    VALUE enc_name;
+lib_set_system_encoding(VALUE self, VALUE enc_name)
 {
 #if TCL_MAJOR_VERSION > 8 || (TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION > 0)
     tcl_stubs_check();
@@ -8461,16 +8118,10 @@ invoke_tcl_proc(arg)
 
 #if TCL_MAJOR_VERSION >= 8
 static VALUE
-ip_invoke_core(interp, objc, objv)
-    VALUE interp;
-    int objc;
-    Tcl_Obj **objv;
+ip_invoke_core(VALUE interp, int objc, Tcl_Obj **objv)
 #else
 static VALUE
-ip_invoke_core(interp, argc, argv)
-    VALUE interp;
-    int argc;
-    char **argv;
+ip_invoke_core(VALUE interp, int argc, char **argv)
 #endif
 {
     struct tcltkip *ptr;
@@ -8747,9 +8398,7 @@ static Tcl_Obj **
 #else /* TCL_MAJOR_VERSION < 8 */
 static char **
 #endif
-alloc_invoke_arguments(argc, argv)
-    int argc;
-    VALUE *argv;
+alloc_invoke_arguments(int argc, VALUE *argv)
 {
     int i;
     int thr_crit_bup;
@@ -8795,13 +8444,14 @@ alloc_invoke_arguments(argc, argv)
 }
 
 static void
-free_invoke_arguments(argc, av)
-    int argc;
+free_invoke_arguments(
+    int argc,
 #if TCL_MAJOR_VERSION >= 8
-    Tcl_Obj **av;
+    Tcl_Obj **av
 #else /* TCL_MAJOR_VERSION < 8 */
-    char **av;
+    char **av
 #endif
+)
 {
     int i;
 
@@ -8839,10 +8489,7 @@ free_invoke_arguments(argc, av)
 }
 
 static VALUE
-ip_invoke_real(argc, argv, interp)
-    int argc;
-    VALUE *argv;
-    VALUE interp;
+ip_invoke_real(int argc, VALUE *argv, VALUE interp)
 {
     VALUE v;
     struct tcltkip *ptr;        /* tcltkip data struct */
@@ -8876,11 +8523,8 @@ ip_invoke_real(argc, argv, interp)
     return v;
 }
 
-int invoke_queue_handler _((Tcl_Event *, int));
 int
-invoke_queue_handler(evPtr, flags)
-    Tcl_Event *evPtr;
-    int flags;
+invoke_queue_handler(Tcl_Event *evPtr, int flags)
 {
     struct invoke_queue *q = (struct invoke_queue *)evPtr;
     volatile VALUE ret;
@@ -8961,11 +8605,7 @@ invoke_queue_handler(evPtr, flags)
 }
 
 static VALUE
-ip_invoke_with_position(argc, argv, obj, position)
-    int argc;
-    VALUE *argv;
-    VALUE obj;
-    Tcl_QueuePosition position;
+ip_invoke_with_position(int argc, VALUE *argv, VALUE obj, Tcl_QueuePosition position)
 {
     struct invoke_queue *ivq;
 #ifdef RUBY_USE_NATIVE_THREAD
@@ -9137,8 +8777,7 @@ ip_invoke_with_position(argc, argv, obj, position)
 
 /* get return code from Tcl_Eval() */
 static VALUE
-ip_retval(self)
-    VALUE self;
+ip_retval(VALUE self)
 {
     struct tcltkip *ptr;        /* tcltkip data struct */
 
@@ -9154,19 +8793,13 @@ ip_retval(self)
 }
 
 static VALUE
-ip_invoke(argc, argv, obj)
-    int argc;
-    VALUE *argv;
-    VALUE obj;
+ip_invoke(int argc, VALUE *argv, VALUE obj)
 {
     return ip_invoke_with_position(argc, argv, obj, TCL_QUEUE_TAIL);
 }
 
 static VALUE
-ip_invoke_immediate(argc, argv, obj)
-    int argc;
-    VALUE *argv;
-    VALUE obj;
+ip_invoke_immediate(int argc, VALUE *argv, VALUE obj)
 {
     /* POTENTIALY INSECURE : can create infinite loop */
     return ip_invoke_with_position(argc, argv, obj, TCL_QUEUE_HEAD);
@@ -9175,10 +8808,7 @@ ip_invoke_immediate(argc, argv, obj)
 
 /* access Tcl variables */
 static VALUE
-ip_get_variable2_core(interp, argc, argv)
-    VALUE interp;
-    int   argc;
-    VALUE *argv;
+ip_get_variable2_core(VALUE interp, int argc, VALUE *argv)
 {
     struct tcltkip *ptr = get_ip(interp);
     int thr_crit_bup;
@@ -9271,11 +8901,7 @@ ip_get_variable2_core(interp, argc, argv)
 }
 
 static VALUE
-ip_get_variable2(self, varname, index, flag)
-    VALUE self;
-    VALUE varname;
-    VALUE index;
-    VALUE flag;
+ip_get_variable2(VALUE self, VALUE varname, VALUE index, VALUE flag)
 {
     VALUE argv[3];
     VALUE retval;
@@ -9297,19 +8923,13 @@ ip_get_variable2(self, varname, index, flag)
 }
 
 static VALUE
-ip_get_variable(self, varname, flag)
-    VALUE self;
-    VALUE varname;
-    VALUE flag;
+ip_get_variable(VALUE self, VALUE varname, VALUE flag)
 {
     return ip_get_variable2(self, varname, Qnil, flag);
 }
 
 static VALUE
-ip_set_variable2_core(interp, argc, argv)
-    VALUE interp;
-    int   argc;
-    VALUE *argv;
+ip_set_variable2_core(VALUE interp, int argc, VALUE *argv)
 {
     struct tcltkip *ptr = get_ip(interp);
     int thr_crit_bup;
@@ -9407,12 +9027,7 @@ ip_set_variable2_core(interp, argc, argv)
 }
 
 static VALUE
-ip_set_variable2(self, varname, index, value, flag)
-    VALUE self;
-    VALUE varname;
-    VALUE index;
-    VALUE value;
-    VALUE flag;
+ip_set_variable2(VALUE self, VALUE varname, VALUE index, VALUE value, VALUE flag)
 {
     VALUE argv[4];
     VALUE retval;
@@ -9436,20 +9051,13 @@ ip_set_variable2(self, varname, index, value, flag)
 }
 
 static VALUE
-ip_set_variable(self, varname, value, flag)
-    VALUE self;
-    VALUE varname;
-    VALUE value;
-    VALUE flag;
+ip_set_variable(VALUE self, VALUE varname, VALUE value, VALUE flag)
 {
     return ip_set_variable2(self, varname, Qnil, value, flag);
 }
 
 static VALUE
-ip_unset_variable2_core(interp, argc, argv)
-    VALUE interp;
-    int   argc;
-    VALUE *argv;
+ip_unset_variable2_core(VALUE interp, int argc, VALUE *argv)
 {
     struct tcltkip *ptr = get_ip(interp);
     volatile VALUE varname, index, flag;
@@ -9485,11 +9093,7 @@ ip_unset_variable2_core(interp, argc, argv)
 }
 
 static VALUE
-ip_unset_variable2(self, varname, index, flag)
-    VALUE self;
-    VALUE varname;
-    VALUE index;
-    VALUE flag;
+ip_unset_variable2(VALUE self, VALUE varname, VALUE index, VALUE flag)
 {
     VALUE argv[3];
     VALUE retval;
@@ -9511,68 +9115,48 @@ ip_unset_variable2(self, varname, index, flag)
 }
 
 static VALUE
-ip_unset_variable(self, varname, flag)
-    VALUE self;
-    VALUE varname;
-    VALUE flag;
+ip_unset_variable(VALUE self, VALUE varname, VALUE flag)
 {
     return ip_unset_variable2(self, varname, Qnil, flag);
 }
 
 static VALUE
-ip_get_global_var(self, varname)
-    VALUE self;
-    VALUE varname;
+ip_get_global_var(VALUE self, VALUE varname)
 {
     return ip_get_variable(self, varname,
                            INT2FIX(TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG));
 }
 
 static VALUE
-ip_get_global_var2(self, varname, index)
-    VALUE self;
-    VALUE varname;
-    VALUE index;
+ip_get_global_var2(VALUE self, VALUE varname, VALUE index)
 {
     return ip_get_variable2(self, varname, index,
                             INT2FIX(TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG));
 }
 
 static VALUE
-ip_set_global_var(self, varname, value)
-    VALUE self;
-    VALUE varname;
-    VALUE value;
+ip_set_global_var(VALUE self, VALUE varname, VALUE value)
 {
     return ip_set_variable(self, varname, value,
                            INT2FIX(TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG));
 }
 
 static VALUE
-ip_set_global_var2(self, varname, index, value)
-    VALUE self;
-    VALUE varname;
-    VALUE index;
-    VALUE value;
+ip_set_global_var2(VALUE self, VALUE varname, VALUE index, VALUE value)
 {
     return ip_set_variable2(self, varname, index, value,
                             INT2FIX(TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG));
 }
 
 static VALUE
-ip_unset_global_var(self, varname)
-    VALUE self;
-    VALUE varname;
+ip_unset_global_var(VALUE self, VALUE varname)
 {
     return ip_unset_variable(self, varname,
                              INT2FIX(TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG));
 }
 
 static VALUE
-ip_unset_global_var2(self, varname, index)
-    VALUE self;
-    VALUE varname;
-    VALUE index;
+ip_unset_global_var2(VALUE self, VALUE varname, VALUE index)
 {
     return ip_unset_variable2(self, varname, index,
                               INT2FIX(TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG));
@@ -9581,9 +9165,7 @@ ip_unset_global_var2(self, varname, index)
 
 /* treat Tcl_List */
 static VALUE
-lib_split_tklist_core(ip_obj, list_str)
-    VALUE ip_obj;
-    VALUE list_str;
+lib_split_tklist_core(VALUE ip_obj, VALUE list_str)
 {
     Tcl_Interp *interp;
     volatile VALUE ary, elem;
@@ -9707,27 +9289,20 @@ lib_split_tklist_core(ip_obj, list_str)
 }
 
 static VALUE
-lib_split_tklist(self, list_str)
-    VALUE self;
-    VALUE list_str;
+lib_split_tklist(VALUE self, VALUE list_str)
 {
     return lib_split_tklist_core(Qnil, list_str);
 }
 
 
 static VALUE
-ip_split_tklist(self, list_str)
-    VALUE self;
-    VALUE list_str;
+ip_split_tklist(VALUE self, VALUE list_str)
 {
     return lib_split_tklist_core(self, list_str);
 }
 
 static VALUE
-lib_merge_tklist(argc, argv, obj)
-    int argc;
-    VALUE *argv;
-    VALUE obj;
+lib_merge_tklist(int argc, VALUE *argv, VALUE obj)
 {
     int  num, len;
     int  *flagPtr;
@@ -9819,9 +9394,7 @@ lib_merge_tklist(argc, argv, obj)
 }
 
 static VALUE
-lib_conv_listelement(self, src)
-    VALUE self;
-    VALUE src;
+lib_conv_listelement(VALUE self, VALUE src)
 {
     int   len, scan_flag;
     volatile VALUE dst;
@@ -9854,8 +9427,7 @@ lib_conv_listelement(self, src)
 }
 
 static VALUE
-lib_getversion(self)
-    VALUE self;
+lib_getversion(VALUE self)
 {
     set_tcltk_version();
 
@@ -9866,8 +9438,7 @@ lib_getversion(self)
 }
 
 static VALUE
-lib_get_reltype_name(self)
-    VALUE self;
+lib_get_reltype_name(VALUE self)
 {
     set_tcltk_version();
 
@@ -9943,10 +9514,7 @@ tcltklib_compile_info(void)
 /*###############################################*/
 
 static VALUE
-create_dummy_encoding_for_tk_core(interp, name, error_mode)
-     VALUE interp;
-     VALUE name;
-     VALUE error_mode;
+create_dummy_encoding_for_tk_core(VALUE interp, VALUE name, VALUE error_mode)
 {
   get_ip(interp);
 
@@ -9983,9 +9551,7 @@ create_dummy_encoding_for_tk_core(interp, name, error_mode)
 #endif
 }
 static VALUE
-create_dummy_encoding_for_tk(interp, name)
-     VALUE interp;
-     VALUE name;
+create_dummy_encoding_for_tk(VALUE interp, VALUE name)
 {
   return create_dummy_encoding_for_tk_core(interp, name, Qtrue);
 }
@@ -9993,10 +9559,7 @@ create_dummy_encoding_for_tk(interp, name)
 
 #ifdef HAVE_RUBY_ENCODING_H
 static int
-update_encoding_table(table, interp, error_mode)
-     VALUE table;
-     VALUE interp;
-     VALUE error_mode;
+update_encoding_table(VALUE table, VALUE interp, VALUE error_mode)
 {
   struct tcltkip *ptr;
   int retry = 0;
@@ -10050,10 +9613,7 @@ update_encoding_table(table, interp, error_mode)
 }
 
 static VALUE
-encoding_table_get_name_core(table, enc_arg, error_mode)
-     VALUE table;
-     VALUE enc_arg;
-     VALUE error_mode;
+encoding_table_get_name_core(VALUE table, VALUE enc_arg, VALUE error_mode)
 {
   volatile VALUE enc = enc_arg;
   volatile VALUE name = Qnil;
@@ -10157,10 +9717,7 @@ encoding_table_get_name_core(table, enc_arg, error_mode)
   return Qnil;
 }
 static VALUE
-encoding_table_get_obj_core(table, enc, error_mode)
-     VALUE table;
-     VALUE enc;
-     VALUE error_mode;
+encoding_table_get_obj_core(VALUE table, VALUE enc, VALUE error_mode)
 {
   volatile VALUE obj = Qnil;
 
@@ -10176,10 +9733,7 @@ encoding_table_get_obj_core(table, enc, error_mode)
 #else /* ! HAVE_RUBY_ENCODING_H */
 #if TCL_MAJOR_VERSION > 8 || (TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION >= 1)
 static int
-update_encoding_table(table, interp, error_mode)
-     VALUE table;
-     VALUE interp;
-     VALUE error_mode;
+update_encoding_table(VALUE table, VALUE interp, VALUE error_mode)
 {
   struct tcltkip *ptr;
   int retry = 0;
@@ -10222,10 +9776,7 @@ update_encoding_table(table, interp, error_mode)
 }
 
 static VALUE
-encoding_table_get_name_core(table, enc, error_mode)
-     VALUE table;
-     VALUE enc;
-     VALUE error_mode;
+encoding_table_get_name_core(VALUE table, VALUE enc, VALUE error_mode)
 {
   volatile VALUE name = Qnil;
 
@@ -10255,28 +9806,19 @@ encoding_table_get_name_core(table, enc, error_mode)
   return Qnil;
 }
 static VALUE
-encoding_table_get_obj_core(table, enc, error_mode)
-     VALUE table;
-     VALUE enc;
-     VALUE error_mode;
+encoding_table_get_obj_core(VALUE table, VALUE enc, VALUE error_mode)
 {
   return encoding_table_get_name_core(table, enc, error_mode);
 }
 
 #else /* Tcl/Tk 7.x or 8.0 */
 static VALUE
-encoding_table_get_name_core(table, enc, error_mode)
-     VALUE table;
-     VALUE enc;
-     VALUE error_mode;
+encoding_table_get_name_core(VALUE table, VALUE enc, VALUE error_mode)
 {
   return Qnil;
 }
 static VALUE
-encoding_table_get_obj_core(table, enc, error_mode)
-     VALUE table;
-     VALUE enc;
-     VALUE error_mode;
+encoding_table_get_obj_core(VALUE table, VALUE enc, VALUE error_mode)
 {
   return Qnil;
 }
@@ -10284,25 +9826,19 @@ encoding_table_get_obj_core(table, enc, error_mode)
 #endif
 
 static VALUE
-encoding_table_get_name(table, enc)
-     VALUE table;
-     VALUE enc;
+encoding_table_get_name(VALUE table, VALUE enc)
 {
   return encoding_table_get_name_core(table, enc, Qtrue);
 }
 static VALUE
-encoding_table_get_obj(table, enc)
-     VALUE table;
-     VALUE enc;
+encoding_table_get_obj(VALUE table, VALUE enc)
 {
   return encoding_table_get_obj_core(table, enc, Qtrue);
 }
 
 #ifdef HAVE_RUBY_ENCODING_H
 static VALUE
-create_encoding_table_core(arg, interp)
-     VALUE arg;
-     VALUE interp;
+create_encoding_table_core(VALUE arg, VALUE interp)
 {
   struct tcltkip *ptr = get_ip(interp);
   volatile VALUE table = rb_hash_new();
@@ -10390,9 +9926,7 @@ create_encoding_table_core(arg, interp)
 #else /* ! HAVE_RUBY_ENCODING_H */
 #if TCL_MAJOR_VERSION > 8 || (TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION >= 1)
 static VALUE
-create_encoding_table_core(arg, interp)
-     VALUE arg;
-     VALUE interp;
+create_encoding_table_core(VALUE arg, VALUE interp)
 {
   struct tcltkip *ptr = get_ip(interp);
   volatile VALUE table = rb_hash_new();
@@ -10431,9 +9965,7 @@ create_encoding_table_core(arg, interp)
 
 #else /* Tcl/Tk 7.x or 8.0 */
 static VALUE
-create_encoding_table_core(arg, interp)
-     VALUE arg;
-     VALUE interp;
+create_encoding_table_core(VALUE arg, VALUE interp)
 {
   volatile VALUE table = rb_hash_new();
   rb_ivar_set(interp, ID_encoding_table, table);
@@ -10443,16 +9975,14 @@ create_encoding_table_core(arg, interp)
 #endif
 
 static VALUE
-create_encoding_table(interp)
-     VALUE interp;
+create_encoding_table(VALUE interp)
 {
   return rb_funcall(rb_proc_new(create_encoding_table_core, interp),
 		    ID_call, 0);
 }
 
 static VALUE
-ip_get_encoding_table(interp)
-     VALUE interp;
+ip_get_encoding_table(VALUE interp)
 {
   volatile VALUE table = Qnil;
 
@@ -10516,10 +10046,7 @@ EXTERN struct dummy_TkMenuRef *TkFindMenuReferences(Tcl_Interp*, char*);
 #endif
 
 static VALUE
-ip_make_menu_embeddable_core(interp, argc, argv)
-    VALUE interp;
-    int   argc;
-    VALUE *argv;
+ip_make_menu_embeddable_core(VALUE interp, int argc, VALUE *argv)
 {
 #if TCL_MAJOR_VERSION >= 8
     volatile VALUE menu_path;
@@ -10596,9 +10123,7 @@ ip_make_menu_embeddable_core(interp, argc, argv)
 }
 
 static VALUE
-ip_make_menu_embeddable(interp, menu_path)
-    VALUE interp;
-    VALUE menu_path;
+ip_make_menu_embeddable(VALUE interp, VALUE menu_path)
 {
     VALUE argv[1];
 
