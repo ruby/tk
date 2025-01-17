@@ -2710,8 +2710,9 @@ ip_mainloop(int argc, VALUE *argv, VALUE self)
 
 
 static VALUE
-watchdog_evloop_launcher(VALUE check_rootwidget)
+watchdog_evloop_launcher(void *arg)
 {
+    VALUE check_rootwidget = (VALUE)arg;
     return lib_eventloop_launcher(RTEST(check_rootwidget), 0,
                                   (int*)NULL, (Tcl_Interp*)NULL);
 }
@@ -2852,7 +2853,7 @@ _thread_call_proc_ensure(VALUE arg)
 }
 
 static VALUE
-_thread_call_proc(VALUE arg)
+_thread_call_proc(void *arg)
 {
     struct thread_call_proc_arg *q = (struct thread_call_proc_arg*)arg;
 
@@ -3336,7 +3337,7 @@ ip_ruby_eval(
     /* evaluate the argument string by ruby */
     DUMP2("rb_eval_string(%s)", arg);
 
-    code = tcl_protect(interp, rb_eval_string, (VALUE)arg);
+    code = tcl_protect(interp, (VALUE (*)(VALUE))rb_eval_string, (VALUE)arg);
 
 #if TCL_MAJOR_VERSION >= 8
     xfree(arg);
@@ -3349,10 +3350,11 @@ ip_ruby_eval(
 
 /* Tcl command `ruby_cmd' */
 static VALUE
-ip_ruby_cmd_core(struct cmd_body_arg *arg)
+ip_ruby_cmd_core(VALUE varg)
 {
     volatile VALUE ret;
     int thr_crit_bup;
+    struct cmd_body_arg *arg = (struct cmd_body_arg *)varg;
 
     DUMP1("call ip_ruby_cmd_core");
     thr_crit_bup = rb_thread_critical;
@@ -3366,8 +3368,9 @@ ip_ruby_cmd_core(struct cmd_body_arg *arg)
 }
 
 static VALUE
-ip_ruby_cmd_receiver_const_get(char *name)
+ip_ruby_cmd_receiver_const_get(VALUE vname)
 {
+    char *name = (char *)vname;
     return rb_path2class(name);
 }
 
@@ -9838,7 +9841,7 @@ encoding_table_get_obj(VALUE table, VALUE enc)
 
 #ifdef HAVE_RUBY_ENCODING_H
 static VALUE
-create_encoding_table_core(VALUE arg, VALUE interp)
+create_encoding_table_core(RB_BLOCK_CALL_FUNC_ARGLIST(arg, interp))
 {
   struct tcltkip *ptr = get_ip(interp);
   volatile VALUE table = rb_hash_new();
@@ -9926,7 +9929,7 @@ create_encoding_table_core(VALUE arg, VALUE interp)
 #else /* ! HAVE_RUBY_ENCODING_H */
 #if TCL_MAJOR_VERSION > 8 || (TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION >= 1)
 static VALUE
-create_encoding_table_core(VALUE arg, VALUE interp)
+create_encoding_table_core(RB_BLOCK_CALL_FUNC_ARGLIST(arg, interp))
 {
   struct tcltkip *ptr = get_ip(interp);
   volatile VALUE table = rb_hash_new();
@@ -9965,7 +9968,7 @@ create_encoding_table_core(VALUE arg, VALUE interp)
 
 #else /* Tcl/Tk 7.x or 8.0 */
 static VALUE
-create_encoding_table_core(VALUE arg, VALUE interp)
+create_encoding_table_core(RB_BLOCK_CALL_FUNC_ARGLIST(arg, interp))
 {
   volatile VALUE table = rb_hash_new();
   rb_ivar_set(interp, ID_encoding_table, table);
@@ -10237,9 +10240,9 @@ Init_tcltklib(void)
 
     /* --------------------------------------------------------------- */
 
-    rb_define_module_function(lib, "get_version", lib_getversion, -1);
+    rb_define_module_function(lib, "get_version", lib_getversion, 0);
     rb_define_module_function(lib, "get_release_type_name",
-			      lib_get_reltype_name, -1);
+			      lib_get_reltype_name, 0);
 
     rb_define_const(release_type, "ALPHA", INT2FIX(TCL_ALPHA_RELEASE));
     rb_define_const(release_type, "BETA",  INT2FIX(TCL_BETA_RELEASE));
