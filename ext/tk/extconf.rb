@@ -12,12 +12,12 @@ TkLib_Config['search_versions'] =
   # %w[8.9 8.8 8.7 8.6 8.5 8.4 8.3 8.2 8.1 8.0 7.6 4.2]
   # %w[8.7 8.6 8.5 8.4 8.3 8.2 8.1 8.0]
   # %w[8.7 8.6 8.5 8.4 8.0] # to shorten search steps
-  %w[8.6 8.5 8.4]
+  %w[8.6 8.5 8.4 9.0]
 
 TkLib_Config['unsupported_versions'] =
   %w[8.8 8.7]
 
-TkLib_Config['major_nums'] = '87'
+TkLib_Config['major_nums'] = '90'
 
 
 ##############################################################
@@ -680,7 +680,9 @@ def libcheck_for_tclConfig(tcldir, tkdir, tclconf, tkconf)
           # FIX ME: avoid pathname trouble (fail to find) on MinGW.
           $INCFLAGS << " -I" << File.join(File.dirname(File.dirname(file)),"include") if is_win32?
         else
-          tklibs = append_library("", libname)
+          # tklibs = append_library("", libname)
+          # there is no tk9.0 in Mac OS after Tcl/Tk 9.0
+          tklibs = append_library("", "tcl9tk9.0")
           #tklibs = append_library("", $1)
           tklibs = "#{libpathflag([tkdir])} #{tklibs}"
 
@@ -691,11 +693,7 @@ def libcheck_for_tclConfig(tcldir, tkdir, tclconf, tkconf)
         tklibs << " " <<  tcllibs if tcllibs
         tmp_tklibs = tklibs.dup
         $LIBPATH = libpath | [tkdir]
-        try_func(tkfunc, tklibs, ["tcl.h", "tk.h"]) ||
-          ( try_func(tkfunc, tklibs << " " << tkconf['TK_LIBS'], ["tcl.h", "tk.h"]) if tkconf['TK_LIBS'] ) ||
-          ( try_func(tkfunc, (tklibs = tmp_tklibs.dup) << " " << tkconf['TK_XLIBSW'], ["tcl.h", "tk.h"]) if tkconf['TK_XLIBSW'] ) ||
-          ( try_func(tkfunc, tklibs << " " << tkconf['TK_LIBS'], ["tcl.h", "tk.h"]) if tkconf['TK_LIBS'] )
-
+        have_header("tk.h") && have_library("tk", tkfunc, ["tcl.h", "tk.h"])
       ensure
         mkmf_param = {
           'PATH' => file,
