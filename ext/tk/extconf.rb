@@ -618,7 +618,7 @@ def libcheck_for_tclConfig(tcldir, tkdir, tclconf, tkconf)
     tk_regexp = /^.*(tk#{stub}#{tkver}.*)\.(#{exts}).*$/
   elsif tkconf
     tk_glob = "*tk#{stub}#{tkconf['TK_MAJOR_VERSION']}{.,}#{tkconf['TK_MINOR_VERSION']}*.*"
-    tk_regexp = /^.*(tk#{stub}#{tkconf['TK_MAJOR_VERSION']}(?:\.|)#{tkconf['TK_MINOR_VERSION']}.*)\.#{exts}.*$/
+    tk_regexp = /^(?:.*(tcl#{tclconf['TCL_MAJOR_VERSION']})|.*)(tk#{stub}#{tkconf['TK_MAJOR_VERSION']}(?:\.|)#{tkconf['TK_MINOR_VERSION']}.*)\.#{exts}.*$/
   end
 
   tcllib_ok ||= !tclconf || Dir.glob(File.join(tcldir, tcl_glob), File::FNM_CASEFOLD).find{|file|
@@ -667,8 +667,8 @@ def libcheck_for_tclConfig(tcldir, tkdir, tclconf, tkconf)
 
   tklib_ok ||= !tkconf || Dir.glob(File.join(tkdir, tk_glob), File::FNM_CASEFOLD).find{|file|
     if file =~ tk_regexp
-      libname = $1
-      ext = $2.downcase
+      libname = ($1 || "") + $2
+      ext = $3.downcase
       begin
         #puts "check #{file} #{$1} #{tkfunc} #{tkdir}"
         # find_library($1, tkfunc, tkdir)
@@ -680,9 +680,7 @@ def libcheck_for_tclConfig(tcldir, tkdir, tclconf, tkconf)
           # FIX ME: avoid pathname trouble (fail to find) on MinGW.
           $INCFLAGS << " -I" << File.join(File.dirname(File.dirname(file)),"include") if is_win32?
         else
-          # tklibs = append_library("", libname)
-          # there is no tk9.0 in Mac OS after Tcl/Tk 9.0
-          tklibs = append_library("", "tcl9tk9.0")
+          tklibs = append_library("", libname)
           #tklibs = append_library("", $1)
           tklibs = "#{libpathflag([tkdir])} #{tklibs}"
 
