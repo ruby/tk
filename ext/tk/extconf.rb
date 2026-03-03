@@ -608,17 +608,17 @@ def libcheck_for_tclConfig(tcldir, tkdir, tclconf, tkconf)
 
   if tclver
     tcl_glob = "*tcl#{stub}#{tclver}.*"
-    tcl_regexp = /^.*(tcl#{stub}#{tclver}.*)\.(#{exts}).*$/
+    tcl_regexp = /(tcl#{stub}#{tclver}.*)\.(#{exts})/
   elsif tclconf
     tcl_glob = "*tcl#{stub}#{tclconf['TCL_MAJOR_VERSION']}{.,}#{tclconf['TCL_MINOR_VERSION']}*.*"
-    tcl_regexp = /^.*(tcl#{stub}#{tclconf['TCL_MAJOR_VERSION']}(?:\.|)#{tclconf['TCL_MINOR_VERSION']}.*)\.(#{exts}).*$/
+    tcl_regexp = /(tcl#{stub}#{tclconf['TCL_MAJOR_VERSION']}(?:\.|)#{tclconf['TCL_MINOR_VERSION']}.*)\.(#{exts})/
   end
   if tkver
     tk_glob = "*tk#{stub}#{tkver}.*"
-    tk_regexp = /^.*(tk#{stub}#{tkver}.*)\.(#{exts}).*$/
+    tk_regexp = /(tk#{stub}#{tkver}.*)\.(#{exts})/
   elsif tkconf
     tk_glob = "*tk#{stub}#{tkconf['TK_MAJOR_VERSION']}{.,}#{tkconf['TK_MINOR_VERSION']}*.*"
-    tk_regexp = /^(?:.*(tcl#{tclconf['TCL_MAJOR_VERSION']})|.*)(tk#{stub}#{tkconf['TK_MAJOR_VERSION']}(?:\.|)#{tkconf['TK_MINOR_VERSION']}.*)\.#{exts}.*$/
+    tk_regexp = /((?:tcl#{tclconf['TCL_MAJOR_VERSION']})?tk#{stub}#{tkconf['TK_MAJOR_VERSION']}\.?#{tkconf['TK_MINOR_VERSION']}.*)\.#{exts}/
   end
 
   tcllib_ok ||= !tclconf || Dir.glob(File.join(tcldir, tcl_glob), File::FNM_CASEFOLD).find{|file|
@@ -667,8 +667,8 @@ def libcheck_for_tclConfig(tcldir, tkdir, tclconf, tkconf)
 
   tklib_ok ||= !tkconf || Dir.glob(File.join(tkdir, tk_glob), File::FNM_CASEFOLD).find{|file|
     if file =~ tk_regexp
-      libname = ($1 || "") + $2
-      ext = $3.downcase
+      libname = $1
+      ext = $2.downcase
       begin
         #puts "check #{file} #{$1} #{tkfunc} #{tkdir}"
         # find_library($1, tkfunc, tkdir)
