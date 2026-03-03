@@ -691,7 +691,11 @@ def libcheck_for_tclConfig(tcldir, tkdir, tclconf, tkconf)
         tklibs << " " <<  tcllibs if tcllibs
         tmp_tklibs = tklibs.dup
         $LIBPATH = libpath | [tkdir]
-        have_header("tk.h") && have_library("tk", tkfunc, ["tcl.h", "tk.h"])
+        try_func(tkfunc, tklibs, ["tcl.h", "tk.h"]) ||
+          ( try_func(tkfunc, tklibs << " " << tkconf['TK_LIBS'], ["tcl.h", "tk.h"]) if tkconf['TK_LIBS'] ) ||
+          ( try_func(tkfunc, (tklibs = tmp_tklibs.dup) << " " << tkconf['TK_XLIBSW'], ["tcl.h", "tk.h"]) if tkconf['TK_XLIBSW'] ) ||
+          ( try_func(tkfunc, tklibs << " " << tkconf['TK_LIBS'], ["tcl.h", "tk.h"]) if tkconf['TK_LIBS'] )
+
       ensure
         mkmf_param = {
           'PATH' => file,
