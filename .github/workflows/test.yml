@@ -18,7 +18,8 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
     - name: Install dependencies
       run: |
-        sudo apt install tk-dev
+        sudo apt-get update
+        sudo apt-get install tk-dev
         gem install bundler --no-document
         bundle install
     - name: Run test
