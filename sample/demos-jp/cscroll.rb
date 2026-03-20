@@ -45,45 +45,31 @@ $cscroll_buttons = TkFrame.new(base_frame) {|frame|
 $cscroll_buttons.pack('side'=>'bottom', 'fill'=>'x', 'pady'=>'2m')
 
 # frame 設定
-unless $tk_version =~ /^4\.[01]/
-  $cscroll_grid = TkFrame.new(base_frame) {
-    pack('expand'=>'yes', 'fill'=>'both', 'padx'=>1, 'pady'=>1)
-  }
-  TkGrid.rowconfigure($cscroll_grid, 0, 'weight'=>1, 'minsize'=>0)
-  TkGrid.columnconfigure($cscroll_grid, 0, 'weight'=>1, 'minsize'=>0)
-end
+$cscroll_grid = TkFrame.new(base_frame) {
+  pack('expand'=>'yes', 'fill'=>'both', 'padx'=>1, 'pady'=>1)
+}
+TkGrid.rowconfigure($cscroll_grid, 0, 'weight'=>1, 'minsize'=>0)
+TkGrid.columnconfigure($cscroll_grid, 0, 'weight'=>1, 'minsize'=>0)
 
 # canvas 設定
 $cscroll_canvas = TkCanvas.new(base_frame,
                                'relief'=>'sunken', 'borderwidth'=>2,
                                'scrollregion'=>['-11c', '-11c', '50c', '20c']
                                ) {|c|
-  if $tk_version =~ /^4\.[01]/
-    pack('expand'=>'yes', 'fill'=>'both')
-  else
-    grid('in'=>$cscroll_grid, 'padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>0,
-         'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-  end
+  grid('in'=>$cscroll_grid, 'padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>0,
+       'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
 
   TkScrollbar.new(base_frame, 'command'=>proc{|*args| c.yview(*args)}) {|vs|
     c.yscrollcommand(proc{|first,last| vs.set first,last})
-    if $tk_version =~ /^4\.[01]/
-      pack('side'=>'right', 'fill'=>'y')
-    else
-      grid('in'=>$cscroll_grid, 'padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>1,
-           'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-    end
+    grid('in'=>$cscroll_grid, 'padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>1,
+         'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
   }
 
   TkScrollbar.new(base_frame, 'orient'=>'horiz',
                   'command'=>proc{|*args| c.xview(*args)}) {|hs|
     c.xscrollcommand(proc{|first,last| hs.set first,last})
-    if $tk_version =~ /^4\.[01]/
-      pack('side'=>'bottom', 'fill'=>'x')
-    else
-      grid('in'=>$cscroll_grid, 'padx'=>1, 'pady'=>1, 'row'=>1, 'column'=>0,
-           'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-    end
+    grid('in'=>$cscroll_grid, 'padx'=>1, 'pady'=>1, 'row'=>1, 'column'=>0,
+         'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
   }
 }
 

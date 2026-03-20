@@ -239,12 +239,7 @@ module TkItemConfigMethod
       unless fnt.kind_of?(TkFont)
         fnt = tagfontobj(tagid(tagOrId), fontkey)
       end
-      if fontcode == 'kanji' && JAPANIZED_TK && TK_VERSION =~ /^4\.*/
-        # obsolete; just for compatibility
-        fnt.kanji_font
-      else
-        fnt
-      end
+      fnt
     else
       tk_tcl2ruby(tk_call_without_enc(*(__item_cget_cmd(tagid(tagOrId)) << "-#{option}")), true)
     end

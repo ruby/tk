@@ -65,21 +65,14 @@ TkFrame.new(base_frame, 'borderwidth'=>10) {|w|
   sv.command(proc{|*args| sayings_lbox.yview(*args)})
   sh.command(proc{|*args| sayings_lbox.xview(*args)})
 
-  if $tk_version =~ /^4\.[01]/
-    sv.pack('side'=>'right', 'fill'=>'y')
-    sh.pack('side'=>'bottom', 'fill'=>'x')
-    sayings_lbox.pack('expand'=>'yes', 'fill'=>'y')
-
-  else
-    sayings_lbox.grid('row'=>0, 'column'=>0,
-                      'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-    sv.grid('row'=>0, 'column'=>1,
-            'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-    sh.grid('row'=>1, 'column'=>0,
-            'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-    TkGrid.rowconfigure(w, 0, 'weight'=>1, 'minsize'=>0)
-    TkGrid.columnconfigure(w, 0, 'weight'=>1, 'minsize'=>0)
-  end
+  sayings_lbox.grid('row'=>0, 'column'=>0,
+                    'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
+  sv.grid('row'=>0, 'column'=>1,
+          'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
+  sh.grid('row'=>1, 'column'=>0,
+          'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
+  TkGrid.rowconfigure(w, 0, 'weight'=>1, 'minsize'=>0)
+  TkGrid.columnconfigure(w, 0, 'weight'=>1, 'minsize'=>0)
 
 }.pack('side'=>'top', 'expand'=>'yes', 'fill'=>'y')
 

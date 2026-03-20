@@ -56,11 +56,7 @@ $ctext_canvas = TkCanvas.new(base_frame, 'relief'=>'flat',
 $ctext_canvas.pack('side'=>'top', 'expand'=>'yes', 'fill'=>'both')
 
 # font 設定
-if $tk_version =~ /^4.*/
-  textFont = '-*-Helvetica-Medium-R-Normal--*-240-*-*-*-*-*-*'
-else
-  textFont = 'Helvetica 24'
-end
+textFont = 'Helvetica 24'
 
 # canvas 設定
 TkcRectangle.new($ctext_canvas, 245, 195, 255, 205,
@@ -70,12 +66,7 @@ ctag_text_param = {
   'text'=>"これはキャンバスwidgetのテキスト機能をデモするための文字列です。\n上で述べたような編集を可能とするためのバインディングを施しています。",
   'width'=>440, 'anchor'=>'n', 'justify'=>'left'
 }
-if $tk_version =~ /^4.*/
-  ctag_text_param['font'] = '-*-Helvetica-Medium-R-Normal--*-240-*-*-*-*-*-*'
-  ctag_text_param['kanjifont'] = '-*-r-*--24-*-jisx0208.1983-0'
-else
-  ctag_text_param['font'] = 'Helvetica 24'
-end
+ctag_text_param['font'] = 'Helvetica 24'
 $ctag_text = TkcTag.new($ctext_canvas)
 $ctag_text.withtag(TkcText.new($ctext_canvas, 250, 200, ctag_text_param))
 
@@ -119,14 +110,8 @@ mkTextConfig $ctext_canvas, x+60, y+60, 'anchor', 'nw', color
 item = TkcRectangle.new($ctext_canvas, x+40, y+40, x+50, y+50,
                         'outline'=>'black', 'fill'=>'red')
 item.bind('1', proc{$ctag_text.configure 'anchor', 'center'})
-if $tk_version =~ /^4.*/
-  TkcText.new($ctext_canvas, x+45, y-5, 'text'=>'Text Position',
-              'font'=>'-*-times-medium-r-normal--*-240-*-*-*-*-*-*',
-              'anchor'=>'s', 'fill'=>'brown')
-else
-  TkcText.new($ctext_canvas, x+45, y-5, 'text'=>'Text Position',
-              'font'=>'Times 24', 'anchor'=>'s', 'fill'=>'brown')
-end
+TkcText.new($ctext_canvas, x+45, y-5, 'text'=>'Text Position',
+            'font'=>'Times 24', 'anchor'=>'s', 'fill'=>'brown')
 
 # Lastly, create some items that allow the text's justification to be
 # changed.
@@ -137,14 +122,8 @@ color = 'SeaGreen2'
 mkTextConfig $ctext_canvas, x, y, 'justify', 'left', color
 mkTextConfig $ctext_canvas, x+30, y, 'justify', 'center', color
 mkTextConfig $ctext_canvas, x+60, y, 'justify', 'right', color
-if $tk_version =~ /^4.*/
-  TkcText.new($ctext_canvas, x+45, y-5, 'text'=>'Justification',
-              'font'=>'-*-times-medium-r-normal--*-240-*-*-*-*-*-*',
-              'anchor'=>'s', 'fill'=>'brown')
-else
-  TkcText.new($ctext_canvas, x+45, y-5, 'text'=>'Justification',
-              'font'=>'Times 24', 'anchor'=>'s', 'fill'=>'brown')
-end
+TkcText.new($ctext_canvas, x+45, y-5, 'text'=>'Justification',
+            'font'=>'Times 24', 'anchor'=>'s', 'fill'=>'brown')
 
 $ctext_canvas.itembind('config', 'Enter', proc{textEnter $ctext_canvas})
 $ctext_canvas.itembind('config', 'Leave',
