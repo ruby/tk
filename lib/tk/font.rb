@@ -52,10 +52,6 @@ class TkFont
 
   # set default font
   case Tk::TK_VERSION
-  when /^4\..*/
-    DEFAULT_LATIN_FONT_NAME = 'a14'.freeze
-    DEFAULT_KANJI_FONT_NAME = 'k14'.freeze
-
   when /^8\.[0-4]/
     if JAPANIZED_TK
       begin
@@ -122,7 +118,7 @@ class TkFont
     DEFAULT_LATIN_FONT_NAME = ltn.freeze
     DEFAULT_KANJI_FONT_NAME = knj.freeze
 
-  when /^8\.[5-9]/, /^9\..*/
+  else
     if tk_call('font', 'names') =~ /\bTkDefaultFont\b/
       DEFAULT_LATIN_FONT_NAME = 'TkDefaultFont'.freeze
       DEFAULT_KANJI_FONT_NAME = 'TkDefaultFont'.freeze
@@ -130,11 +126,6 @@ class TkFont
       DEFAULT_LATIN_FONT_NAME = 'Helvetica'.freeze
       DEFAULT_KANJI_FONT_NAME = 'mincho'.freeze
     end
-
-  else # unknown version
-    DEFAULT_LATIN_FONT_NAME = 'Helvetica'.freeze
-    DEFAULT_KANJI_FONT_NAME = 'mincho'.freeze
-
   end
 
   if $DEBUG
@@ -346,34 +337,15 @@ class TkFont
   end
 
   def TkFont.families(win=nil)
-    case (Tk::TK_VERSION)
-    when /^4\..*/
-      ['fixed']
-
-    when /^8\..*/
-      if win
-        tk_split_simplelist(tk_call('font', 'families', '-displayof', win))
-      else
-        tk_split_simplelist(tk_call('font', 'families'))
-      end
+    if win
+      tk_split_simplelist(tk_call('font', 'families', '-displayof', win))
+    else
+      tk_split_simplelist(tk_call('font', 'families'))
     end
   end
 
   def TkFont.names
-    case (Tk::TK_VERSION)
-    when /^4\..*/
-      r = ['fixed']
-      r += ['a14', 'k14'] if JAPANIZED_TK
-      Tk_FontNameTBL.mutex.synchronize{
-        Tk_FontNameTBL.each_value{|obj| r.push(obj)}
-      }
-      #r | []
-      r.uniq
-
-    when /^8\..*/
-      tk_split_simplelist(tk_call('font', 'names'))
-
-    end
+    tk_split_simplelist(tk_call('font', 'names'))
   end
 
   def TkFont.create_copy(font)
@@ -406,32 +378,6 @@ class TkFont
     path = [win, tag, key].join(';')
 
     case (Tk::TK_VERSION)
-    when /^4\..*/
-      regexp = /^-(|kanji)#{key} /
-
-      conf_list = tk_split_simplelist(tk_call(*args)).
-        find_all{|prop| prop =~ regexp}.
-        collect{|prop| tk_split_simplelist(prop)}
-
-      if conf_list.size == 0
-        raise RuntimeError, "the widget may not support 'font' option"
-      end
-
-      args << {}
-
-      ltn_key = "-#{key}"
-      knj_key = "-kanji#{key}"
-
-      ltn_info = conf_list.find{|conf| conf[0] == ltn_key}
-      ltn = ltn_info[-1]
-      ltn = nil if ltn == [] || ltn == ""
-
-      knj_info = conf_list.find{|conf| conf[0] == knj_key}
-      knj = knj_info[-1]
-      knj = nil if knj == [] || knj == ""
-
-      TkFont.new(ltn, knj).call_font_configure([path, key], *args)
-
     when /^8\.[0-4]/
       regexp = /^-#{key} /
 
@@ -479,7 +425,7 @@ class TkFont
         end
       end
 
-    when /^8\.[5-9]/, /^9\..*/
+    else
       regexp = /^-#{key} /
 
       conf_list = tk_split_simplelist(tk_call(*args)).
@@ -527,7 +473,7 @@ class TkFont
 
   def TkFont.failsafe(font)
     begin
-      if /^8\..*/ === Tk::TK_VERSION  && JAPANIZED_TK
+      if JAPANIZED_TK
         tk_call('font', 'failsafe', font)
       end
     rescue
@@ -552,35 +498,22 @@ class TkFont
     # @kanji_desscendant = nil
     @descendant = [nil, nil] # [latin, kanji]
 
-    case (Tk::TK_VERSION)
-    when /^4\..*/
-      @latinfont = ""
-      @kanjifont = ""
-      if JAPANIZED_TK
-        @compoundfont = [[@latinfont], [@kanjifont]]
-        @fontslot = {'font'=>@latinfont, 'kanjifont'=>@kanjifont}
-      else
-        @compoundfont = @latinfont
-        @fontslot = {'font'=>@latinfont}
-      end
+    @latinfont = @id + 'l'
+    @kanjifont = @id + 'k'
+    @compoundfont = @id + 'c'
+
+    if JAPANIZED_TK
+      tk_call('font', 'create', @latinfont, '-charset', 'iso8859')
+      tk_call('font', 'create', @kanjifont, '-charset', 'jisx0208.1983')
+      tk_call('font', 'create', @compoundfont,
+              '-compound', [@latinfont, @kanjifont])
     else
-      @latinfont = @id + 'l'
-      @kanjifont = @id + 'k'
-      @compoundfont = @id + 'c'
-
-      if JAPANIZED_TK
-        tk_call('font', 'create', @latinfont, '-charset', 'iso8859')
-        tk_call('font', 'create', @kanjifont, '-charset', 'jisx0208.1983')
-        tk_call('font', 'create', @compoundfont,
-                '-compound', [@latinfont, @kanjifont])
-      else
-        tk_call('font', 'create', @latinfont)
-        tk_call('font', 'create', @kanjifont)
-        tk_call('font', 'create', @compoundfont)
-      end
-
-      @fontslot = {'font'=>@compoundfont}
+      tk_call('font', 'create', @latinfont)
+      tk_call('font', 'create', @kanjifont)
+      tk_call('font', 'create', @compoundfont)
     end
+
+    @fontslot = {'font'=>@compoundfont}
 
     self
   end
@@ -637,11 +570,7 @@ class TkFont
 
     if ltn
       if JAPANIZED_TK && !knj
-        if Tk::TK_VERSION =~ /^4..*/
-          knj = DEFAULT_KANJI_FONT_NAME
-        else
-          knj = ltn
-        end
+        knj = ltn
       end
     else
       ltn = DEFAULT_LATIN_FONT_NAME
@@ -1586,7 +1515,7 @@ class TkFont
 
   def reset_pointadjust
     begin
-      if /^8\..*/ === Tk::TK_VERSION  && JAPANIZED_TK
+      if JAPANIZED_TK
         configure('pointadjust' => latin_actual.assoc('size')[1].to_f /
                                       kanji_actual.assoc('size')[1].to_f )
       end
@@ -1599,11 +1528,6 @@ class TkFont
   # private alias
   ###################################
   case (Tk::TK_VERSION)
-  when /^4\..*/
-    alias create_latinfont        create_latinfont_tk4x
-    alias create_kanjifont        create_kanjifont_tk4x
-    alias create_compoundfont     create_compoundfont_tk4x
-
   when /^8\.[0-5]/
     alias create_latinfont        create_latinfont_tk8x
     alias create_kanjifont        create_kanjifont_tk8x
@@ -2188,41 +2112,15 @@ module TkFont::CoreMethods
   ###################################
   # private alias
   ###################################
-  case (Tk::TK_VERSION)
-  when /^4\..*/
-    alias actual_core             actual_core_tk4x
-    alias configure_core          configure_core_tk4x
-    alias configinfo_core         configinfo_core_tk4x
-    alias current_configinfo_core current_configinfo_core_tk4x
-    alias delete_core             delete_core_tk4x
-    alias latin_replace_core      latin_replace_core_tk4x
-    alias kanji_replace_core      kanji_replace_core_tk4x
-    alias measure_core            measure_core_tk4x
-    alias metrics_core            metrics_core_tk4x
-
-  when /^8\.[0-9]/
-    alias actual_core             actual_core_tk8x
-    alias configure_core          configure_core_tk8x
-    alias configinfo_core         configinfo_core_tk8x
-    alias current_configinfo_core current_configinfo_core_tk8x
-    alias delete_core             delete_core_tk8x
-    alias latin_replace_core      latin_replace_core_tk8x
-    alias kanji_replace_core      kanji_replace_core_tk8x
-    alias measure_core            measure_core_tk8x
-    alias metrics_core            metrics_core_tk8x
-
-  else
-    alias actual_core             actual_core_tk8x
-    alias configure_core          configure_core_tk8x
-    alias configinfo_core         configinfo_core_tk8x
-    alias current_configinfo_core current_configinfo_core_tk8x
-    alias delete_core             delete_core_tk8x
-    alias latin_replace_core      latin_replace_core_tk8x
-    alias kanji_replace_core      kanji_replace_core_tk8x
-    alias measure_core            measure_core_tk8x
-    alias metrics_core            metrics_core_tk8x
-
-  end
+  alias actual_core             actual_core_tk8x
+  alias configure_core          configure_core_tk8x
+  alias configinfo_core         configinfo_core_tk8x
+  alias current_configinfo_core current_configinfo_core_tk8x
+  alias delete_core             delete_core_tk8x
+  alias latin_replace_core      latin_replace_core_tk8x
+  alias kanji_replace_core      kanji_replace_core_tk8x
+  alias measure_core            measure_core_tk8x
+  alias metrics_core            metrics_core_tk8x
 end
 
 class TkFont

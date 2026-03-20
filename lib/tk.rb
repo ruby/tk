@@ -2396,7 +2396,7 @@ module Tk
 
   def Tk.show_kinsoku(mode='both')
     begin
-      if /^8\.*/ === TK_VERSION  && JAPANIZED_TK
+      if JAPANIZED_TK
         tk_split_simplelist(tk_call('kinsoku', 'show', mode))
       end
     rescue
@@ -2404,7 +2404,7 @@ module Tk
   end
   def Tk.add_kinsoku(chars, mode='both')
     begin
-      if /^8\.*/ === TK_VERSION  && JAPANIZED_TK
+      if JAPANIZED_TK
         tk_split_simplelist(tk_call('kinsoku', 'add', mode,
                                     *(chars.split(''))))
       else
@@ -2416,7 +2416,7 @@ module Tk
   end
   def Tk.delete_kinsoku(chars, mode='both')
     begin
-      if /^8\.*/ === TK_VERSION  && JAPANIZED_TK
+      if JAPANIZED_TK
         tk_split_simplelist(tk_call('kinsoku', 'delete', mode,
                             *(chars.split(''))))
       end
@@ -3813,12 +3813,7 @@ module TkConfigMethod
       unless fnt.kind_of?(TkFont)
         fnt = fontobj(fontkey)
       end
-      if fontcode == 'kanji' && JAPANIZED_TK && TK_VERSION =~ /^4\.*/
-        # obsolete; just for compatibility
-        fnt.kanji_font
-      else
-        fnt
-      end
+      fnt
 
     when /^(#{__tkvariable_optkeys.join('|')})$/
       v = tk_call_without_enc(*(__cget_cmd << "-#{slot}"))

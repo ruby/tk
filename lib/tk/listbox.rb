@@ -116,12 +116,7 @@ class Tk::Listbox<TkTextWin
       unless fnt.kind_of?(TkFont)
         fnt = tagfontobj(index, fnt)
       end
-      if key.to_s == 'kanjifont' && JAPANIZED_TK && TK_VERSION =~ /^4\.*/
-        # obsolete; just for compatibility
-        fnt.kanji_font
-      else
-        fnt
-      end
+      fnt
     else
       tk_tcl2ruby(_fromUTF8(tk_send_without_enc('itemcget', index, "-#{key}")))
     end

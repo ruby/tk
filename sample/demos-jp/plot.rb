@@ -45,11 +45,7 @@ $plot_buttons = TkFrame.new(base_frame) {|frame|
 $plot_buttons.pack('side'=>'bottom', 'fill'=>'x', 'pady'=>'2m')
 
 # font 設定
-  if $tk_version =~ /^4.*/
-    plotFont = '-*-Helvetica-Medium-R-Normal--*-180-*-*-*-*-*-*'
-  else
-    font = 'Helvetica 18'
-  end
+font = 'Helvetica 18'
 
 # canvas 設定
 $plot_canvas = TkCanvas.new(base_frame,'relief'=>'raised','width'=>450,'height'=>300)

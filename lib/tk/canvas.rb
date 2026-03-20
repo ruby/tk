@@ -301,12 +301,7 @@ class Tk::Canvas<TkWindow
       unless fnt.kind_of?(TkFont)
         fnt = tagfontobj(tagid(tagOrId), fnt)
       end
-      if option.to_s == 'kanjifont' && JAPANIZED_TK && TK_VERSION =~ /^4\.*/
-        # obsolete; just for compatibility
-        fnt.kanji_font
-      else
-        fnt
-      end
+      fnt
     else
       tk_tcl2ruby(_fromUTF8(tk_send_without_enc('itemcget', tagid(tagOrId),
                                                 "-#{option}")))

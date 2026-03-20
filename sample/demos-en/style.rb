@@ -57,24 +57,11 @@ txt = TkText.new(base_frame){|t|
   #
   family = 'Courier'
 
-  if $tk_version =~ /^4.*/
-    style_tag_bold = TkTextTag.new(t, 'font'=>'-*-Courier-Bold-O-Normal--*-120-*-*-*-*-*-*')
-    style_tag_big = TkTextTag.new(t, 'font'=>'-*-Courier-Bold-R-Normal--*-140-*-*-*-*-*-*', 'kanjifont'=>$msg_kanji_font)
-    style_tag_verybig = TkTextTag.new(t, 'font'=>'-*-Helvetica-Bold-R-Normal--*-240-*-*-*-*-*-*')
-    #    style_tag_small = TkTextTag.new(t, 'font'=>'-Adobe-Helvetica-Bold-R-Normal-*-100-*', 'kanjifont'=>$kanji_font)
-    style_tag_small = TkTextTag.new(t, 'font'=>'-Adobe-Helvetica-Bold-R-Normal-*-100-*')
-  else
-    style_tag_bold = TkTextTag.new(t, 'font'=>[family, 12, :bold, :italic])
-    style_tag_big = TkTextTag.new(t, 'font'=>[family, 14, :bold])
-    style_tag_verybig = TkTextTag.new(t, 'font'=>['Helvetica', 24, :bold])
-    style_tag_small = TkTextTag.new(t, 'font'=>'Times 8 bold')
-  end
+  style_tag_bold = TkTextTag.new(t, 'font'=>[family, 12, :bold, :italic])
+  style_tag_big = TkTextTag.new(t, 'font'=>[family, 14, :bold])
+  style_tag_verybig = TkTextTag.new(t, 'font'=>['Helvetica', 24, :bold])
+  style_tag_small = TkTextTag.new(t, 'font'=>'Times 8 bold')
 ###
-#  case($tk_version)
-#  when /^4.*/
-#    style_tag_big = TkTextTag.new(t, 'font'=>'-*-Courier-Bold-R-Normal--*-140-*-*-*-*-*-*', 'kanjifont'=>$msg_kanji_font)
-#    style_tag_small = TkTextTag.new(t, 'font'=>'-Adobe-Helvetica-Bold-R-Normal-*-100-*', 'kanjifont'=>$kanji_font)
-#  when /^8.*/
 #    unless $style_demo_do_first
 #      $style_demo_do_first = true
 #      Tk.tk_call('font', 'create', '@bigascii',
@@ -88,7 +75,6 @@ txt = TkText.new(base_frame){|t|
 #    end
 #    style_tag_big = TkTextTag.new(t, 'font'=>'@cBigFont')
 #    style_tag_small = TkTextTag.new(t, 'font'=>'@cSmallFont')
-#  end
 
   #
   if TkWinfo.depth($root).to_i > 1
@@ -108,27 +94,16 @@ txt = TkText.new(base_frame){|t|
   end
 
   #
-  if $tk_version =~ /^4\.[01]/
-    style_tag_bgstipple = TkTextTag.new(t, 'background'=>'black',
-                                        'borderwidth'=>0,
-                                        'bgstipple'=>'gray25')
-  else
-    style_tag_bgstipple = TkTextTag.new(t, 'background'=>'black',
-                                        'borderwidth'=>0,
-                                        'bgstipple'=>'gray12')
-  end
+  style_tag_bgstipple = TkTextTag.new(t, 'background'=>'black',
+                                      'borderwidth'=>0,
+                                      'bgstipple'=>'gray12')
   style_tag_fgstipple = TkTextTag.new(t, 'fgstipple'=>'gray50')
   style_tag_underline = TkTextTag.new(t, 'underline'=>'on')
   style_tag_overstrike = TkTextTag.new(t, 'overstrike'=>'on')
   style_tag_right  = TkTextTag.new(t, 'justify'=>'right')
   style_tag_center = TkTextTag.new(t, 'justify'=>'center')
-  if $tk_version =~ /^4.*/
-    style_tag_super = TkTextTag.new(t, 'offset'=>'4p', 'font'=>'-Adobe-Courier-Medium-R-Normal--*-100-*-*-*-*-*-*')
-    style_tag_sub = TkTextTag.new(t, 'offset'=>'-2p', 'font'=>'-Adobe-Courier-Medium-R-Normal--*-100-*-*-*-*-*-*')
-  else
-    style_tag_super = TkTextTag.new(t, 'offset'=>'4p', 'font'=>[family, 10])
-    style_tag_sub = TkTextTag.new(t, 'offset'=>'-2p', 'font'=>[family, 10])
-  end
+  style_tag_super = TkTextTag.new(t, 'offset'=>'4p', 'font'=>[family, 10])
+  style_tag_sub = TkTextTag.new(t, 'offset'=>'-2p', 'font'=>[family, 10])
   style_tag_margins = TkTextTag.new(t, 'lmargin1'=>'12m', 'lmargin2'=>'6m',
                                     'rmargin'=>'10m')
   style_tag_spacing = TkTextTag.new(t, 'spacing1'=>'10p', 'spacing2'=>'2p',

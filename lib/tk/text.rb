@@ -814,12 +814,7 @@ class Tk::Text<TkTextWin
       unless fnt.kind_of?(TkFont)
         fnt = tagfontobj(tag, fnt)
       end
-      if key.to_s == 'kanjifont' && JAPANIZED_TK && TK_VERSION =~ /^4\.*/
-        # obsolete; just for compatibility
-        fnt.kanji_font
-      else
-        fnt
-      end
+      fnt
     else
       tk_tcl2ruby(_fromUTF8(tk_call_without_enc(@path,'tag','cget',_get_eval_enc_str(tag),"-#{key}")))
     end
@@ -1039,12 +1034,7 @@ class Tk::Text<TkTextWin
       unless fnt.kind_of?(TkFont)
         fnt = tagfontobj(index, fnt)
       end
-      if slot.to_s == 'kanjifont' && JAPANIZED_TK && TK_VERSION =~ /^4\.*/
-        # obsolete; just for compatibility
-        fnt.kanji_font
-      else
-        fnt
-      end
+      fnt
     else
       tk_tcl2ruby(_fromUTF8(tk_send_without_enc('window', 'cget', _get_eval_enc_str(index), "-#{slot}")))
     end

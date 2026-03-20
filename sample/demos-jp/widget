@@ -32,36 +32,11 @@ $tk_platform = TkVarAccess.new('tcl_platform')
 
 # フォント設定
 #######
-case($tk_version)
-when /^4.*/
-  $font = TkFont.new('-*-Helvetica-Medium-R-Normal--*-140-*-*-*-*-*-*', nil)
-  knjfont = '-*--16-*-jisx0208.1983-0'
-  $kanji_font = TkFont.new('-*-Helvetica-Medium-R-Normal--*-140-*-*-*-*-*-*',
-                           knjfont)
-  TkOption.add('*kanjiFont', knjfont, 'startupFile')
-  $msg_kanji_font=TkFont.new('-*-Helvetica-Medium-R-Normal--*-140-*-*-*-*-*-*',
-                             '-*--24-*-jisx0208.1983-0')
-
-#when '8.0'
-#  $font = TkFont.new('Helvetica -12')
-#  $kanji_font = TkFont.new('Helvetica -12', 'Mincho -12')
-#  TkOption.add('*kanjiFont', knjfont, 'startupFile')
-#  $msg_kanji_font=TkFont.new('Helvetica 16', 'Gothic 16 bold')
-
-when /^8.*/
-  $font = TkFont.new('Helvetica -12')
-  $kanji_font = TkFont.new('Helvetica -12', 'Mincho -12')
-  TkOption.add('*kanjiFont', knjfont, 'startupFile')
-  $msg_kanji_font=TkFont.new('Helvetica 14 bold', 'Gothic 14 bold')
-
-else
-  $font = TkFont.new('Helvetica 14', nil)
-  knjfont = '-*--16-*-jisx0208.1983-0'
-  $kanji_font = TkFont.new('Helvetic 14', knjfont)
-  TkOption.add('*kanjiFont', knjfont, 'startupFile')
-  $msg_kanji_font=TkFont.new('Helvetica 14',
-                             '-*--24-*-jisx0208.1983-0')
-end
+$font = TkFont.new('Helvetica -12')
+$kanji_font = TkFont.new('Helvetica -12', 'Mincho -12')
+knjfont = '-*--16-*-jisx0208.1983-0'
+TkOption.add('*kanjiFont', knjfont, 'startupFile')
+$msg_kanji_font=TkFont.new('Helvetica 14 bold', 'Gothic 14 bold')
 #######
 
 # イメージ設定
@@ -155,72 +130,48 @@ TkFrame.new($root){|frame|
 =end
 
 # テキストボックスの生成
-if $tk_version =~ /^4\.[01]/
-  scr = TkScrollbar.new($root, 'orient'=>'vertical')
-  txt = TkText.new($root) {
-    #wrap 'word'
-    wrap 'char'
-    width 70
-    height 30
-    font $font
-    setgrid 'yes'
-    yscrollcommand proc{|first,last| scr.set first,last}
-  }
-  scr.command(proc{|*args| txt.yview(*args)})
-  scr.pack('side'=>'right', 'fill'=>'y')
-  txt.pack('expand'=>'yes', 'fill'=>'both')
-else
-  textFrame = TkFrame.new($root)
-  scr = TkScrollbar.new($root, 'orient'=>'vertical',
-                        'highlightthickness'=>0, 'takefocus'=>1) {
-    pack('in'=>textFrame, 'side'=>'right', 'fill'=>'y', 'padx'=>1)
-  }
-  txt = TkText.new($root) {
-    #wrap 'word'
-    wrap 'char'
-    width 70
-    height 30
-    font $font
-    setgrid 'yes'
-    highlightthickness 0
-    padx 4
-    pady 2
-    takefocus 0
-    bd 1
-    yscrollcommand proc{|first,last| scr.set first,last}
-  }
-  scr.command(proc{|*args| txt.yview(*args)})
+textFrame = TkFrame.new($root)
+scr = TkScrollbar.new($root, 'orient'=>'vertical',
+                      'highlightthickness'=>0, 'takefocus'=>1) {
+  pack('in'=>textFrame, 'side'=>'right', 'fill'=>'y', 'padx'=>1)
+}
+txt = TkText.new($root) {
+  #wrap 'word'
+  wrap 'char'
+  width 70
+  height 30
+  font $font
+  setgrid 'yes'
+  highlightthickness 0
+  padx 4
+  pady 2
+  takefocus 0
+  bd 1
+  yscrollcommand proc{|first,last| scr.set first,last}
+}
+scr.command(proc{|*args| txt.yview(*args)})
 
 #  txt.pack('in'=>textFrame, 'expand'=>'yes', 'fill'=>'both', 'padx'=>1)
 #  txt.pack('in'=>textFrame, 'expand'=>'yes', 'fill'=>'both')
 #  textFrame.pack('expand'=>'yes', 'fill'=>'both', 'padx'=>1, 'pady'=>2)
-  textFrame.pack('expand'=>'yes', 'fill'=>'both')
-  #  $root.withdraw.deiconify
-  Tk.update_idletasks
-  txt.pack('in'=>textFrame, 'expand'=>'yes', 'fill'=>'both')
+textFrame.pack('expand'=>'yes', 'fill'=>'both')
+#  $root.withdraw.deiconify
+Tk.update_idletasks
+txt.pack('in'=>textFrame, 'expand'=>'yes', 'fill'=>'both')
 
-  statusBar = TkFrame.new($root) {|f|
-    if $tk_version =~ /^4.*/
-      statusfont = '-*-Helvetica-Medium-R-Normal--*-120-*-*-*-*-*-*'
-    else
-      statusfont = 'Helvetica 10'
-    end
-    $statusBarLabel = \
-    TkLabel.new(f, 'text'=>"   ", 'relief'=>'sunken', 'bd'=>1, 'anchor'=>'w',
-                'font'=>statusfont) \
-    .pack('side'=>'left', 'padx'=>2, 'expand'=>'yes', 'fill'=>'both')
-    TkLabel.new(f, 'width'=>8, 'relief'=>'sunken', 'bd'=>1, 'anchor'=>'w',
-                'font'=>statusfont) \
-    .pack('side'=>'left', 'padx'=>2)
-  }.pack('side'=>'bottom', 'fill'=>'x', 'pady'=>2)
-end
+statusBar = TkFrame.new($root) {|f|
+  statusfont = 'Helvetica 10'
+  $statusBarLabel = \
+  TkLabel.new(f, 'text'=>"   ", 'relief'=>'sunken', 'bd'=>1, 'anchor'=>'w',
+              'font'=>statusfont) \
+  .pack('side'=>'left', 'padx'=>2, 'expand'=>'yes', 'fill'=>'both')
+  TkLabel.new(f, 'width'=>8, 'relief'=>'sunken', 'bd'=>1, 'anchor'=>'w',
+              'font'=>statusfont) \
+  .pack('side'=>'left', 'padx'=>2)
+}.pack('side'=>'bottom', 'fill'=>'x', 'pady'=>2)
 
 # テキストタグ設定
-if $tk_version =~ /^4.*/
-  tag_title = TkTextTag.new(txt, 'font'=>'-*-Helvetica-Bold-R-Normal--*-180-*-*-*-*-*-*')
-else
-  tag_title = TkTextTag.new(txt, 'font'=>'Helvetica 18 bold')
-end
+tag_title = TkTextTag.new(txt, 'font'=>'Helvetica 18 bold')
 #tag_kanji_title = TkTextTag.new(txt, 'kanjifont'=>$msg_kanji_font)
 #tag_middle = TkTextTag.new(txt, 'kanjifont'=>$kanji_font)
 tag_kanji_title = TkTextTag.new(txt, 'font'=>$msg_kanji_font)
@@ -567,11 +518,7 @@ def showVars1(parent, *args)
       text "変数値:"
       width 20
       anchor 'center'
-      if $tk_version =~ /^4.*/
-        font '-Adobe-helvetica-medium-r-normal--*-180-*-*-*-*-*-*'
-      else
-        font 'Helvetica 14'
-      end
+      font 'Helvetica 14'
     }.pack('side'=>'top', 'fill'=>'x')
     len = 1
     args.each{|vnam,vbody|
@@ -827,48 +774,36 @@ def showCode1(demo)
 
     f.pack('side'=>'bottom', 'expand'=>'true', 'fill'=>'x')
 
-    if $tk_version =~ /^4\.[01]/
-      s = TkScrollbar.new($code_window, 'orient'=>'vertical')
-      $code_text = TkText.new($code_window) {
+    TkFrame.new($code_window) {|f|
+      pack('expand'=>'yes', 'fill'=>'both', 'padx'=>1, 'pady'=>1)
+
+      hs = TkScrollbar.new($code_window, 'highlightthickness'=>0,
+                           'orient'=>'horizontal')
+      vs = TkScrollbar.new($code_window, 'highlightthickness'=>0,
+                           'orient'=>'vertical')
+      $code_text = TkText.new($code_window) {|t|
         height 40
+        #wrap 'word'
+        wrap 'char'
+        xscrollcommand proc{|first,last| hs.set first,last}
+        yscrollcommand proc{|first,last| vs.set first,last}
         setgrid 'yes'
-        yscrollcommand proc{|first,last| s.set first,last}
+        highlightthickness 0
+        pady 2
+        padx 3
+        hs.command(proc{|*args| $code_text.xview(*args)})
+        vs.command(proc{|*args| $code_text.yview(*args)})
       }
-      s.command(proc{|*args| $code_text.yview(*args)})
-      s.pack('side'=>'right', 'fill'=>'y')
-      $code_text.pack('side'=>'left', 'expand'=>'yes', 'fill'=>'both')
-    else
-      TkFrame.new($code_window) {|f|
-        pack('expand'=>'yes', 'fill'=>'both', 'padx'=>1, 'pady'=>1)
 
-        hs = TkScrollbar.new($code_window, 'highlightthickness'=>0,
-                             'orient'=>'horizontal')
-        vs = TkScrollbar.new($code_window, 'highlightthickness'=>0,
-                             'orient'=>'vertical')
-        $code_text = TkText.new($code_window) {|t|
-          height 40
-          #wrap 'word'
-          wrap 'char'
-          xscrollcommand proc{|first,last| hs.set first,last}
-          yscrollcommand proc{|first,last| vs.set first,last}
-          setgrid 'yes'
-          highlightthickness 0
-          pady 2
-          padx 3
-          hs.command(proc{|*args| $code_text.xview(*args)})
-          vs.command(proc{|*args| $code_text.yview(*args)})
-        }
-
-        $code_text.grid('in'=>f, 'padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>0,
-                        'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-        vs.grid('in'=>f, 'padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>1,
-                'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
+      $code_text.grid('in'=>f, 'padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>0,
+                      'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
+      vs.grid('in'=>f, 'padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>1,
+              'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
 #       xs.grid('in'=>f, 'padx'=>1, 'pady'=>1, 'row'=>1, 'column'=>0,
 #               'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-        TkGrid.rowconfigure(f, 0, 'weight'=>1, 'minsize'=>0)
-        TkGrid.columnconfigure(f, 0, 'weight'=>1, 'minsize'=>0)
-      }
-    end
+      TkGrid.rowconfigure(f, 0, 'weight'=>1, 'minsize'=>0)
+      TkGrid.columnconfigure(f, 0, 'weight'=>1, 'minsize'=>0)
+    }
 
     btag = TkBindTag.new
 

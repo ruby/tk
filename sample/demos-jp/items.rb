@@ -68,22 +68,14 @@ TkFrame.new(base_frame) {|cf|
       c.yscrollcommand proc{|first,last| s.set first,last}
     }
 
-    if $tk_version =~ /^4\.[01]/
-      hs.pack('side'=>'bottom', 'fill'=>'x')
-      vs.pack('side'=>'right', 'fill'=>'y')
-      c.pack('in'=>cf, 'expand'=>'yes', 'fill'=>'both')
-
-    else
-      c.grid('in'=>cf, 'row'=>0, 'column'=>0,
-             'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-      vs.grid('row'=>0, 'column'=>1,
-              'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-      hs.grid('row'=>1, 'column'=>0,
-              'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-      TkGrid.rowconfigure(cf, 0, 'weight'=>1, 'minsize'=>0)
-      TkGrid.columnconfigure(cf, 0, 'weight'=>1, 'minsize'=>0)
-
-    end
+    c.grid('in'=>cf, 'row'=>0, 'column'=>0,
+           'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
+    vs.grid('row'=>0, 'column'=>1,
+            'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
+    hs.grid('row'=>1, 'column'=>0,
+            'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
+    TkGrid.rowconfigure(cf, 0, 'weight'=>1, 'minsize'=>0)
+    TkGrid.columnconfigure(cf, 0, 'weight'=>1, 'minsize'=>0)
 
   }
 }.pack('side'=>'top', 'fill'=>'both', 'expand'=>'yes')
@@ -95,13 +87,8 @@ TkcLine.new(cvs, '0c', '16c', '30c', '16c', 'width'=>2)
 TkcLine.new(cvs, '10c', '0c', '10c', '24c', 'width'=>2)
 TkcLine.new(cvs, '20c', '0c', '20c', '24c', 'width'=>2)
 
-if $tk_version =~ /^4.*/
-  font1 = '-Adobe-Helvetica-Medium-R-Normal--*-120-*-*-*-*-*-*'
-  font2 = '-Adobe-Helvetica-Bold-R-Normal--*-240-*-*-*-*-*-*'
-else
-  font1 = 'Helvetica 12'
-  font2 = 'Helvetica 24 bold'
-end
+font1 = 'Helvetica 12'
+font2 = 'Helvetica 24 bold'
 if TkWinfo.depth($root).to_i > 1
   blue   = 'DeepSkyBlue3'
   red    = 'red'
@@ -192,16 +179,9 @@ TkcRectangle.new(cvs, '25.4c','10.9c','25.6c','11.1c')
 TkcText.new(cvs, '25.5c', '11c', 'anchor'=>'w', 'font'=>font1, 'fill'=>blue,
             'text'=>"いくつかの行。\nそれぞれ独立に\n行揃え。\n全て左端がアンカーされている。", 'justify'=>'center', 'tags'=>$tag_item )
 TkcRectangle.new(cvs, '24.9c','13.9c','25.1c','14.1c')
-if $tk_version =~ /^4\.[01]/
-  TkcText.new(cvs, '25c', '14c', 'anchor'=>'c', 'font'=>font2, 'fill'=>red,
-              'stipple'=>'@' + [$demo_dir, '..',
-                                'images', 'grey.5'].join(File::Separator),
-              'text'=>'Stippled characters', 'tags'=>$tag_item )
-else
-  TkcText.new(cvs, '25c', '14c', 'anchor'=>'c', 'font'=>font2, 'fill'=>red,
-              'stipple'=>'gray50', 'text'=>'Stippled characters',
-              'tags'=>$tag_item )
-end
+TkcText.new(cvs, '25c', '14c', 'anchor'=>'c', 'font'=>font2, 'fill'=>red,
+            'stipple'=>'gray50', 'text'=>'Stippled characters',
+            'tags'=>$tag_item )
 
 TkcText.new(cvs, '5c', '16.2c', 'text'=>'弧', 'anchor'=>'n')
 TkcArc.new(cvs, '0.5c','17c','7c','20c', 'fill'=>green, 'outline'=>'black',

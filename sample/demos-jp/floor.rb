@@ -1620,58 +1620,37 @@ $floorLabels = {}
 $floorItems = {}
 
 # canvas 設定
-if $tk_version =~ /^4\.[01]/
-  $floor_canvas_frame = TkFrame.new(base_frame,'bd'=>2,'relief'=>'sunken',
-                                    'highlightthickness'=>2)
-  $floor_canvas = TkCanvas.new($floor_canvas_frame,
-                               'width'=>900, 'height'=>500, 'borderwidth'=>0,
-                               'highlightthickness'=>0) {|c|
-    TkScrollbar.new(base_frame, 'orient'=>'horiz',
-                    'command'=>proc{|*args| c.xview(*args)}){|hs|
-      c.xscrollcommand(proc{|first,last| hs.set first,last})
-      pack('side'=>'bottom', 'fill'=>'x')
+TkFrame.new(base_frame) {|f|
+  pack('side'=>'top', 'fill'=>'both', 'expand'=>'yes')
+
+  h = TkScrollbar.new(f, 'highlightthickness'=>0, 'orient'=>'horizontal')
+  v = TkScrollbar.new(f, 'highlightthickness'=>0, 'orient'=>'vertical')
+
+  TkFrame.new(f, 'bd'=>2, 'relief'=>'sunken') {|f1|
+    $floor_canvas = TkCanvas.new(f1, 'width'=>900, 'height'=>500,
+                                 'borderwidth'=>0,
+                                 'highlightthickness'=>0) {
+      xscrollcommand(proc{|first,last| h.set first,last})
+      yscrollcommand(proc{|first,last| v.set first,last})
+      pack('expand'=>'yes', 'fill'=>'both')
     }
-    TkScrollbar.new(base_frame, 'command'=>proc{|*args| c.yview(*args)}){|vs|
-      c.yscrollcommand(proc{|first,last| vs.set first,last})
-      pack('side'=>'right', 'fill'=>'y')
-    }
+    grid('padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>0,
+         'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
   }
-  $floor_canvas_frame.pack('side'=>'top','fill'=>'both', 'expand'=>'yes')
-  $floor_canvas.pack('expand'=>'yes', 'fill'=>'both')
 
-else
-  TkFrame.new(base_frame) {|f|
-    pack('side'=>'top', 'fill'=>'both', 'expand'=>'yes')
+  v.grid('padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>1,
+         'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
+  h.grid('padx'=>1, 'pady'=>1, 'row'=>1, 'column'=>0,
+         'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
 
-    h = TkScrollbar.new(f, 'highlightthickness'=>0, 'orient'=>'horizontal')
-    v = TkScrollbar.new(f, 'highlightthickness'=>0, 'orient'=>'vertical')
+  TkGrid.rowconfigure(f, 0, 'weight'=>1, 'minsize'=>0)
+  TkGrid.columnconfigure(f, 0, 'weight'=>1, 'minsize'=>0)
 
-    TkFrame.new(f, 'bd'=>2, 'relief'=>'sunken') {|f1|
-      $floor_canvas = TkCanvas.new(f1, 'width'=>900, 'height'=>500,
-                                   'borderwidth'=>0,
-                                   'highlightthickness'=>0) {
-        xscrollcommand(proc{|first,last| h.set first,last})
-        yscrollcommand(proc{|first,last| v.set first,last})
-        pack('expand'=>'yes', 'fill'=>'both')
-      }
-      grid('padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>0,
-           'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-    }
+  pack('expand'=>'yes', 'fill'=>'both', 'padx'=>1, 'pady'=>1)
 
-    v.grid('padx'=>1, 'pady'=>1, 'row'=>0, 'column'=>1,
-           'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-    h.grid('padx'=>1, 'pady'=>1, 'row'=>1, 'column'=>0,
-           'rowspan'=>1, 'columnspan'=>1, 'sticky'=>'news')
-
-    TkGrid.rowconfigure(f, 0, 'weight'=>1, 'minsize'=>0)
-    TkGrid.columnconfigure(f, 0, 'weight'=>1, 'minsize'=>0)
-
-    pack('expand'=>'yes', 'fill'=>'both', 'padx'=>1, 'pady'=>1)
-
-    v.command(proc{|*args| $floor_canvas.yview(*args)})
-    h.command(proc{|*args| $floor_canvas.xview(*args)})
-  }
-end
+  v.command(proc{|*args| $floor_canvas.yview(*args)})
+  h.command(proc{|*args| $floor_canvas.xview(*args)})
+}
 
 
 # Create an entry for displaying and typing in current room.
