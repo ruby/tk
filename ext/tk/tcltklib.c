@@ -239,6 +239,7 @@ static VALUE eTkCallbackThrow;
 
 static VALUE tcltkip_class;
 
+static ID ID_plus_at;
 static ID ID_at_enc;
 static ID ID_at_interp;
 
@@ -7598,6 +7599,7 @@ lib_toUTF8_core(VALUE ip_obj, VALUE src, VALUE encodename)
     if (NIL_P(encodename)) {
         if (RB_TYPE_P(str, T_STRING)) {
             volatile VALUE enc;
+            str = rb_funcall(str, ID_plus_at, 0);
 
 #ifdef HAVE_RUBY_ENCODING_H
             enc = rb_funcallv(rb_obj_encoding(str), ID_to_s, 0, 0);
@@ -7649,6 +7651,9 @@ lib_toUTF8_core(VALUE ip_obj, VALUE src, VALUE encodename)
     } else {
         StringValue(encodename);
 	if (strcmp(RSTRING_PTR(encodename), "binary") == 0) {
+          if (RB_TYPE_P(str, T_STRING)) {
+            str = rb_funcall(str, ID_plus_at, 0);
+          }
 #ifdef HAVE_RUBY_ENCODING_H
 	  rb_enc_associate_index(str, ENCODING_INDEX_BINARY);
 #endif
@@ -10299,6 +10304,7 @@ Init_tcltklib(void)
 
     /* --------------------------------------------------------------- */
 
+    ID_plus_at = rb_intern("+@");
     ID_at_enc = rb_intern("@encoding");
     ID_at_interp = rb_intern("@interp");
     ID_encoding_name = rb_intern("encoding_name");
