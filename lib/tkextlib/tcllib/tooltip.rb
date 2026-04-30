@@ -33,6 +33,7 @@ end
 
 module Tk::Tcllib::Tooltip
   extend TkCore
+  include Tk
 
   WidgetClassName = 'Tooltip'.freeze
   WidgetClassNames[WidgetClassName] ||= self
