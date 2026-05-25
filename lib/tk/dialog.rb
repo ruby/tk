@@ -68,7 +68,7 @@ class TkDialogObj < TkWindow
     @msgframe_config = msgframe_config
 
     @bitmap  = bitmap
-    @bitmap_config = message_config
+    @bitmap_config = bitmap_config
 
     @default_button = default_button
 
