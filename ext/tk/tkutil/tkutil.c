@@ -174,7 +174,19 @@ tk_eval_cmd(int argc, VALUE *argv, VALUE self)
 
     rb_scan_args(argc, argv, "1*", &cmd, &rest);
 #ifdef RB_PASS_KEYWORDS
+#  ifdef HAVE_RB_EVAL_CMD_KW
     return rb_eval_cmd_kw(cmd, rest, 0);
+#  else
+    if (RB_TYPE_P(cmd, T_STRING)) {
+        VALUE val = rb_funcallv_kw(rb_const_get(rb_cObject, rb_intern("TOPLEVEL_BINDING")), rb_intern("eval"), 1, &cmd, 0);
+        RB_GC_GUARD(cmd);
+        return val;
+    } else {
+        VALUE val = rb_funcallv_kw(cmd, rb_intern("call"), RARRAY_LENINT(rest), RARRAY_CONST_PTR(rest), 0);
+        RB_GC_GUARD(rest);
+        return val;
+    }
+#  endif
 #else
     return rb_eval_cmd(cmd, rest, 0);
 #endif

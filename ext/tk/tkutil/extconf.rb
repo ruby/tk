@@ -2,6 +2,7 @@
 begin
   require 'mkmf'
 
+  have_func("rb_eval_cmd_kw", "ruby.h")
   have_func("rb_obj_instance_exec", "ruby.h")
   have_func("rb_sym2str", "ruby.h")
   have_func("rb_id2str", "ruby.h")
